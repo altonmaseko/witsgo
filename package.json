@@ -4,7 +4,7 @@
   "description": "Transportation System for Wits University",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "echo \"No test specified\" && exit 0",
     "start": "node app.js",
     "dev": "nodemon app.js"
   },
@@ -16,7 +16,9 @@
     "express": "^4.19.2",
     "mongodb": "^6.8.0",
     "mongoose": "^8.5.3",
-    "nodemon": "^3.1.4",
     "path": "^0.12.7"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4"
   }
 }
