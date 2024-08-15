@@ -106,3 +106,7 @@ const asyncFunction = async () => {
 }
 // This is just javascript: when you call asyncFunction(), all the things in there will be executed.
 asyncFunction(); // run the function
+
+// TO run the file, open the project (github repository, after cloning) in vs code.
+// Open terminal and navigate to howTo folder ('cd howTo'), then
+// type 'node mongodb.js'
