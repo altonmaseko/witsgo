@@ -5,7 +5,7 @@ const authFailureController = (req, res) => {
 }
 
 const logoutController = (req, res) => {
-    req.session.destroy(); // req.user will be undefined
+    req.session.destroy(); // req.user will be made undefined
     res.send("Goodbye!");
 }
 
