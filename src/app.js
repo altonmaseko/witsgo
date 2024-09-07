@@ -9,16 +9,18 @@ const cors = require("cors")
 require("dotenv").config()
 require("./auth");
 const app = express()
+
+// ROUTES ==========================================
+const googleAuthRouter = require("./routers/googleAuthRouter");
+// END: ROUTES =====================================
+
+// SETUP MIDDLEWARE [not our own] =================== 
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
     origin: "http://127.0.0.1:5501",
     credentials: true
 }));
-const route_optimize = require("./routers/v1/route_optimize/route_optimize")
-
-
-app.use("/v1/route_optimize", route_optimize);
 
 app.use(session({
     secret: process.env.SESSION_SECRET,
@@ -27,6 +29,12 @@ app.use(session({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
+// END: MIDDLEWARE ================================
+
+
+
+const route_optimize = require("./routers/v1/route_optimize/route_optimize")
+app.use("/v1/route_optimize", route_optimize);
 
 const isLoggedIn = (req, res, next) => {
     // req.user is set by passport if the user is successfully authenticated by googles
@@ -35,19 +43,14 @@ const isLoggedIn = (req, res, next) => {
 }
 
 app.get("/", (req, res) => {
-    res.send("Welcome to the home page");
+    res.send("Welcome to the WITSGO server, what are you doing here bruv??");
 });
 
-app.get("/login", (req, res) => {
-    res.send("<a href='/auth/google'>Login with Google</a>");
-});
-
-
-app.use("/", require("./routers/googleAuthRouter"));
+app.use(googleAuthRouter);
 
 app.get("/protected", isLoggedIn, (req, res) => {
     console.log(req.user);
-    res.send(`Hello there ${req.user.displayName}`);
+    res.send(`Hello there ${req.user.displayName}, what do you want on the server??`);
 });
 
 app.get("/tellstory", (req, res) => { // no authentication needed because no isLoggedIn middleware
@@ -55,7 +58,6 @@ app.get("/tellstory", (req, res) => { // no authentication needed because no isL
     and they were very sad. The end.`;
     res.send(funnyStory);
 });
-
 
 const PORT = process.env.PORT || 3000; // get port from .env file, otherwise 3000
 

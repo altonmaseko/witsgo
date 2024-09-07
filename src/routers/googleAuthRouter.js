@@ -10,11 +10,17 @@ router.get("/auth/google",
     })
 );
 
+
+router.get("/login", (req, res) => {
+    res.send("<a href='/auth/google'>Login with Google</a>");
+});
+
 // After user logs in, google will redirect them to this route
 router.get("/google/callback", passport.authenticate("google", {
     successRedirect: "/auth/success", // if authentication is successful
     failureRedirect: "/auth/failure" // if authentication fails
 }));
+
 
 router.get("/auth/success", authSuccessController);
 
