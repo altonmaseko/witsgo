@@ -1,0 +1,53 @@
+What Sessions Are
+
+A session is a way to store information about a user across multiple interactions with a web application. HTTP, the protocol used for communication on the web, is stateless, meaning each request from the user to the server is independent and does not automatically "remember" previous requests. Sessions are used to solve this issue by allowing the server to keep track of user interactions.
+How Sessions Work
+
+    Session ID: When a user first interacts with the server, a session is created. The server generates a unique session ID and sends it back to the client (browser) as a cookie.
+
+    Server-side storage: The server stores information associated with the session ID, such as login status, user preferences, shopping cart contents, etc. This data is stored on the server, not on the client side.
+
+    Session persistence: With each subsequent request, the client sends the session ID back to the server (through the cookie). The server uses this ID to retrieve the associated session data and "remembers" the user.
+
+Lifecycle of a Session:
+
+    Session Creation: When a user first interacts with a site (e.g., by logging in or interacting with the site), a session is created on the server.
+
+    Session Storage: The session data (like user information) is stored in the server's session store (this can be in memory, a database, or even a file).
+
+    Session ID Cookie: The session ID is sent to the client in a cookie and is stored in the browser. For every subsequent request, the browser sends the session ID back to the server automatically.
+
+    Session Expiration: Sessions have a limited lifetime. After a certain amount of time, the session can expire, and the user will need to re-authenticate or re-establish the session.
+
+Example Scenario
+
+    User logs in: When a user logs in to a web application, a session is created. The server stores details about the user (e.g., user ID, login status) in a session associated with the session ID.
+    User navigates the site: As the user moves between different pages, the session ID is sent with each request, and the server retrieves the associated session data to know who the user is, keeping them logged in.
+    User logs out: The session is destroyed, and the session data is removed from the server.
+
+Why Sessions Are Important
+
+    Stateful experience: Sessions allow servers to "remember" users and provide personalized, continuous experiences across page loads (e.g., keeping users logged in).
+
+    Security: Sessions can securely manage user authentication without storing sensitive data like passwords in the browser.
+
+    Temporary storage: Sessions can be used for temporary data storage, such as storing items in a shopping cart before checkout.
+
+====================================
+
+resave and saveUninitialized in express-session
+
+    resave:
+        What it does: If set to true, the session will be saved to the store on every request, even if the session wasn't modified during the request. If set to false, it will only be saved if something within the session has changed.
+
+        The session store is where the server stores session data associated with each session ID. By default, if you use express-session in an Express app without explicitly specifying a store, the session data is stored in-memory (in the server's memory). However, this approach is not recommended for production because the session data will be lost when the server restarts or scales across multiple instances.
+
+        Default: Undefined, so you must explicitly define it.
+        User perspective: If resave is false, the session will not be unnecessarily saved to the store during requests where no session changes occur. This improves performance since it reduces the number of writes to the session store.
+
+    saveUninitialized:
+        What it does: If set to true, sessions will be created and stored even if they are "uninitialized" (i.e., the session has been created, but nothing has been added to it yet). If set to false, the session won't be created until something is actually added to it (e.g., a login event or some user data).
+
+        Default: Undefined, so you must explicitly define it.
+        User perspective: If saveUninitialized is true, a session will be created and stored as soon as the user visits the site, even if they haven't logged in or taken any action. This can result in empty sessions being stored, which can be useful for tracking purposes like analytics but might clutter the session store with useless data if not handled properly.
+

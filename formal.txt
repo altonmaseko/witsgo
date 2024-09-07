@@ -1,0 +1,48 @@
+Project Documentation: Wits Campus Transportation Tracker
+Project Overview
+The Wits Campus Transportation Tracker is a web application designed to track buses traveling between Wits campuses and residences. It also includes rental stations on campus where students can rent bikes and scooters. The application is hosted on Azure, utilizing Google Maps for geolocation services. The frontend is built with HTML, CSS, and JavaScript, while the backend is developed using Express.js.
+
+Repository Structure
+The GitHub repository is organized as follows:
+
+.github/
+controllers/
+frontend/
+models/
+routers/
+.env
+app.js
+package.json
+package-lock.json
+web.config
+
+Folder and File Descriptions
+.github/: Contains GitHub-specific configurations, such as workflows for CI/CD.
+controllers/: Houses the controller files that handle the logic for different routes and API endpoints.
+frontend/: Contains all frontend-related files, including HTML, CSS, and JavaScript.
+models/: Includes the data models used by the application, typically defining the structure of the data stored in the database.
+routers/: Contains the route definitions, mapping URLs to the corresponding controller functions.
+.env: Environment variables file, storing sensitive information like API keys and database credentials.
+app.js: The main entry point of the application, setting up the Express server and middleware.
+package.json: Lists the project dependencies and scripts.
+package-lock.json: Locks the versions of dependencies to ensure consistency across different environments.
+web.config: Configuration file for hosting the application on Azure.
+How It Works
+Frontend:
+The frontend is built with HTML, CSS, and JavaScript, providing the user interface for tracking buses and rental stations.
+Google Maps API is integrated to display the locations of buses and rental stations on the map.
+Backend:
+The backend is developed using Express.js, handling API requests and responses.
+Controllers manage the logic for different routes, interacting with the models to fetch or update data.
+Models define the structure of the data, ensuring consistency and validation.
+Routing:
+Routes are defined in the routers folder, mapping URLs to the corresponding controller functions.
+Example: A GET request to /buses might be handled by a function in controllers/busController.js.
+Environment Variables:
+Sensitive information, such as API keys and database credentials, are stored in the .env file.
+These variables are loaded into the application using the dotenv package.
+Hosting on Azure:
+The application is hosted on Azure, with the web.config file providing the necessary configurations.
+Both the frontend and backend are deployed to Azure, ensuring seamless integration and scalability.
+Dependencies:
+All project dependencies are listed in the package.json file.

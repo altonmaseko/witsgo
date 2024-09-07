@@ -24,7 +24,7 @@ const connectDB = async () => {
 // that is what we are getting.
 // If modules folder had Example.js as well, we could get it
 // by saying const Example = require("./modules/Example.js");.
-const User = require("../models/User"); // [Step 1]
+const User = require("../../models/User"); // [Step 1]
 
 // [Step 2] Now look at models/User.js to see how to create simple structure 
 // to store in database. Navigate to User.js first then come back.
