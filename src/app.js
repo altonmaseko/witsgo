@@ -4,19 +4,17 @@ const session = require("express-session")
 const mongoose = require("mongoose")
 const connectDB = require("./config/connectDB")
 const passport = require("passport")
-const cookieParser = require("cookie-parser")
 require("dotenv").config()
 require("./auth");
-const cors = require("cors");
-
 
 const app = express()
-app.use(cors({
-    origin: 'http://127.0.0.1:5501',
-    credentials: true
-}));
-app.use(cookieParser());
 app.use(express.json());
+
+const route_optimize = require("./routers/v1/route_optimize/route_optimize")
+
+
+app.use("/v1/route_optimize", route_optimize);
+
 app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
@@ -24,7 +22,6 @@ app.use(session({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
-
 
 const isLoggedIn = (req, res, next) => {
     // req.user is set by passport if the user is successfully authenticated by googles
