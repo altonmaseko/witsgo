@@ -4,12 +4,17 @@ const session = require("express-session")
 const mongoose = require("mongoose")
 const connectDB = require("./config/connectDB")
 const passport = require("passport")
+const cookieParser = require('cookie-parser');
+const cors = require("cors")
 require("dotenv").config()
 require("./auth");
-
 const app = express()
 app.use(express.json());
-
+app.use(cookieParser());
+app.use(cors({
+    origin: "http://127.0.0.1:5501",
+    credentials: true
+}));
 const route_optimize = require("./routers/v1/route_optimize/route_optimize")
 
 
