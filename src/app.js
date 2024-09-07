@@ -8,6 +8,14 @@ require("dotenv").config()
 require("./auth");
 
 const app = express()
+
+
+const route_optimize = require("./routers/v1/route_optimize/route_optimize")
+
+
+app.use("/route_optimize",route_optimize);
+
+
 app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,

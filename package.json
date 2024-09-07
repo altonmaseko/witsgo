@@ -2,11 +2,11 @@
   "name": "hexago",
   "version": "1.0.0",
   "description": "Transportation System for Wits University",
-  "main": "index.js",
+  "main": "src/app.js",
   "scripts": {
     "test": "echo \"No test specified\" && exit 0",
-    "start": "node app.js",
-    "dev": "nodemon app.js"
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js"
   },
   "author": "",
   "license": "ISC",
