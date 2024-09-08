@@ -1,29 +1,24 @@
 const express = require("express");
 const router = express.Router();
 const passport = require("passport")
-const { authFailureController, logoutController, authSuccessController, verifyLoginController } = require("../controllers/googleAuthController.js");
+const {
+    startAuthController,
+    googleCallbackController,
+    authFailureController,
+    logoutController,
+    authSuccessController,
+    verifyLoginController } = require("../controllers/googleAuthController.js");
 
 // Starts authentication process
-router.get("/auth/google",
-    passport.authenticate("google", {
-        scope: ["email", "profile"] // The data that we want from the users google account
-    })
-);
+router.get("/auth/google", startAuthController);
 
+// After user logs in through google, google will redirect to this route
+router.get("/google/callback", googleCallbackController);
 
-router.get("/login", (req, res) => {
-    res.send("<a href='/auth/google'>Login with Google</a>");
-});
-
-// After user logs in, google will redirect them to this route
-router.get("/google/callback", passport.authenticate("google", {
-    successRedirect: "/auth/success", // if authentication is successful
-    failureRedirect: "/auth/failure" // if authentication fails
-}));
-
-
+// If authentication is successful, googleCallbackController will redirect user here
 router.get("/auth/success", authSuccessController);
 
+// If authentication fails, googleCallbackController will redirect user here
 router.get("/auth/failure", authFailureController);
 
 router.get("/logout", logoutController);
@@ -31,3 +26,8 @@ router.get("/logout", logoutController);
 router.get("/verifylogin", verifyLoginController);
 
 module.exports = router;
+
+
+// router.get("/login", (req, res) => {
+//     res.send("<a href='/auth/google'>Login with Google</a>");
+// });

@@ -1,14 +1,48 @@
 const jwt = require('jsonwebtoken');
+const passport = require('passport');
+
+// INITIALIZE AUTHENTICATION AND CALLBACK ==========================================
+
+const startAuthController = (req, res, next) => {
+    const redirect = req.query.redirect;
+
+    // encodeURIComponent:  It converts characters that are not valid in a URL 
+    // (like spaces, special characters, and punctuation) into a format that 
+    // can be safely transmitted via a URL.
+    const state = encodeURIComponent(redirect);
+
+    const authenticator = passport.authenticate("google", {
+        scope: ["email", "profile"],
+        // state will be included in the authentication request as query parameter to google,
+        // and google will include it unchanged when redirecting back to our server.
+        state: state
+    });
+    authenticator(req, res, next);
+}
+
+const googleCallbackController = (req, res, next) => {
+    passport.authenticate("google", (err, user, info) => {
+        if (err) {
+            return next(err);
+        }
+        if (!user) {
+            return res.redirect('/auth/failure');
+        }
+
+        return res.redirect(`/auth/success?redirect=${req.query.state}`);
+    })(req, res, next);
+}
+
+// AUTHENTICATION SUCCESS AND FAILURE ==========================================
 
 const authFailureController = (req, res) => {
-    res.send("Something went wrong while trying to authenticate you");
+    res.send("Something went wrong while trying to authenticate you.");
 }
 
 const authSuccessController = (req, res) => {
 
     // AFTER google authentication is successful, we create our own accessToken to store
-
-    const homepage = 'http://127.0.0.1:5501/logintest/';
+    const redirect = decodeURIComponent(req.query.redirect);
 
     const user = req.user;
     const accessToken = jwt.sign({ user }, process.env.JWT_SECRET, { expiresIn: "2m" });
@@ -18,10 +52,11 @@ const authSuccessController = (req, res) => {
         sameSite: "none",
         secure: true
     });
-    res.redirect(homepage);
 
-    // res.json({ user, success: true });
+    res.redirect(redirect);
 }
+
+// ============================================================================
 
 const verifyLoginController = (req, res) => {
     const accessToken = req.cookies.accessToken;
@@ -62,4 +97,11 @@ const logoutController = (req, res) => {
     res.redirect(loginPage);
 }
 
-module.exports = { authFailureController, logoutController, authSuccessController, verifyLoginController }; 
+module.exports = {
+    startAuthController,
+    googleCallbackController,
+    authFailureController,
+    logoutController,
+    authSuccessController,
+    verifyLoginController
+}; 
