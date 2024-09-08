@@ -7,7 +7,7 @@ const {
     authFailureController,
     logoutController,
     authSuccessController,
-    verifyLoginController } = require("../controllers/googleAuthController.js");
+    verifyLoginController } = require("../controllers/googleAuthControllers.js");
 
 // Starts authentication process
 router.get("/auth/google", startAuthController);
@@ -27,7 +27,3 @@ router.get("/verifylogin", verifyLoginController);
 
 module.exports = router;
 
-
-// router.get("/login", (req, res) => {
-//     res.send("<a href='/auth/google'>Login with Google</a>");
-// });

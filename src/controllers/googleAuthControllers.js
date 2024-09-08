@@ -15,7 +15,8 @@ const startAuthController = (req, res, next) => {
         scope: ["email", "profile"],
         // state will be included in the authentication request as query parameter to google,
         // and google will include it unchanged when redirecting back to our server.
-        state: state
+        state: state,
+        prompt: "consent" // after logging
     });
     authenticator(req, res, next);
 }
@@ -92,8 +93,15 @@ const verifyLoginController = (req, res) => {
 
 const logoutController = (req, res) => {
     const loginPage = "http://127.0.0.1:5501/logintest/login.html";
+
     req.session.destroy(); // req.user will be undefined
     res.clearCookie("accessToken");
+    res.clearCookie("connect.sid");
+
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+
     res.redirect(loginPage);
 }
 

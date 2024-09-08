@@ -25,28 +25,27 @@ app.use(cors({
 app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: true
 }));
 app.use(passport.initialize());
 app.use(passport.session());
 // END: MIDDLEWARE ================================
 
-
-
 const route_optimize = require("./routers/v1/route_optimize/route_optimize")
 app.use("/v1/route_optimize", route_optimize);
 
+app.get("/", (req, res) => {
+    res.send("Welcome to the WITSGO server, what are you doing here bruv?? Go to the frontend!");
+});
+
+app.use(googleAuthRouter);
+
+// Server-only Interactions ==========================
 const isLoggedIn = (req, res, next) => {
     // req.user is set by passport if the user is successfully authenticated by googles
     req.user ? next() : res.sendStatus(401);
     // 401: Unauthorized
 }
-
-app.get("/", (req, res) => {
-    res.send("Welcome to the WITSGO server, what are you doing here bruv??");
-});
-
-app.use(googleAuthRouter);
 
 app.get("/protected", isLoggedIn, (req, res) => {
     console.log(req.user);
@@ -58,6 +57,7 @@ app.get("/tellstory", (req, res) => { // no authentication needed because no isL
     and they were very sad. The end.`;
     res.send(funnyStory);
 });
+// END: Server-only Interactions ======================
 
 const PORT = process.env.PORT || 3000; // get port from .env file, otherwise 3000
 
