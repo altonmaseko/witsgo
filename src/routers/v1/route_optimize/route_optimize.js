@@ -6,24 +6,27 @@ const baseURL = "https://routes.googleapis.com/directions/v2:computeRoutes?key="
 
 
 router.post("/route_optimize",async (req,res)=>{
-    if (!req.body || !req.body.origin || !req.body.destination || !req.body.travelMode) {
+    if (!req.body || !req.body["destination"] || !req.body["origin"] || !req.body["travelMode"]) {
       res.status(400).send({ "message": "Missing required parameters" });
       return;
     }
 
-    if (!res.body.origin.latitude||!res.body.origin.longitude||!res.body.destination.latitude||!res.body.destination.longitude){
-      res.status(400).send({ "message": "Missing required parameters" });
-      return;
-    }
-    
+    let origin = req.body["origin"]
     let dest = req.body["destination"];
     let travel_mode = req.body["travelMode"];
 
 
+    if (!origin["latitude"]||!origin["longitude"]||!dest["latitude"]||!dest["longitude"]){
+      res.status(400).send({ "message": "Missing required parameters" });
+      return;
+    }
+    
+
     const endpoint = baseURL+process.env.GOOGLE_MAP_KEY;
+    
     const headers = {
         'Content-Type': 'application/json',
-        'X-Goog-FieldMask': 'routes.distanceMeters,routes.duration,routes.polyline.encodedPolyline'
+        'X-Goog-FieldMask': 'routes.distanceMeters,routes.duration,routes.polyline.encodedPolyline,routes.legs.steps.navigationInstruction,routes.legs.steps.localizedValues'
       }
 
     const data = {
@@ -44,7 +47,6 @@ router.post("/route_optimize",async (req,res)=>{
           }
         },
         "travelMode": travel_mode,
-        "routingPreference": "TRAFFIC_AWARE",
         "computeAlternativeRoutes": false,
         "routeModifiers": {
           "avoidTolls": false,
@@ -55,13 +57,17 @@ router.post("/route_optimize",async (req,res)=>{
         "units": "METRIC"
       }
 
+
     try{  
         const APIresponse = await axios.post(endpoint,data,{headers:headers})
-
+        const legs = APIresponse.data.routes[0].legs
         const encodedPolyline = APIresponse.data.routes[0].polyline.encodedPolyline;
-
         res.send(
-            {"success":true,data:encodedPolyline}
+            {"success":true,data:{
+              "polyline":encodedPolyline,
+              "legs":legs
+            }
+          }
         );
 
     }catch(error){
