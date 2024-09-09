@@ -6,11 +6,18 @@ const baseURL = "https://routes.googleapis.com/directions/v2:computeRoutes?key="
 
 
 router.post("/route_optimize",async (req,res)=>{
-    console.log(req.body);
+    if (!req.body || !req.body.origin || !req.body.destination || !req.body.travelMode) {
+      res.status(400).send({ "message": "Missing required parameters" });
+      return;
+    }
 
-    origin = req.body["origin"];
-    dest = req.body["destination"];
-    travel_mode = req.body["travelMode"];
+    if (!res.body.origin.latitude||!res.body.origin.longitude||!res.body.destination.latitude||!res.body.destination.longitude){
+      res.status(400).send({ "message": "Missing required parameters" });
+      return;
+    }
+    
+    let dest = req.body["destination"];
+    let travel_mode = req.body["travelMode"];
 
 
     const endpoint = baseURL+process.env.GOOGLE_MAP_KEY;

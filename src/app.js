@@ -6,7 +6,6 @@ const mongoose = require("mongoose")
 const connectDB = require("./config/connectDB")
 const passport = require("passport")
 const cookieParser = require('cookie-parser');
-const cors = require("cors")
 require("dotenv").config()
 require("./auth");
 const app = express()
