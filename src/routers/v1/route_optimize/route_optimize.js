@@ -4,10 +4,14 @@ const axios = require("axios");
 
 const baseURL = "https://routes.googleapis.com/directions/v2:computeRoutes?key="
 
+
 router.post("/route_optimize",async (req,res)=>{
+    console.log(req.body);
+
     origin = req.body["origin"];
     dest = req.body["destination"];
     travel_mode = req.body["travelMode"];
+
 
     const endpoint = baseURL+process.env.GOOGLE_MAP_KEY;
     const headers = {

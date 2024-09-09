@@ -1,6 +1,7 @@
 const path = require("path")
 const express = require("express")
 const session = require("express-session")
+const cors = require('cors');
 const mongoose = require("mongoose")
 const connectDB = require("./config/connectDB")
 const passport = require("passport")
@@ -9,9 +10,14 @@ require("./auth");
 
 const app = express()
 app.use(express.json());
+app.use(cors());
 
 const route_optimize = require("./routers/v1/route_optimize/route_optimize")
 
+
+app.get("/work",(req,res)=>{
+    res.send("WORKING");
+})
 
 app.use("/v1/route_optimize",route_optimize);
 
@@ -52,7 +58,7 @@ app.get("/tellstory", (req, res) => { // no authentication needed because no isL
 });
 
 
-const PORT = process.env.PORT || 3000; // get port from .env file, otherwise 3000
+const PORT = process.env.PORT || 3001; // get port from .env file, otherwise 3000
 
 connectDB();
 mongoose.connection.on("connected", async () => {
