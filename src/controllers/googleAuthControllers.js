@@ -59,10 +59,26 @@ const authSuccessController = async (req, res) => {
         httpOnly: true,
         sameSite: "none",
         secure: true,
+        path: "/",
         maxAge: 1000 * 60 * 4 // 4 minutes
     });
 
-    res.redirect(`${redirect}?email=${user.email}`);
+    // res.redirect(`${redirect}?email=${user.email}`);
+
+    // Send a response with a script to redirect after a short delay
+    res.send(`
+  <html>
+    <body>
+      <script>
+        setTimeout(() => {
+          window.location.href = "${redirect}?email=${user.email}";
+        }, 500);  // 500ms delay
+      </script>
+    </body>
+  </html>
+`
+    );
+
 }
 
 // ============================================================================
