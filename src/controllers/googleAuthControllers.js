@@ -99,7 +99,7 @@ const verifyLoginController = (req, res) => {
 
 
 const logoutController = (req, res) => {
-    const loginPage = "http://127.0.0.1:5501/logintest/login.html";
+    const loginPage = `${process.env.CLIENT_URL}`;
 
     req.session.destroy(); // req.user will be undefined
     res.clearCookie("accessToken");

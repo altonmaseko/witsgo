@@ -20,7 +20,7 @@ const userRouter = require("./routers/userRouter");
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-    origin: "http://localhost:5000",
+    origin: process.env.CLIENT_URL,
     credentials: true
 }));
 
@@ -89,7 +89,7 @@ const instrument = require("@socket.io/admin-ui").instrument;
 const io = require('socket.io')(server, {
     cors: {
         // origin: "*"
-        origin: ['http://localhost:5000', "https://admin.socket.io", "/socket.io",]
+        origin: ['http://localhost:5000', "https://admin.socket.io", "/socket.io", process.env.CLIENT_URL]
     }
 });
 
