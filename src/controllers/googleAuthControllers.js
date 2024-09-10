@@ -1,6 +1,8 @@
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
 const User = require('../models/User');
+const path = require('path');
+const fs = require('fs');
 
 // INITIALIZE AUTHENTICATION AND CALLBACK ==========================================
 
@@ -63,21 +65,32 @@ const authSuccessController = async (req, res) => {
         maxAge: 1000 * 60 * 4 // 4 minutes
     });
 
-    // res.redirect(`${redirect}?email=${user.email}`);
+    //     // res.redirect(`${redirect}?email=${user.email}`);
 
-    // Send a response with a script to redirect after a short delay
-    res.send(`
-  <html>
-    <body>
-      <script>
-        setTimeout(() => {
-          window.location.href = "${redirect}?email=${user.email}";
-        }, 500);  // 500ms delay
-      </script>
-    </body>
-  </html>
-`
-    );
+    //     // Send a response with a script to redirect after a short delay
+    //     res.send(`
+    //   <html>
+    //     <body>
+    //       <script>
+    //         setTimeout(() => {
+    //           window.location.href = "${redirect}?email=${user.email}";
+    //         }, 500);  // 500ms delay
+    //       </script>
+    //     </body>
+    //   </html>
+    // `
+    //     );
+
+    // Read the HTML file
+    const filePath = path.join(__dirname, '..', 'config', 'loaderPageRedirect.html');
+    let loaderPageHtml = fs.readFileSync(filePath, 'utf8');
+
+    // Replace the placeholder with the actual redirect URL
+    const redirectUrl = `${redirect}?email=${encodeURIComponent(user.email)}`;
+    loaderPageHtml = loaderPageHtml.replace('{{REDIRECT_URL}}', redirectUrl);
+
+    // Send the modified HTML
+    res.send(loaderPageHtml);
 
 }
 
