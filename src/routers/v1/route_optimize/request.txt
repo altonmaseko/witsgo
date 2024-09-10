@@ -1,0 +1,14 @@
+curl -X POST \
+  'http://localhost:3000/v1/route_optimize/route_optimize' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "origin": {
+        "latitude": 37.7749,
+        "longitude": -122.4194
+    },
+    "destination": {
+        "latitude": 37.7849,
+        "longitude": -122.4094
+    },
+    "travelMode": "DRIVE"
+  }'
