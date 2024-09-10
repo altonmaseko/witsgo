@@ -76,12 +76,13 @@ const PORT = process.env.PORT; // get port from .env file, otherwise 3000
 // Create an HTTP server that both Express and WebSockets will use
 const server = http.createServer(app);
 
+server.listen(PORT, () => {
+    console.log(`server listening on port: ${PORT}...`)
+});
+
 connectDB();
 mongoose.connection.on("connected", async () => {
     console.log("SUCCESSFULLY CONNECTED TO DATABASE");
-    server.listen(PORT, () => {
-        console.log(`server listening on port: ${PORT}...`)
-    });
 });
 mongoose.connection.on("disconnected", () => {
     console.log("Lost connection to database")
