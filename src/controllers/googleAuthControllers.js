@@ -67,12 +67,15 @@ const authSuccessController = async (req, res) => {
 // ============================================================================
 
 const verifyLoginController = (req, res) => {
+    console.log("Cookies Received:", req.cookies);
+
     const accessToken = req.cookies.accessToken;
     if (!accessToken) {
+        console.log("No accessToken");
         res.json({
             success: false,
             isLoggedIn: false,
-            message: "User is not logged in",
+            message: "NO accessToken FOUND",
             status: 200
         });
         return;
@@ -80,18 +83,20 @@ const verifyLoginController = (req, res) => {
 
     jwt.verify(accessToken, process.env.JWT_SECRET, (err, user) => {
         if (err) {
+            console.log("INVALID JWT");
             return res.json({
                 success: false,
                 isLoggedIn: false,
-                message: "User has invalid jwt",
+                message: "INVALID JWT",
                 status: 200
             });
         }
+        console.log("JWT IS VALID");
         res.json({
             user,
             isLoggedIn: true,
             success: true,
-            message: "User is logged in",
+            message: "JWT IS VALID",
             status: 200
         });
     });
