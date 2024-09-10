@@ -146,3 +146,15 @@ io.emit(event, data): Sends the message to all connected clients.
 socket.broadcast.emit(event, data): Sends the message to all connected clients except the one that triggered the event.
 */
 
+// PRINT ALL .env variables
+console.log("ENVIRONMENT VARIABLES: ");
+console.log("---------------------------------");
+console.log(`PORT: ${process.env.PORT}`);
+console.log(`CONNECTION_URI: ${process.env.CONNECTION_URI}`);
+console.log(`GOOGLE_CLIENT_ID: ${process.env.GOOGLE_CLIENT_ID}`);
+console.log(`GOOGLE_CLIENT_SECRET: ${process.env.GOOGLE_CLIENT_SECRET}`);
+console.log(`SESSION_SECRET: ${process.env.SESSION_SECRET}`);
+console.log(`JWT_SECRET: ${process.env.JWT_SECRET}`);
+console.log(`CLIENT_URL: ${process.env.CLIENT_URL}`);
+console.log(`SERVER_URL: ${process.env.SERVER_URL}`);
+console.log("---------------------------------");
