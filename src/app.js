@@ -19,10 +19,19 @@ const userRouter = require("./routers/userRouter");
 // SETUP MIDDLEWARE [not our own] =================== 
 app.use(express.json());
 app.use(cookieParser());
+// CORS -------------
+const allowedOrigins = [process.env.CLIENT_URL, 'http://localhost:5000'];
 app.use(cors({
-    origin: process.env.CLIENT_URL,
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     credentials: true
 }));
+// END: CORS -------------
 
 app.use(session({
     secret: process.env.SESSION_SECRET,
@@ -89,7 +98,8 @@ const instrument = require("@socket.io/admin-ui").instrument;
 const io = require('socket.io')(server, {
     cors: {
         // origin: "*"
-        origin: ['http://localhost:5000', "https://admin.socket.io", "/socket.io", process.env.CLIENT_URL]
+        origin: allowedOrigins,
+        credentials: true
     }
 });
 
