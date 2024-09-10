@@ -58,7 +58,8 @@ const authSuccessController = async (req, res) => {
     res.cookie("accessToken", accessToken, {
         httpOnly: true,
         sameSite: "none",
-        secure: true
+        secure: true,
+        maxAge: 1000 * 60 * 4 // 4 minutes
     });
 
     res.redirect(`${redirect}?email=${user.email}`);
