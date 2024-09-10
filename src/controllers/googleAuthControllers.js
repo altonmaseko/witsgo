@@ -14,12 +14,15 @@ const startAuthController = (req, res, next) => {
     // can be safely transmitted via a URL.
     const state = encodeURIComponent(redirect);
 
+    // show prompt only if registering
+    const prompt = req.query.register === "true" ? "consent" : "none";
+
     const authenticator = passport.authenticate("google", {
         scope: ["email", "profile",],
         // state will be included in the authentication request as query parameter to google,
         // and google will include it unchanged when redirecting back to our server.
         state: state,
-        prompt: "consent" // after logging
+        prompt: prompt
     });
     authenticator(req, res, next);
 }
@@ -61,7 +64,7 @@ const authSuccessController = async (req, res) => {
         httpOnly: true,
         sameSite: "none",
         secure: true,
-        path: "/",
+        // path: "/",
         maxAge: 1000 * 60 * 4 // 4 minutes
     });
 
