@@ -1,6 +1,7 @@
 const path = require("path")
 const express = require("express")
 const session = require("express-session")
+const cors = require('cors');
 const mongoose = require("mongoose")
 const connectDB = require("./config/connectDB")
 const passport = require("passport")
