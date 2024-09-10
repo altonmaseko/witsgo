@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
+const User = require('../models/User');
 
 // INITIALIZE AUTHENTICATION AND CALLBACK ==========================================
 
@@ -12,7 +13,7 @@ const startAuthController = (req, res, next) => {
     const state = encodeURIComponent(redirect);
 
     const authenticator = passport.authenticate("google", {
-        scope: ["email", "profile"],
+        scope: ["email", "profile",],
         // state will be included in the authentication request as query parameter to google,
         // and google will include it unchanged when redirecting back to our server.
         state: state,
@@ -30,7 +31,7 @@ const googleCallbackController = (req, res, next) => {
             return res.redirect('/auth/failure');
         }
 
-        return res.redirect(`/auth/success?redirect=${req.query.state}`);
+        return res.redirect(`/auth/success?redirect=${req.query.state}&email=${user.email}`);
     })(req, res, next);
 }
 
@@ -40,12 +41,18 @@ const authFailureController = (req, res) => {
     res.send("Something went wrong while trying to authenticate you.");
 }
 
-const authSuccessController = (req, res) => {
+const authSuccessController = async (req, res) => {
 
     // AFTER google authentication is successful, we create our own accessToken to store
     const redirect = decodeURIComponent(req.query.redirect);
 
-    const user = req.user;
+    const user = await User.findOne({ email: req.query.email });
+
+    if (!user) {
+        res.redirect("/auth/failure");
+        return;
+    }
+
     const accessToken = jwt.sign({ user }, process.env.JWT_SECRET, { expiresIn: "2m" });
 
     res.cookie("accessToken", accessToken, {
@@ -54,7 +61,7 @@ const authSuccessController = (req, res) => {
         secure: true
     });
 
-    res.redirect(redirect);
+    res.redirect(`${redirect}?email=${user.email}`);
 }
 
 // ============================================================================

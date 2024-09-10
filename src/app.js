@@ -6,19 +6,21 @@ const connectDB = require("./config/connectDB")
 const passport = require("passport")
 const cookieParser = require('cookie-parser');
 const cors = require("cors")
+const http = require("http")
 require("dotenv").config()
 require("./auth");
 const app = express()
 
 // ROUTES ==========================================
 const googleAuthRouter = require("./routers/googleAuthRouter");
+const userRouter = require("./routers/userRouter");
 // END: ROUTES =====================================
 
 // SETUP MIDDLEWARE [not our own] =================== 
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-    origin: "http://127.0.0.1:5501",
+    origin: "http://localhost:5000",
     credentials: true
 }));
 
@@ -39,6 +41,7 @@ app.get("/", (req, res) => {
 });
 
 app.use(googleAuthRouter);
+app.use(userRouter);
 
 // Server-only Interactions ==========================
 const isLoggedIn = (req, res, next) => {
@@ -59,15 +62,77 @@ app.get("/tellstory", (req, res) => { // no authentication needed because no isL
 });
 // END: Server-only Interactions ======================
 
-const PORT = process.env.PORT || 3000; // get port from .env file, otherwise 3000
+const PORT = process.env.PORT; // get port from .env file, otherwise 3000
+
+// Create an HTTP server that both Express and WebSockets will use
+const server = http.createServer(app);
 
 connectDB();
 mongoose.connection.on("connected", async () => {
     console.log("SUCCESSFULLY CONNECTED TO DATABASE");
-    app.listen(PORT, () => {
+    server.listen(PORT, () => {
         console.log(`server listening on port: ${PORT}...`)
     });
 });
 mongoose.connection.on("disconnected", () => {
     console.log("Lost connection to database")
 });
+
+// =================================================
+
+// =================================================
+
+// =================================================
+
+// SOCKETS.io SERVER ====================================
+const instrument = require("@socket.io/admin-ui").instrument;
+const io = require('socket.io')(server, {
+    cors: {
+        // origin: "*"
+        origin: ['http://localhost:5000', "https://admin.socket.io", "/socket.io",]
+    }
+});
+
+io.on("connection", (socket) => {
+    console.log(`new socket client: ${socket.id}`);
+    socket.on("client-to-server", (data) => {
+        console.log(data);
+        // get the socket id
+        if (data.room) {
+            data.id = socket.id;
+            io.to(data.room).emit("server-to-client", data);
+        } else {
+            console.log('no room specified');
+        }
+    })
+
+    socket.on("join-room", (room, cb) => {
+        socket.join(room);
+        console.log(`client joined room: ${room}`);
+        if (cb) cb(`Joined Room: ${room}`);
+    })
+
+    socket.on("leave-room", (room, cb) => {
+        socket.leave(room);
+        console.log(`client left room: ${room}`);
+        if (cb) cb(`Left Room: ${room}`);
+    })
+})
+
+instrument(io, { auth: false });
+
+// Think of a socket as representing a connection from server to one client.
+
+/*
+Callback Function: Sent by client and will be executed (on the client side), once the server responds,
+by calling the callback function with any parameters. It is a good way for the server to let the client 
+know that the connection succeeded and action was completed successfully.
+*/
+
+
+/*
+socket.emit(event, data): Sends the message only to the client that triggered the event.
+io.emit(event, data): Sends the message to all connected clients.
+socket.broadcast.emit(event, data): Sends the message to all connected clients except the one that triggered the event.
+*/
+
