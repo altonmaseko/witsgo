@@ -19,10 +19,19 @@ const userRouter = require("./routers/userRouter");
 // SETUP MIDDLEWARE [not our own] =================== 
 app.use(express.json());
 app.use(cookieParser());
+// CORS -------------
+const allowedOrigins = [process.env.CLIENT_URL, 'http://localhost:5000'];
 app.use(cors({
-    origin: process.env.CLIENT_URL,
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     credentials: true
 }));
+// END: CORS -------------
 
 app.use(session({
     secret: process.env.SESSION_SECRET,
@@ -89,7 +98,8 @@ const instrument = require("@socket.io/admin-ui").instrument;
 const io = require('socket.io')(server, {
     cors: {
         // origin: "*"
-        origin: ['http://localhost:5000', "https://admin.socket.io", "/socket.io", process.env.CLIENT_URL]
+        origin: allowedOrigins,
+        credentials: true
     }
 });
 
@@ -136,3 +146,15 @@ io.emit(event, data): Sends the message to all connected clients.
 socket.broadcast.emit(event, data): Sends the message to all connected clients except the one that triggered the event.
 */
 
+// PRINT ALL .env variables
+console.log("ENVIRONMENT VARIABLES: ");
+console.log("---------------------------------");
+console.log(`PORT: ${process.env.PORT}`);
+console.log(`CONNECTION_URI: ${process.env.CONNECTION_URI}`);
+console.log(`GOOGLE_CLIENT_ID: ${process.env.GOOGLE_CLIENT_ID}`);
+console.log(`GOOGLE_CLIENT_SECRET: ${process.env.GOOGLE_CLIENT_SECRET}`);
+console.log(`SESSION_SECRET: ${process.env.SESSION_SECRET}`);
+console.log(`JWT_SECRET: ${process.env.JWT_SECRET}`);
+console.log(`CLIENT_URL: ${process.env.CLIENT_URL}`);
+console.log(`SERVER_URL: ${process.env.SERVER_URL}`);
+console.log("---------------------------------");
