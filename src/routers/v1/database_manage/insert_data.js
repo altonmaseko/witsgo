@@ -5,8 +5,8 @@ const path = require("path");
 
 // Security: Validate and sanitize input
 
-const allowedDatabases = ["UserRoutes","Transportation"];
-const allowedCollections = ["Preferences","Vehicle","Tracking"];
+const allowedDatabases = ["UserRoutes","Transportation","Accessibility"];
+const allowedCollections = ["Preferences","Vehicle","Tracking","Location"];
 
 router.post("/get_data", async (req, res) => {
     try {
