@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MongoDB Data Insertion</title>
+  <script>
+    // Placeholder data: Replace this with an API call to your backend to fetch real data
+    const databases = {
+      "Maps": ["Amenity", "Building", "PointOfInterest", "Room", "Route"],
+      "Transportation": ["Route", "Schedule", "Stop", "Tracking", "Vehicle"],
+      "UserRoutes": ["NavigationHistory", "Preferences", "Routes", "User"]
+    };
+
+    const collectionSchemas = {
+      "Maps": {
+        "Amenity": {
+          "amenity_type": { "type": "string", "required": true },
+          "building_id": { "type": "string", "required": true },
+          "latitude": { "type": "number", "required": true },
+          "longitude": { "type": "number", "required": true },
+          "created_at": { "type": "date", "required": false }
+        },
+        // Add other collections here...
+      },
+      "Transportation": {
+        "Route": {
+          "route_name": { "type": "string", "required": true },
+          "stops": { "type": "array", "required": true }
+        },
+        // Add other collections here...
+      },
+      "UserRoutes": {
+        "NavigationHistory": {
+          "history_id": { "type": "string", "required": true },
+          "route_id": { "type": "string", "required": true },
+          "start_time": { "type": "date", "required": true },
+          "end_time": { "type": "date", "required": true },
+          "created_at": { "type": "date", "required": false }
+        },
+        // Add other collections here...
+      }
+    };
+
+    function updateCollections() {
+      const dbSelect = document.getElementById("database");
+      const collectionSelect = document.getElementById("collection");
+      const selectedDb = dbSelect.value;
+
+      // Clear the previous options
+      collectionSelect.innerHTML = "";
+
+      // Populate collections based on the selected database
+      if (databases[selectedDb]) {
+        databases[selectedDb].forEach(collection => {
+          const option = document.createElement("option");
+          option.value = collection;
+          option.text = collection;
+          collectionSelect.appendChild(option);
+        });
+      }
+    }
+
+    function generateForm() {
+      const dbSelect = document.getElementById("database").value;
+      const collectionSelect = document.getElementById("collection").value;
+      const schema = collectionSchemas[dbSelect][collectionSelect];
+
+      const formDiv = document.getElementById("form-container");
+      formDiv.innerHTML = ""; // Clear previous form fields
+
+      if (schema) {
+        for (const field in schema) {
+          const fieldInfo = schema[field];
+          const label = document.createElement("label");
+          label.textContent = `${field}: `;
+          
+          const input = document.createElement("input");
+          input.name = field;
+          input.type = fieldInfo.type === "number" ? "number" : "text";
+          if (fieldInfo.type === "date") {
+            input.type = "date";
+          }
+
+          if (fieldInfo.required) {
+            input.required = true;
+          }
+
+          formDiv.appendChild(label);
+          formDiv.appendChild(input);
+          formDiv.appendChild(document.createElement("br"));
+        }
+      } else {
+        formDiv.innerHTML = "No schema available for selected collection.";
+      }
+    }
+
+    function handleSubmit(event) {
+      event.preventDefault();
+      const formData = new FormData(event.target);
+      const data = Object.fromEntries(formData.entries());
+
+      // Send data to the backend (replace URL with your API endpoint)
+      fetch('/api/insert', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          database: document.getElementById("database").value,
+          collection: document.getElementById("collection").value,
+          data: data
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        alert('Data inserted successfully!');
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+    }
+  </script>
+</head>
+<body>
+  <h1>Insert Data into MongoDB</h1>
+
+  <!-- Step 1: Select Database -->
+  <label for="database">Select Database:</label>
+  <select id="database" onchange="updateCollections()">
+    <option value="">-- Select Database --</option>
+    <option value="Maps">Maps</option>
+    <option value="Transportation">Transportation</option>
+    <option value="UserRoutes">UserRoutes</option>
+  </select>
+
+  <br>
+
+  <!-- Step 2: Select Collection -->
+  <label for="collection">Select Collection:</label>
+  <select id="collection" onchange="generateForm()">
+    <option value="">-- Select Collection --</option>
+    <!-- Collections will be populated based on selected database -->
+  </select>
+
+  <br>
+
+  <!-- Step 3: Dynamic Form will be generated here -->
+  <form id="data-form" onsubmit="handleSubmit(event)">
+    <div id="form-container">
+      <!-- Form fields will be generated dynamically -->
+    </div>
+    <br>
+    <button type="submit">Submit</button>
+  </form>
+</body>
+</html>

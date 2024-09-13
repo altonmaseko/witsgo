@@ -25,4 +25,4 @@ routeSchema.statics.isRouteValid = async function(routeId) {
     return !!route;
 };
 
-module.exports = mongoose.model('Route', routeSchema);
+module.exports = mongoose.model('UserRoute', routeSchema);

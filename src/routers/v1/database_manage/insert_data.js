@@ -5,8 +5,8 @@ const path = require("path");
 
 // Security: Validate and sanitize input
 
-const allowedDatabases = ["UserRoutes"];
-const allowedCollections = ["Preferences"];
+const allowedDatabases = ["UserRoutes","Transportation"];
+const allowedCollections = ["Preferences","Vehicle","Tracking"];
 
 router.post("/get_data", async (req, res) => {
     try {
@@ -38,7 +38,7 @@ router.post("/get_data", async (req, res) => {
 
         if (typeof controller.getDoc === 'function') {
             const result = await controller.getDoc(data);
-            
+
             if (result.success) {
                 return res.status(200).send({ data: result.data });
             } else {
