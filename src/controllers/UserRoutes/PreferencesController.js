@@ -12,13 +12,31 @@ const PreferencesController = {
         }
     },
 
+
+    async getDoc(query){
+        try {
+            const doc = await Preferences.findOne(query);
+            
+            if (doc) {
+                // If a document is found, return it
+                return { success: true, data: doc };
+            } else {
+                // If no document is found, return a not found message
+                return { success: false, message: "Document does not exist." };
+            }
+        } catch (error) {
+            console.error("Error checking if document exists:", error);
+            return false;
+        }
+    },
+
     //updates preferenece, or adds if not there already
-    async editPreference(obj){
+    async edits(obj){
         try {
             const doc = await Preferences.findOneAndReplace(
                 { 
                     user_id: obj.user_id,
-                    preference_type: obj.preference_type,
+                    preferences_type: obj.preference_type,
 
                  },
                 {

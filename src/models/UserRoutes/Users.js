@@ -30,4 +30,4 @@ userSchema.statics.isUserValid = async function(user_id) {
     }
 };
 
-module.exports = mongoose.model('User', userSchema);
+module.exports = mongoose.model('UserRoutesSchema', userSchema);
