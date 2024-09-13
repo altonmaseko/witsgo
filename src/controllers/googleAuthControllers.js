@@ -6,6 +6,10 @@ const fs = require('fs');
 
 // INITIALIZE AUTHENTICATION AND CALLBACK ==========================================
 
+function isMobileRequest(req) {
+    return /mobile|android|iphone/i.test(req.headers['user-agent']);
+}
+
 const startAuthController = (req, res, next) => {
     const redirect = req.query.redirect;
 
@@ -16,6 +20,11 @@ const startAuthController = (req, res, next) => {
 
     // show prompt only if registering
     const prompt = req.query.register === "true" ? "consent" : "none";
+
+    if (isMobileRequest(req)) {
+        console.log("***Mobile Request");
+        prompt = "select_account";
+    }
 
     const authenticator = passport.authenticate("google", {
         scope: ["email", "profile",],
@@ -45,6 +54,8 @@ const googleCallbackController = (req, res, next) => {
 const authFailureController = (req, res) => {
     res.send("Something went wrong while trying to authenticate you.");
 }
+
+
 
 const authSuccessController = async (req, res) => {
 
