@@ -19,7 +19,7 @@ const startAuthController = (req, res, next) => {
     const state = encodeURIComponent(redirect);
 
     // show prompt only if registering
-    const prompt = req.query.register === "true" ? "consent" : "none";
+    let prompt = req.query.register === "true" ? "consent" : "none";
 
     if (isMobileRequest(req)) {
         console.log("***Mobile Request");
