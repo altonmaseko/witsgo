@@ -3,7 +3,8 @@ const {
     busDriver,
     admin,
     campusSecurity,
-    student } = require('../constants/constants');
+    student,
+    campusControl } = require('../constants/constants');
 
 const UserSchema = new mongoose.Schema({
     firstName: {
@@ -14,7 +15,7 @@ const UserSchema = new mongoose.Schema({
     },
     role: {
         type: String,
-        enum: [busDriver, admin, student, campusSecurity],
+        enum: [busDriver, admin, student, campusSecurity, campusControl],
         default: student
     },
     email: {
