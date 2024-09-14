@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 
+require("dotenv").config()
+
 const connectDB = async () => {
     try {
         await mongoose.connect(process.env.CONNECTION_URI)
@@ -8,16 +10,20 @@ const connectDB = async () => {
     }
 }
 
+const accessibilityConnectionURI = process.env.CONNECTION_URI+"Accessibility"
+const accessibilityConnection = mongoose.createConnection(accessibilityConnectionURI, {});
 
-const accessibilityConnection = mongoose.createConnection('mongodb://localhost:27017/Accessibility', {});
+const mapConnectionURI = process.env.CONNECTION_URI+"Map"
+const mapConnection = mongoose.createConnection(mapConnectionURI, {});
 
-const mapConnection = mongoose.createConnection('mongodb://localhost:27017/Map ', {});
+const userRoutesConnectionURI = process.env.CONNECTION_URI+"UserRoutes"
+const userRoutesConnection = mongoose.createConnection(userRoutesConnectionURI, {});
 
-const userRoutesConnection = mongoose.createConnection('mongodb://localhost:27017/UserRoutes', {});
+const rentalConnectionURI = process.env.CONNECTION_URI+"RentalService"
+const rentalConnection = mongoose.createConnection(rentalConnectionURI, {});
 
-const rentalConnection = mongoose.createConnection('mongodb://localhost:27017/RentalService', {});
-
-const transporationConnection = mongoose.createConnection('mongodb://localhost:27017/Transportation', {});
+const transporationConnectionURI = process.env.CONNECTION_URI+"Transportation"
+const transporationConnection = mongoose.createConnection(transporationConnectionURI, {});
 
 
 module.exports = {

@@ -4,21 +4,28 @@ const path = require("path");
 
 
 // Security: Validate and sanitize input
-
-const allowedDatabases = ["Accessibility","Map","UserRoutes"];
+const allowedDatabases = ["Accessibility","Map","UserRoutes","RentalService","Transportation"];
 const allowedCollections = [
-    "AccessibleRoute",
-    "Location",
+    "Users",
+    "Routes",
+    "Preferences",
+    "NavigationHistory",
+    "Route",
+    "Schedule",
+    "Stop",
+    "Tracking",
+    "Vehicle",
+    "Rental",
+    "Station",
+    "Student",
     "Amenity",
     "Building",
     "PointOfInterest",
     "Room",
-    "UserRoute",
-    "Preferences"
-
-
-
+    "AccessibleRoute",
+    "Location"
 ];
+
 
 router.post("/get_data", async (req, res) => {
     try {
@@ -46,7 +53,6 @@ router.post("/get_data", async (req, res) => {
         console.log(requireString)
 
         const controller = require(requireString);
-        console.log(process.env.CONNECTION_URI+db);
 
         // mongoose.createConnection(CONNECTION_URI+"/"+database)
         if (typeof controller.getDoc === 'function') {
