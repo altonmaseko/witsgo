@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { accessibilityConnection } = require("../../config/connectDB");
 
 const accessibleRouteSchema = new mongoose.Schema({
     route_name: {
@@ -16,4 +17,8 @@ const accessibleRouteSchema = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('AccessibleRoute', accessibleRouteSchema);
+
+const AccessibleRoute = accessibilityConnection.model('AccessibleRoute', accessibleRouteSchema);
+
+
+module.exports = AccessibleRoute;

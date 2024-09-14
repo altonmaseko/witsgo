@@ -6,6 +6,7 @@
  */
 
 const mongoose = require('mongoose');
+const { transporationConnection } = require('../../config/connectDB');
 
 const StopSchema = new mongoose.Schema({
     stop_name: {
@@ -18,4 +19,6 @@ const StopSchema = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('Stop', StopSchema);
+const Stop = transporationConnection.model('Stop', StopSchema);
+
+module.exports = Stop

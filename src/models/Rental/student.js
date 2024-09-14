@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { rentalConnection } = require("../../config/connectDB");
 
 const studentSchema = new mongoose.Schema({
     student_number: {
@@ -30,4 +31,7 @@ const studentSchema = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('Student', studentSchema);
+
+const Student = rentalConnection.model('Student', studentSchema);
+
+module.exports = Student

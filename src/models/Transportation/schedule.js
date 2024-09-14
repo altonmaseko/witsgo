@@ -7,6 +7,7 @@
  * @property {Date} departure_time - The expected departure time of the vehicle.
  */
 const mongoose = require('mongoose');
+const { transporationConnection } = require('../../config/connectDB');
 
 const ScheduleSchema = new mongoose.Schema({
     route_id: {
@@ -29,4 +30,6 @@ const ScheduleSchema = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('Schedule', ScheduleSchema);
+const Schedule = transporationConnection.model('Schedule', ScheduleSchema);
+
+module.exports = Schedule

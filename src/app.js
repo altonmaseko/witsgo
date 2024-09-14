@@ -3,7 +3,7 @@ const express = require("express")
 const session = require("express-session")
 const cors = require('cors');
 const mongoose = require("mongoose")
-const connectDB = require("./config/connectDB")
+const connectDatabase = require("./config/connectDB")
 const passport = require("passport")
 const cookieParser = require('cookie-parser');
 const http = require("http")
@@ -45,7 +45,7 @@ app.use(passport.session());
 const route_optimize = require("./routers/v1/route_optimize/route_optimize")
 app.use("/v1/route_optimize", route_optimize);
 
-const dbManage = require("./routers/v1/database_manage/insert_data")
+const dbManage = require("./routers/v1/database_manage/data")
 app.use("/v1/admin", dbManage);
 
 
@@ -84,7 +84,8 @@ server.listen(PORT, () => {
     console.log(`server listening on port: ${PORT}...`)
 });
 
-connectDB();
+
+connectDatabase.connectDB();
 mongoose.connection.on("connected", async () => {
     console.log("SUCCESSFULLY CONNECTED TO DATABASE");
 });

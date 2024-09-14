@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { accessibilityConnection, rentalConnection } = require("../../config/connectDB");
 
 const rentalSchema = new mongoose.Schema({
     student_id: {
@@ -33,4 +34,6 @@ const rentalSchema = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('Rental', rentalSchema);
+const Rental = rentalConnection.model('Rental', rentalSchema);
+
+module.exports = Rental

@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { accessibilityConnection } = require("../../config/connectDB");
 
 const locationSchema = new mongoose.Schema({
     name: {
@@ -31,4 +32,6 @@ const locationSchema = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('Location', locationSchema);
+const Location = accessibilityConnection.model('Location', locationSchema);
+
+module.exports = Location;

@@ -6,6 +6,7 @@
  * @property {Array} stops - The list of stops along the route.
  */
 const mongoose = require('mongoose');
+const { transporationConnection } = require('../../config/connectDB');
 
 const RouteSchema = new mongoose.Schema({
     route_name: {
@@ -19,4 +20,7 @@ const RouteSchema = new mongoose.Schema({
     }]
 });
 
-module.exports = mongoose.model('Route', RouteSchema);
+
+const Route = transporationConnection.model('Route', RouteSchema);
+
+module.exports = Route

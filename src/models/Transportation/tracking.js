@@ -9,6 +9,7 @@
  * @property {Number} longitude - The longitude of the vehicle's current location.
  */
 const mongoose = require('mongoose');
+const { transporationConnection } = require('../../config/connectDB');
 
 const TrackingSchema = new mongoose.Schema({
     vehicle_id: {
@@ -41,4 +42,7 @@ const TrackingSchema = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('Tracking', TrackingSchema);
+
+const Tracking = transporationConnection.model('Tracking', TrackingSchema);
+
+module.exports = Tracking

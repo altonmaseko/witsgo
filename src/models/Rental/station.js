@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { rentalConnection } = require("../../config/connectDB");
 
 const stationSchema = new mongoose.Schema({
     location: {
@@ -15,4 +16,6 @@ const stationSchema = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('Station', stationSchema);
+const Station = rentalConnection.model('Station', stationSchema);
+
+module.exports = Station

@@ -1,12 +1,25 @@
 const express = require("express");
+const { default: mongoose } = require("mongoose");
 const router = express.Router();
 const path = require("path");
 
 
 // Security: Validate and sanitize input
 
-const allowedDatabases = ["UserRoutes","Transportation","Accessibility"];
-const allowedCollections = ["Preferences","Vehicle","Tracking","Location"];
+const allowedDatabases = ["Accessibility","Map","UserRoutes"];
+const allowedCollections = [
+    "AccessibleRoute",
+    "Location",
+    "Amenity",
+    "Building",
+    "PointOfInterest",
+    "Room",
+    "UserRoute",
+    "Preferences"
+
+
+
+];
 
 router.post("/get_data", async (req, res) => {
     try {
@@ -34,8 +47,9 @@ router.post("/get_data", async (req, res) => {
         console.log(requireString)
 
         const controller = require(requireString);
+        console.log(process.env.CONNECTION_URI+db);
 
-
+        // mongoose.createConnection(CONNECTION_URI+"/"+database)
         if (typeof controller.getDoc === 'function') {
             const result = await controller.getDoc(data);
 
@@ -89,7 +103,8 @@ router.post("/insert_data",async (req,res)=>{
 
 
         if (typeof controller.insertRecord === 'function') {
-            controller.insertRecord(data)
+            const returned = await controller.insertRecord(data);
+            console.log(returned);
         } else if (typeof controller.edits === 'function'){
             controller.edits(data);
         }else{

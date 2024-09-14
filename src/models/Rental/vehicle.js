@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { rentalConnection } = require("../../config/connectDB");
 
 const vehicleSchema = new mongoose.Schema({
     barcode: {
@@ -29,4 +30,6 @@ const vehicleSchema = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('Vehicle', vehicleSchema);
+const Vehicle = rentalConnection.model('Vehicle', vehicleSchema);
+
+module.exports = Vehicle
