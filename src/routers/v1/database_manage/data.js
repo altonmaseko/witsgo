@@ -108,16 +108,23 @@ router.post("/insert_data",async (req,res)=>{
 
 
         if (typeof controller.insertRecord === 'function') {
-            const returned = await controller.insertRecord(data);
-            console.log(returned);
+            const result = await controller.insertRecord(data);
+            if (result.success) {
+                return res.status(200).send({ data: result.data });
+            } else {
+                return res.status(404).send({ message: result.message });
+            }
         } else if (typeof controller.edits === 'function'){
-            controller.edits(data);
+            const result = await controller.edits(data);
+            if (result.success) {
+                return res.status(200).send({ data: result.data });
+            } else {
+                return res.status(404).send({ message: result.message });
+            }
         }else{
             return res.status(200).send({ message: "Operation not valid for this model" });
-
         }
 
-        res.status(200).send({ message: "Data processed successfully" });
 
     } catch (error) {
         console.error("Error loading controller:", error);
@@ -156,13 +163,16 @@ router.put("/update_data",async (req,res)=>{
 
 
         if (typeof controller.edits === 'function'){
-            controller.edits(data);
+            const result = await controller.edits(data);
+            if (result.success) {
+                return res.status(200).send({ data: result.data });
+            } else {
+                return res.status(404).send({ message: result.message });
+            }
         }else{
             return res.status(200).send({ message: "Operation not valid for this model" });
 
         }
-
-        res.status(200).send({ message: "Data processed successfully" });
 
     } catch (error) {
         console.error("Error loading controller:", error);
