@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Building = require("./building");
+const { mapConnection } = require("../../config/connectDB");
 
 const roomSchema = new mongoose.Schema({
     room_name: {
@@ -27,4 +28,7 @@ roomSchema.pre('save', async function(next) {
     next();
 });
 
-module.exports = mongoose.model('Room', roomSchema);
+
+const Room = mapConnection.model('Room', roomSchema);
+
+module.exports = Room

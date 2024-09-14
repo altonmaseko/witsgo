@@ -3,7 +3,7 @@ const express = require("express")
 const session = require("express-session")
 const cors = require('cors');
 const mongoose = require("mongoose")
-const connectDB = require("./config/connectDB")
+const connectDatabase = require("./config/connectDB")
 const passport = require("passport")
 const cookieParser = require('cookie-parser');
 const http = require("http")
@@ -45,6 +45,10 @@ app.use(passport.session());
 const route_optimize = require("./routers/v1/route_optimize/route_optimize")
 app.use("/v1/route_optimize", route_optimize);
 
+const dbManage = require("./routers/v1/database_manage/data")
+app.use("/v1/admin", dbManage);
+
+
 app.get("/", (req, res) => {
     res.send("Welcome to the WITSGO server, what are you doing here bruv?? Go to the frontend!");
 });
@@ -71,7 +75,7 @@ app.get("/tellstory", (req, res) => { // no authentication needed because no isL
 });
 // END: Server-only Interactions ======================
 
-const PORT = process.env.PORT; // get port from .env file, otherwise 3000
+const PORT = process.env.PORT || 3000; // get port from .env file, otherwise 3000
 
 // Create an HTTP server that both Express and WebSockets will use
 const server = http.createServer(app);
@@ -80,7 +84,8 @@ server.listen(PORT, () => {
     console.log(`server listening on port: ${PORT}...`)
 });
 
-connectDB();
+
+connectDatabase.connectDB();
 mongoose.connection.on("connected", async () => {
     console.log("SUCCESSFULLY CONNECTED TO DATABASE");
 });

@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
-const User = require("./Users");;
+const User = require("./Users");const { userRoutesConnection } = require("../../config/connectDB");
+;
 
 
 const preferencesSchema = new mongoose.Schema({
@@ -42,4 +43,6 @@ preferencesSchema.pre('save', async function(next) {
 
 
 
-module.exports = mongoose.model('Preferences', preferencesSchema);
+const Pref = userRoutesConnection.model('Preferences', preferencesSchema);
+
+module.exports = Pref

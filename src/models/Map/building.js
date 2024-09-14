@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { mapConnection } = require("../../config/connectDB");
 
 const buildingSchema = new mongoose.Schema({
     building_name: {
@@ -19,4 +20,7 @@ const buildingSchema = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('Building', buildingSchema);
+
+const Building = mapConnection.model('Building', buildingSchema);
+
+module.exports = Building

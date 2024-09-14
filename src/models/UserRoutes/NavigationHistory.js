@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
-const Routes = require("./Routes");;
+const Routes = require("./Routes");const { userRoutesConnection } = require("../../config/connectDB");
+;
 
 
 const navigationHistorySchema = new mongoose.Schema({
@@ -40,4 +41,6 @@ navigationHistorySchema.pre('save', async function(next) {
 
 
 
-module.exports = mongoose.model('NavigationHistory', navigationHistorySchema);
+const NavHis = userRoutesConnection.model('NavigationHistory', navigationHistorySchema);
+
+module.exports = NavHis

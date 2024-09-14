@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { mapConnection } = require("../../config/connectDB");
 
 const pointOfInterestSchema = new mongoose.Schema({
     poi_name: {
@@ -19,4 +20,6 @@ const pointOfInterestSchema = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('PointOfInterest', pointOfInterestSchema);
+const POI = mapConnection.model('PointOfInterest', pointOfInterestSchema);
+
+module.exports = POI

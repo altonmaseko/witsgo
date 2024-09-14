@@ -13,6 +13,7 @@ router.post("/route_optimize", async (req, res) => {
     let origin = req.body["origin"]
     let dest = req.body["destination"];
     let travel_mode = req.body["travelMode"];
+    let waypoints = req.body["waypoints"];
 
     if (!origin["latitude"] || !origin["longitude"] || !dest["latitude"] || !dest["longitude"]) {
         res.status(400).send({ "message": "Missing required parameters" });

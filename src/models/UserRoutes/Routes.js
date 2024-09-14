@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
-const User = require("./Users");;
-
-
+const User = require("./Users");
+const { userRoutesConnection } = require("../../config/connectDB");
 
 const routesSchema = new mongoose.Schema({
     route_id: {
@@ -62,4 +61,6 @@ routesSchema.statics.isRouteValid = async function(route_id) {
 };
 
 
-module.exports = mongoose.model('Routes', routesSchema);
+const Routes = userRoutesConnection.model('Routes', routesSchema);
+
+module.exports = Routes

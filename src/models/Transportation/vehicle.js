@@ -6,6 +6,7 @@
  */
 
 const mongoose = require('mongoose');
+const { transporationConnection } = require('../../config/connectDB');
 
 const VehicleSchema = new mongoose.Schema({
     vehicle_number: {
@@ -18,4 +19,7 @@ const VehicleSchema = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('Vehicle', VehicleSchema);
+
+const Vehicle = transporationConnection.model('Vehicle', VehicleSchema);
+
+module.exports = Vehicle

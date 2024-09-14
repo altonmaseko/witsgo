@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Building = require("./building");
+const { mapConnection } = require("../../config/connectDB");
 
 const amenitySchema = new mongoose.Schema({
     amenity_type: {
@@ -35,4 +36,7 @@ amenitySchema.pre('save', async function(next) {
     next();
 });
 
-module.exports = mongoose.model('Amenity', amenitySchema);
+
+const Amenity = mapConnection.model('Amenity', amenitySchema);
+
+module.exports = Amenity

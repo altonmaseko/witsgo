@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { mapConnection } = require("../../config/connectDB");
 
 const routeSchema = new mongoose.Schema({
     route_name: {
@@ -25,4 +26,6 @@ routeSchema.statics.isRouteValid = async function(routeId) {
     return !!route;
 };
 
-module.exports = mongoose.model('Route', routeSchema);
+const Route = mapConnection.model('Route', routeSchema);
+module.exports = Route
+
