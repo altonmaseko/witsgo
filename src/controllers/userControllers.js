@@ -33,4 +33,24 @@ const updateUserController = async (req, res) => {
 
 }
 
-module.exports = { updateUserController };
+const getUserController = async (req, res) => {
+    const { email } = req.params;
+    const user = await User.findOne({ email });
+
+    if (!user) {
+        res.json({
+            success: false,
+            message: "User not found",
+            status: 404
+        });
+        return;
+    }
+
+    res.json({
+        success: true,
+        user,
+        status: 200
+    });
+}
+
+module.exports = { updateUserController, getUserController };
