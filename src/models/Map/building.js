@@ -6,6 +6,15 @@ const buildingSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    campus:{
+        type: ["west_campus","east_campus","parktown"],
+        required: true
+    },
+    type:{
+        type:["gatehouse","building","food","library"],
+        required:true,
+        default:"building"
+    },
     latitude: {
         type: Number,
         required: true

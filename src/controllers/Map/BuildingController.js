@@ -33,6 +33,9 @@ const BuildingController = {
                     building_name: obj.building_name,
                     latitude: obj.latitude,
                     longitude: obj.longitude,
+                    campus: obj.campus,
+                    type: obj.type,
+                    code: obj.code,
                     created_at: Date.now()
                 },
                 { new: true, upsert: true }

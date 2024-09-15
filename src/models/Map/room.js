@@ -12,6 +12,14 @@ const roomSchema = new mongoose.Schema({
         required: true,
         ref: 'Building'
     },
+    code:{
+        type:String,
+        required: true
+    },
+    type:{
+        type:["tutorial","lecture_hall"],
+        required:true
+    },
     created_at: {
         type: Date,
         default: Date.now
