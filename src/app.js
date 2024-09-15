@@ -84,15 +84,6 @@ server.listen(PORT, () => {
     console.log(`server listening on port: ${PORT}...`)
 });
 
-
-connectDatabase.connectDB();
-mongoose.connection.on("connected", async () => {
-    console.log("SUCCESSFULLY CONNECTED TO DATABASE");
-});
-mongoose.connection.on("disconnected", () => {
-    console.log("Lost connection to database")
-});
-
 // =================================================
 
 // =================================================

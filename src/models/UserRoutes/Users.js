@@ -20,7 +20,7 @@ const userSchema = new mongoose.Schema({
 });
 
 // Static method to check if a user with a given ID exists
-userSchema.statics.isUserValid = async function(user_id) {
+userSchema.statics.isUserValid = async function (user_id) {
     try {
         // Directly use the user_id as it is. Mongoose handles casting it to ObjectId.
         const user = await this.exists({ _id: user_id });

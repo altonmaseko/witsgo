@@ -1,4 +1,7 @@
 const mongoose = require('mongoose');
+
+const { userConnection } = require('../config/connectDB');
+
 const {
     busDriver,
     admin,
@@ -32,4 +35,4 @@ const UserSchema = new mongoose.Schema({
     },
 });
 
-module.exports = mongoose.model("User", UserSchema, "users"); 
+module.exports = userConnection.model("User", UserSchema, "users"); 
