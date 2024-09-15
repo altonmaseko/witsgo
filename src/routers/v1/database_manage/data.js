@@ -1,6 +1,12 @@
 const express = require("express");
 const router = express.Router();
 const path = require("path");
+const mongoose = require('mongoose');
+
+function isValidObjectId(id) {
+    return mongoose.Types.ObjectId.isValid(id);
+}
+
 
 
 // Security: Validate and sanitize input
@@ -142,18 +148,21 @@ router.put("/update_data",async (req,res)=>{
             return;
         }
 
-        console.log(req.body);
 
         const db = req.body["database"];
         const collection = req.body["collection"];
         const data = req.body["data"];
 
 
+        const isValid = !isValidObjectId(data._id);
+        if (!data._id || isValid){
+            return res.send({ success: false, message: "Invalid ObjectId" });
+        }
+
         if (!allowedDatabases.includes(db) || !allowedCollections.includes(collection)) {
             res.status(400).send({ message: "Invalid database or collection" });
             return;
         }
-
         // Dynamically load the controller
         let requireString = path.resolve(__dirname, "../../../controllers", db, `${collection}Controller`);
 
@@ -164,6 +173,7 @@ router.put("/update_data",async (req,res)=>{
 
         if (typeof controller.edits === 'function'){
             const result = await controller.edits(data);
+            console.log(result);
             if (result.success) {
                 return res.status(200).send({ data: result.data });
             } else {
