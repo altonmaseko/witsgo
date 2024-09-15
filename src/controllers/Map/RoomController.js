@@ -13,7 +13,7 @@ const RoomController = {
 
     async getDoc(query) {
         try {
-            const doc = await Room.findOne(query);
+            const doc = await Room.find(query);
             if (doc) {
                 return { success: true, data: doc };
             } else {
@@ -32,6 +32,8 @@ const RoomController = {
                 {
                     room_name: obj.room_name,
                     building_id: obj.building_id,
+                    code:obj.code,
+                    type:obj.type,
                     created_at: Date.now()
                 },
                 { new: true, upsert: true }

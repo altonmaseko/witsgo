@@ -13,7 +13,7 @@ const VehicleController = {
 
     async getDoc(query) {
         try {
-            const doc = await Vehicle.findOne(query);
+            const doc = await Vehicle.find(query);
             if (doc) {
                 return { success: true, data: doc };
             } else {

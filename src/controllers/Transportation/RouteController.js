@@ -13,7 +13,7 @@ const RouteController = {
 
     async getDoc(query) {
         try {
-            const doc = await Route.findOne(query).populate('stops');
+            const doc = await Route.find(query).populate('stops');
             if (doc) {
                 return { success: true, data: doc };
             } else {

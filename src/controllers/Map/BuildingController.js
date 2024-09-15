@@ -13,7 +13,7 @@ const BuildingController = {
 
     async getDoc(query) {
         try {
-            const doc = await Building.findOne(query);
+            const doc = await Building.find(query);
             if (doc) {
                 return { success: true, data: doc };
             } else {

@@ -13,7 +13,7 @@ const AmenityController = {
 
     async getDoc(query) {
         try {
-            const doc = await Amenity.findOne(query);
+            const doc = await Amenity.find(query);
             if (doc) {
                 return { success: true, data: doc };
             } else {

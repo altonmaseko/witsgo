@@ -1,7 +1,14 @@
 const mongoose = require("mongoose");
 const { mapConnection } = require("../../config/connectDB");
+const generateUUID = require("../../misc/generateUUID");
+
 
 const buildingSchema = new mongoose.Schema({
+    building_id:{
+        type: String,
+        unique: true,
+        default: generateUUID
+    },
     building_name: {
         type: String,
         required: true

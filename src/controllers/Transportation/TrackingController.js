@@ -13,7 +13,7 @@ const TrackingController = {
 
     async getDoc(query) {
         try {
-            const doc = await Tracking.findOne(query).populate('vehicle_id').populate('route_id').populate('current_stop_id');
+            const doc = await Tracking.find(query).populate('vehicle_id').populate('route_id').populate('current_stop_id');
             if (doc) {
                 return { success: true, data: doc };
             } else {
