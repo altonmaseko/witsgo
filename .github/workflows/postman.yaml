@@ -25,6 +25,11 @@ jobs:
         run: npm start &
         env:
           PORT: 3000
+          CONNECTION_URI: mongodb+srv://lucian:lucian-witsgo@hexacluster.sjjuf.mongodb.net/
+          GOOGLE_MAP_KEY: AIzaSyCEbj6_WGhOUTbbDAVNw3BhOMnQ44yyXOo
+          GOOGLE_CLIENT_ID: 1
+          GOOGLE_CLIENT_SECRET: 1
+          SESSION_SECRET: temp
 
       - name: Install Newman
         run: npm install -g newman
