@@ -79,6 +79,12 @@ app.get("/tellstory", (req, res) => { // no authentication needed because no isL
 });
 // END: Server-only Interactions ======================
 
+
+app.use((req, res) => {
+    res.status(404).send({"data":"unknown_endpoint"});
+  });
+
+
 const PORT = process.env.PORT || 3000; // get port from .env file, otherwise 3000
 
 // Create an HTTP server that both Express and WebSockets will use
