@@ -13,6 +13,11 @@ const buildingSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    code: {
+        type:String,
+        required:false,
+        default:null
+    },
     campus:{
         type: ["west_campus","east_campus","parktown"],
         required: true

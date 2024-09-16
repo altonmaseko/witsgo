@@ -36,34 +36,6 @@ router.get("/getBuildings", async (req, res) => {
     }
 });
 
-
-router.get("/getAmenties", async (req, res) => {
-    try {
-        // Capture the filters from the query parameters
-        const filters = {};
-
-        if (req.query.building_name) {
-            filters.building_name = req.query.building_name;
-        }
-
-        if (req.query.campus) {
-            filters.campus = req.query.campus; // You can also handle array input here if needed
-        }
-
-        if (req.query.type) {
-            filters.type = req.query.type; // Assuming type is an array, you might want to handle it more dynamically
-        }
-
-        // Pass filters to the getDoc method
-        const data = await building.getDoc(filters);
-
-        return res.status(200).send({ data: data });
-    } catch (error) {
-        return res.status(500).send({ message: "An error occurred", error: error });
-    }
-});
-
-
 router.get("/getAmenities", async (req, res) => {
     try {
         // Capture the filters from the query parameters

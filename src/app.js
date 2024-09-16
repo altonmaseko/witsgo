@@ -20,7 +20,7 @@ const userRouter = require("./routers/userRouter");
 app.use(express.json());
 app.use(cookieParser());
 // CORS -------------
-const allowedOrigins = [process.env.CLIENT_URL, 'http://localhost:5000'];
+const allowedOrigins = [process.env.CLIENT_URL, 'http://localhost:5000', 'http://localhost:5001'];
 app.use(cors({
     origin: function (origin, callback) {
         if (!origin || allowedOrigins.indexOf(origin) !== -1) {
@@ -31,6 +31,9 @@ app.use(cors({
     },
     credentials: true
 }));
+
+app.use(cors());
+
 // END: CORS -------------
 
 app.use(session({
@@ -51,6 +54,13 @@ app.use("/v1/admin", dbManage);
 const maps = require("./routers/v1/Map/map")
 app.use("/v1/map", maps);
 
+
+const bus = require("./routers/v1/Schedule/busSchedule")
+app.use("/v1/schedule", bus);
+
+
+const accessibility = require("./routers/v1/Accessibility/accessibility")
+app.use("/v1/accessibility", accessibility);
 
 
 app.get("/", (req, res) => {
