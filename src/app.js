@@ -20,17 +20,20 @@ const userRouter = require("./routers/userRouter");
 app.use(express.json());
 app.use(cookieParser());
 // CORS -------------
-const allowedOrigins = [process.env.CLIENT_URL, 'http://localhost:5000'];
-app.use(cors({
-    origin: function (origin, callback) {
-        if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-            callback(null, true);
-        } else {
-            callback(new Error('Not allowed by CORS'));
-        }
-    },
-    credentials: true
-}));
+const allowedOrigins = [process.env.CLIENT_URL, 'http://localhost:5000', 'http://localhost:5001'];
+// app.use(cors({
+//     origin: function (origin, callback) {
+//         if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+//             callback(null, true);
+//         } else {
+//             callback(new Error('Not allowed by CORS'));
+//         }
+//     },
+//     credentials: true
+// }));
+
+app.use(cors());
+
 // END: CORS -------------
 
 app.use(session({
