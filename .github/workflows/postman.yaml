@@ -8,7 +8,7 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -17,9 +17,20 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '18'
-          
+
       - name: Install dependencies
+        run: npm install
+
+      - name: Start the server
+        run: npm start &
+        env:
+          PORT: 3000
+
+      - name: Install Newman
         run: npm install -g newman
 
       - name: Run Postman tests
-        run: newman run "https://api.getpostman.com/collections/33683923-80216182-2ad9-4a3f-bbea-9cca9a8106af?apikey=PMAK-66e889ccb6c61c0001a29e1d-9ca34dfbd7be40c1aae35249ca202729ed"
+        run: newman run "https://api.getpostman.com/collections/33683923-80216182-2ad9-4a3f-bbea-9cca9a8106af?apikey=YOUR_POSTMAN_API_KEY"
+
+      - name: Stop the server
+        run: kill $(lsof -t -i:3000) || true
