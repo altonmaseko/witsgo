@@ -48,6 +48,9 @@ app.use("/v1/route_optimize", route_optimize);
 const dbManage = require("./routers/v1/database_manage/data")
 app.use("/v1/admin", dbManage);
 
+const schedule = require("./routers/v1/Schedule/busSchedule")
+app.use("/v1/Schedule", schedule);
+
 const maps = require("./routers/v1/Map/map")
 app.use("/v1/map", maps);
 
