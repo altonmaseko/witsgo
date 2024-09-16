@@ -48,6 +48,10 @@ app.use("/v1/route_optimize", route_optimize);
 const dbManage = require("./routers/v1/database_manage/data")
 app.use("/v1/admin", dbManage);
 
+const maps = require("./routers/v1/Map/map")
+app.use("/v1/map", maps);
+
+
 
 app.get("/", (req, res) => {
     res.send("Welcome to the WITSGO server, what are you doing here bruv?? Go to the frontend!");

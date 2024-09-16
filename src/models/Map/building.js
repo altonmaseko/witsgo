@@ -1,10 +1,26 @@
 const mongoose = require("mongoose");
 const { mapConnection } = require("../../config/connectDB");
+const generateUUID = require("../../misc/generateUUID");
+
 
 const buildingSchema = new mongoose.Schema({
+    building_id:{
+        type: String,
+        unique: true,
+        default: generateUUID
+    },
     building_name: {
         type: String,
         required: true
+    },
+    campus:{
+        type: ["west_campus","east_campus","parktown"],
+        required: true
+    },
+    type:{
+        type:["gatehouse","building","food","library"],
+        required:true,
+        default:"building"
     },
     latitude: {
         type: Number,

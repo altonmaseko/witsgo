@@ -13,7 +13,7 @@ const StudentController = {
 
     async getDoc(query) {
         try {
-            const doc = await Student.findOne(query);
+            const doc = await Student.find(query);
             if (doc) {
                 return { success: true, data: doc };
             } else {

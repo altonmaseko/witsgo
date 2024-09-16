@@ -13,7 +13,7 @@ const StopController = {
 
     async getDoc(query) {
         try {
-            const doc = await Stop.findOne(query);
+            const doc = await Stop.find(query);
             if (doc) {
                 return { success: true, data: doc };
             } else {

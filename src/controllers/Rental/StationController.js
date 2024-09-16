@@ -13,7 +13,7 @@ const StationController = {
 
     async getDoc(query) {
         try {
-            const doc = await Station.findOne(query);
+            const doc = await Station.find(query);
             if (doc) {
                 return { success: true, data: doc };
             } else {

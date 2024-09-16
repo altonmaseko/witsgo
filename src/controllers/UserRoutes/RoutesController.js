@@ -16,7 +16,7 @@ const RoutesController = {
     // Retrieve a document based on the query
     async getDoc(query) {
         try {
-            const doc = await Routes.findOne(query);
+            const doc = await Routes.find(query);
 
             if (doc) {
                 // If a document is found, return it

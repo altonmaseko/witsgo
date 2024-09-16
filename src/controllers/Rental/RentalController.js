@@ -13,7 +13,7 @@ const RentalController = {
 
     async getDoc(query) {
         try {
-            const doc = await Rental.findOne(query);
+            const doc = await Rental.find(query);
             if (doc) {
                 return { success: true, data: doc };
             } else {

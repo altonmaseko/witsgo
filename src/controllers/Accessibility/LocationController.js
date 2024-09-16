@@ -13,7 +13,7 @@ const LocationController = {
 
     async getDoc(query) {
         try {
-            const doc = await Location.findOne(query);
+            const doc = await Location.find(query);
             if (doc) {
                 return { success: true, data: doc };
             } else {
