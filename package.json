@@ -28,6 +28,7 @@
     "passport-google-oauth2": "^0.2.0",
     "passport-google-oauth20": "^2.0.0",
     "path": "^0.12.7",
+    "pdfreader": "^3.0.5",
     "socket.io": "^4.7.5",
     "uuid": "^10.0.0",
     "ws": "^8.18.0"

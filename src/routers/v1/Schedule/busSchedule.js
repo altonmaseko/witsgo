@@ -2,20 +2,16 @@ const express = require('express');
 const fs = require('fs');
 const axios = require('axios');
 const { PdfReader } = require('pdfreader');
-const path = require('path');
-const app = express();
-const port = 3000;
+
+
+
+const router = express.Router();
 
 const pdfUrl = 'https://www.wits.ac.za/media/wits-university/campus-life/documents/CampusBusSchedule24.pdf';
 const pdfPath = 'downloadedSchedule.pdf';
 
-app.use(express.static(__dirname));
 
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'busSchedule.html'));
-});
-
-app.get('/pdf-text', (req, res) => {
+router.get('/pdf-text', (req, res) => {
   axios({
     url: pdfUrl,
     method: 'GET',
@@ -44,6 +40,6 @@ app.get('/pdf-text', (req, res) => {
     });
 });
 
-app.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
-});
+
+module.exports = router
+
