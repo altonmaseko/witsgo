@@ -14,7 +14,7 @@ const AccessibleRouteController = {
 
     async getDoc(query) {
         try {
-            const doc = await AccessibleRoute.findOne(query);
+            const doc = await AccessibleRoute.find(query);
             if (doc) {
                 return { success: true, data: doc };
             } else {

@@ -2,22 +2,25 @@ const mongoose = require("mongoose");
 
 require("dotenv").config()
 
-const userConnectionURI = process.env.CONNECTION_URI + "User"
+
+const connectionURI = "mongodb+srv://lucian:lucian-witsgo@hexacluster.sjjuf.mongodb.net/";
+
+const userConnectionURI = connectionURI + "User"
 const userConnection = mongoose.createConnection(userConnectionURI, {});
 
-const accessibilityConnectionURI = process.env.CONNECTION_URI + "Accessibility"
+const accessibilityConnectionURI = connectionURI + "Accessibility"
 const accessibilityConnection = mongoose.createConnection(accessibilityConnectionURI, {});
 
-const mapConnectionURI = process.env.CONNECTION_URI + "Map"
+const mapConnectionURI = connectionURI + "Map"
 const mapConnection = mongoose.createConnection(mapConnectionURI, {});
 
-const userRoutesConnectionURI = process.env.CONNECTION_URI + "UserRoutes"
+const userRoutesConnectionURI = connectionURI + "UserRoutes"
 const userRoutesConnection = mongoose.createConnection(userRoutesConnectionURI, {});
 
-const rentalConnectionURI = process.env.CONNECTION_URI + "RentalService"
+const rentalConnectionURI = connectionURI + "RentalService"
 const rentalConnection = mongoose.createConnection(rentalConnectionURI, {});
 
-const transporationConnectionURI = process.env.CONNECTION_URI + "Transportation"
+const transporationConnectionURI = connectionURI + "Transportation"
 const transporationConnection = mongoose.createConnection(transporationConnectionURI, {});
 
 // CHECK CONNECTIONS =================================

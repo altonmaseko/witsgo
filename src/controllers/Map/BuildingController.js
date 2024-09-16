@@ -13,7 +13,7 @@ const BuildingController = {
 
     async getDoc(query) {
         try {
-            const doc = await Building.findOne(query);
+            const doc = await Building.find(query);
             if (doc) {
                 return { success: true, data: doc };
             } else {
@@ -33,6 +33,9 @@ const BuildingController = {
                     building_name: obj.building_name,
                     latitude: obj.latitude,
                     longitude: obj.longitude,
+                    campus: obj.campus,
+                    type: obj.type,
+                    code: obj.code,
                     created_at: Date.now()
                 },
                 { new: true, upsert: true }

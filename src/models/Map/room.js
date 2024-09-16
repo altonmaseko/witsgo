@@ -5,12 +5,21 @@ const { mapConnection } = require("../../config/connectDB");
 const roomSchema = new mongoose.Schema({
     room_name: {
         type: String,
-        required: true
+        required: true,
     },
     building_id: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: String,
         required: true,
         ref: 'Building'
+    },
+    code:{
+        type:String,
+        required: true,
+        unique:true
+    },
+    type:{
+        type:["tutorial","lecture_hall"],
+        required:true
     },
     created_at: {
         type: Date,
@@ -19,8 +28,7 @@ const roomSchema = new mongoose.Schema({
 });
 
 roomSchema.pre('save', async function(next) {
-    const buildingExists = await Building.exists({ _id: this.building_id });
-
+    const buildingExists = await Building.exists({ building_id: this.building_id });
     if (!buildingExists) {
         const err = new Error('Invalid building_id provided.');
         return next(err);

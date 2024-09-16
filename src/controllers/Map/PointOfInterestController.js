@@ -13,7 +13,7 @@ const PointOfInterestController = {
 
     async getDoc(query) {
         try {
-            const doc = await PointOfInterest.findOne(query);
+            const doc = await PointOfInterest.find(query);
             if (doc) {
                 return { success: true, data: doc };
             } else {

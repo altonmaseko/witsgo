@@ -13,7 +13,7 @@ const ScheduleController = {
 
     async getDoc(query) {
         try {
-            const doc = await Schedule.findOne(query).populate('route_id').populate('stop_id');
+            const doc = await Schedule.find(query).populate('route_id').populate('stop_id');
             if (doc) {
                 return { success: true, data: doc };
             } else {

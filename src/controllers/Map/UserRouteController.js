@@ -13,7 +13,7 @@ const UserRouteController = {
 
     async getDoc(query) {
         try {
-            const doc = await UserRoute.findOne(query);
+            const doc = await UserRoute.find(query);
             if (doc) {
                 return { success: true, data: doc };
             } else {

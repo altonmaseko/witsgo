@@ -20,7 +20,7 @@ const userRouter = require("./routers/userRouter");
 app.use(express.json());
 app.use(cookieParser());
 // CORS -------------
-const allowedOrigins = [process.env.CLIENT_URL, 'http://localhost:5000'];
+const allowedOrigins = [process.env.CLIENT_URL, 'http://localhost:5000', 'http://localhost:5001'];
 app.use(cors({
     origin: function (origin, callback) {
         if (!origin || allowedOrigins.indexOf(origin) !== -1) {
@@ -31,6 +31,9 @@ app.use(cors({
     },
     credentials: true
 }));
+
+app.use(cors());
+
 // END: CORS -------------
 
 app.use(session({
@@ -47,6 +50,14 @@ app.use("/v1/route_optimize", route_optimize);
 
 const dbManage = require("./routers/v1/database_manage/data")
 app.use("/v1/admin", dbManage);
+
+const maps = require("./routers/v1/Map/map")
+app.use("/v1/map", maps);
+
+
+const bus = require("./routers/v1/Schedule/busSchedule")
+app.use("/v1/schedule", bus);
+
 
 
 app.get("/", (req, res) => {
@@ -74,6 +85,12 @@ app.get("/tellstory", (req, res) => { // no authentication needed because no isL
     res.send(funnyStory);
 });
 // END: Server-only Interactions ======================
+
+
+app.use((req, res) => {
+    res.status(404).send({"data":"unknown_endpoint"});
+  });
+
 
 const PORT = process.env.PORT || 3000; // get port from .env file, otherwise 3000
 

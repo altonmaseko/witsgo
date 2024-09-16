@@ -15,7 +15,7 @@ const PreferencesController = {
 
     async getDoc(query){
         try {
-            const doc = await Preferences.findOne(query);
+            const doc = await Preferences.find(query);
             
             if (doc) {
                 // If a document is found, return it

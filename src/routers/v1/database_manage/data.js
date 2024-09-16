@@ -1,6 +1,15 @@
 const express = require("express");
 const router = express.Router();
 const path = require("path");
+const mongoose = require('mongoose');
+
+function isValidObjectId(id) {
+    if (id==''){
+        return false;
+    }
+    return mongoose.Types.ObjectId.isValid(id);
+}
+
 
 
 // Security: Validate and sanitize input
@@ -35,11 +44,14 @@ router.post("/get_data", async (req, res) => {
             return;
         }
 
-        console.log(req.body);
 
         const db = req.body["database"];
         const collection = req.body["collection"];
         const data = req.body["data"];
+
+        if (data._id&&!isValidObjectId(data._id)){
+            return res.send({ success: false, message: "Invalid ObjectId" });
+        }
 
 
         if (!allowedDatabases.includes(db) || !allowedCollections.includes(collection)) {
@@ -142,30 +154,34 @@ router.put("/update_data",async (req,res)=>{
             return;
         }
 
-        console.log(req.body);
 
         const db = req.body["database"];
         const collection = req.body["collection"];
         const data = req.body["data"];
 
 
+        if (!data._id||!isValidObjectId(data._id)){
+            return res.send({ success: false, message: "Invalid ObjectId" });
+        }
+
+
         if (!allowedDatabases.includes(db) || !allowedCollections.includes(collection)) {
             res.status(400).send({ message: "Invalid database or collection" });
             return;
         }
-
         // Dynamically load the controller
         let requireString = path.resolve(__dirname, "../../../controllers", db, `${collection}Controller`);
 
-        console.log(requireString)
 
         const controller = require(requireString);
 
 
         if (typeof controller.edits === 'function'){
             const result = await controller.edits(data);
+            console.log(result);
             if (result.success) {
                 return res.status(200).send({ data: result.data });
+                
             } else {
                 return res.status(404).send({ message: result.message });
             }
