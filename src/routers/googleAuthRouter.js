@@ -21,9 +21,10 @@ router.get("/auth/success", authSuccessController);
 // If authentication fails, googleCallbackController will redirect user here
 router.get("/auth/failure", authFailureController);
 
-router.get("/logout", logoutController);
-
 router.get("/verifylogin", verifyLoginController);
+
+router.post("/logout", logoutController);
+
 
 module.exports = router;
 

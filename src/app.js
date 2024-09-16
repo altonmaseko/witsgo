@@ -32,7 +32,7 @@ app.use(cors({
     credentials: true
 }));
 
-app.use(cors());
+// app.use(cors()); // Causes google authentication to fail
 
 // END: CORS -------------
 
@@ -88,8 +88,8 @@ app.get("/tellstory", (req, res) => { // no authentication needed because no isL
 
 
 app.use((req, res) => {
-    res.status(404).send({"data":"unknown_endpoint"});
-  });
+    res.status(404).send({ "data": "unknown_endpoint" });
+});
 
 
 const PORT = process.env.PORT || 3000; // get port from .env file, otherwise 3000
