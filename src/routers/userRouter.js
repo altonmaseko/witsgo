@@ -1,13 +1,16 @@
 const express = require("express");
 const router = express.Router();
 const passport = require("passport");
-const { updateUserController, getUserController } = require("../controllers/userControllers");
+const { updateUserController, getUserController, deleteUserController } = require("../controllers/userControllers");
 
 require("dotenv").config();
 
 // create route for updating user details
 router.put("/user/update/:email", updateUserController);
 router.get("/user/:email", getUserController);
+router.delete("/user/:email", deleteUserController);
+
+
 router.get("/api/secrets/googlemapsapikey",
     // return google maps api key
     (req, res) => {

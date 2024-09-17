@@ -148,6 +148,7 @@ const verifyLoginController = (req, res) => {
 
 
 const logoutController = (req, res) => {
+    console.log("Logging out request made");
     const loginPage = `${process.env.CLIENT_URL}`;
 
     req.session.destroy(); // req.user will be undefined
@@ -158,7 +159,11 @@ const logoutController = (req, res) => {
     res.setHeader('Pragma', 'no-cache');
     res.setHeader('Expires', '0');
 
-    res.redirect(loginPage);
+    res.json({
+        success: true,
+        message: "User logged out successfully",
+        status: 200
+    });
 }
 
 module.exports = {
