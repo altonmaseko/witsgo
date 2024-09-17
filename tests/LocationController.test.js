@@ -79,5 +79,7 @@ describe('LocationController', () => {
             const result = await LocationController.edits({ _id: '123', name: 'Error Location' });
             expect(result).toEqual({ success: false, message: 'Error occurred' });
         });
+
+
     });
 });
