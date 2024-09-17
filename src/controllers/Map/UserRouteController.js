@@ -1,5 +1,5 @@
 const UserRoute = require("../../models/UserRoute");
-
+// Method to check if a document exists
 const UserRouteController = {
     async exist(query) {
         try {
@@ -10,7 +10,7 @@ const UserRouteController = {
             return false;
         }
     },
-
+// Method to get a document based on a query
     async getDoc(query) {
         try {
             const doc = await UserRoute.find(query);
@@ -24,7 +24,7 @@ const UserRouteController = {
             return { success: false, message: "Error occurred." };
         }
     },
-
+// Method to edit an existing record
     async edits(obj) {
         try {
             const doc = await UserRoute.findOneAndUpdate(
@@ -48,7 +48,7 @@ const UserRouteController = {
             return { success: false, message: "Error occurred" };
         } 
     },
-
+// Method to insert a new record
     async insertRecord(obj) {
         try {
             const newRoute = new UserRoute(obj);

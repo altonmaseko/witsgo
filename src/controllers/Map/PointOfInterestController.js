@@ -10,7 +10,7 @@ const PointOfInterestController = {
             return false;
         }
     },
-
+// Method to get a document based on a query
     async getDoc(query) {
         try {
             const doc = await PointOfInterest.find(query);
@@ -24,7 +24,7 @@ const PointOfInterestController = {
             return { success: false, message: "Error occurred." };
         }
     },
-
+// Method to edit an existing record
     async edits(obj) {
         try {
             const doc = await PointOfInterest.findOneAndUpdate(
@@ -48,7 +48,7 @@ const PointOfInterestController = {
             return { success: false, message: "Error occurred" };
         }
     },
-
+// Method to insert a new record
     async insertRecord(obj) {
         try {
             const newPointOfInterest = new PointOfInterest(obj);

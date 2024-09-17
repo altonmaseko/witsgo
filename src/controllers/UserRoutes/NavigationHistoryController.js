@@ -1,6 +1,6 @@
 const NavigationHistory = require("../../models/UserRoutes/NavigationHistory");
 
-
+// Method to check if a record exists
 const NavigationHistoryController = {
     async exists(query){
         try {
@@ -11,7 +11,7 @@ const NavigationHistoryController = {
             return false;
         }
     },
-
+// Method to get a document based on a query
     async addRecord(recordInfo){
         try{
             const alreadyExists = this.getRecord({route_id:recordInfo.route_id});

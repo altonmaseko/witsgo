@@ -10,7 +10,7 @@ const BuildingController = {
             return false;
         }
     },
-
+//method to get a document
     async getDoc(query) {
         try {
             const doc = await Building.find(query);
@@ -24,7 +24,7 @@ const BuildingController = {
             return { success: false, message: "Error occurred." };
         }
     },
-
+//method to edit an existing record
     async edits(obj) {
         try {
             const doc = await Building.findOneAndUpdate(
@@ -51,7 +51,7 @@ const BuildingController = {
             return { success: false, message: "Error occurred" };
         }
     },
-
+//insert a new record
     async insertRecord(obj) {
         try {
             const newBuilding = new Building(obj);
