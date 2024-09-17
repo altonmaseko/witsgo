@@ -23,16 +23,16 @@ jest.mock("mongoose", () => {
 
 describe("Database Connections", () => {
     beforeAll(() => {
-        process.env.CONNECTION_URI = "mongodb+srv://lucian:lucian-witsgo@hexacluster.sjjuf.mongodb.net/";
+        CONNECTION_URI = "mongodb+srv://lucian:lucian-witsgo@hexacluster.sjjuf.mongodb.net/";
     });
 
     it("should create connections with the correct URIs", () => {
-        expect(mongoose.createConnection).toHaveBeenCalledWith(process.env.CONNECTION_URI + "User", {});
-        expect(mongoose.createConnection).toHaveBeenCalledWith(process.env.CONNECTION_URI + "Accessibility", {});
-        expect(mongoose.createConnection).toHaveBeenCalledWith(process.env.CONNECTION_URI + "Map", {});
-        expect(mongoose.createConnection).toHaveBeenCalledWith(process.env.CONNECTION_URI + "UserRoutes", {});
-        expect(mongoose.createConnection).toHaveBeenCalledWith(process.env.CONNECTION_URI + "RentalService", {});
-        expect(mongoose.createConnection).toHaveBeenCalledWith(process.env.CONNECTION_URI + "Transportation", {});
+        expect(mongoose.createConnection).toHaveBeenCalledWith(CONNECTION_URI + "User", {});
+        expect(mongoose.createConnection).toHaveBeenCalledWith(CONNECTION_URI + "Accessibility", {});
+        expect(mongoose.createConnection).toHaveBeenCalledWith(CONNECTION_URI + "Map", {});
+        expect(mongoose.createConnection).toHaveBeenCalledWith(CONNECTION_URI + "UserRoutes", {});
+        expect(mongoose.createConnection).toHaveBeenCalledWith(CONNECTION_URI + "RentalService", {});
+        expect(mongoose.createConnection).toHaveBeenCalledWith(CONNECTION_URI + "Transportation", {});
     });
 
     it("should set up event listeners for successful connections", () => {
