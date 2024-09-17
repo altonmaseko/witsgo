@@ -1,5 +1,5 @@
 
-const User = require('../models/User');
+const User = require('../models/User.js');
 const CryptoJS = require('crypto-js');
 
 require("dotenv").config();
@@ -46,8 +46,11 @@ const updateUserController = async (req, res) => {
 }
 
 const getUserController = async (req, res) => {
+    console.log("get user request", req.params);
+
     const { email } = req.params;
     const user = await User.findOne({ email });
+
 
     if (!user) {
         res.json({
