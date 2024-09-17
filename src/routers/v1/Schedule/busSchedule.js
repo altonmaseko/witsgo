@@ -6,7 +6,7 @@ const { PdfReader } = require('pdfreader');
 
 
 const router = express.Router();
-
+//get the bus schedule pdf from site
 const pdfUrl = 'https://www.wits.ac.za/media/wits-university/campus-life/documents/CampusBusSchedule24.pdf';
 const pdfPath = 'downloadedSchedule.pdf';
 
@@ -20,11 +20,11 @@ router.get('/pdf-text', (req, res) => {
     responseType: 'stream',
   })
     .then(response => {
-      response.data.pipe(fs.createWriteStream(pdfPath))
+      response.data.pipe(fs.createWriteStream(pdfPath))//pipe the pdf to the file
         .on('finish', () => {
           const items = []; // Store extracted text
 
-          new PdfReader().parseFileItems(pdfPath, (err, item) => {
+          new PdfReader().parseFileItems(pdfPath, (err, item) => {//parse the pdf file
             if (err) {
               console.error(err);
               res.status(500).send('Error reading PDF');
@@ -37,7 +37,7 @@ router.get('/pdf-text', (req, res) => {
         });
     })
     .catch(err => {
-      console.error('Error fetching the PDF:', err);
+      console.error('Error fetching the PDF:', err);//error handling
       res.status(500).send('Error downloading the PDF');
     });
 });
@@ -49,18 +49,18 @@ router.get('/new-schedule', (req, res) => {
       responseType: 'stream',
     })
       .then(response => {
-        response.data.pipe(fs.createWriteStream(newPdfPath))
+        response.data.pipe(fs.createWriteStream(newPdfPath))//pipe the pdf to the file
           .on('finish', () => {
             const items = []; // Store extracted text
   
-            new PdfReader().parseFileItems(newPdfPath, (err, item) => {
+            new PdfReader().parseFileItems(newPdfPath, (err, item) => {//parse the pdf file
               if (err) {
                 console.error(err);
                 res.status(500).send('Error reading New Schedule PDF');
               } else if (!item) {
                 res.send(items.join('<br/>'));
               } else if (item.text) {
-                items.push(item.text);
+                items.push(item.text);//push the text to the array
               }
             });
           });

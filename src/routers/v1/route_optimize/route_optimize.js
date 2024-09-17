@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const axios = require("axios");
-
+// Base URL for Google Maps Directions API
 const baseURL = "https://routes.googleapis.com/directions/v2:computeRoutes?key="
 
 
@@ -21,8 +21,8 @@ router.post("/route_optimize",async (req,res)=>{
       return;
     }
     
-
-    const endpoint = baseURL+process.env.GOOGLE_MAP_KEY;
+    
+    const endpoint = baseURL+"AIzaSyCEbj6_WGhOUTbbDAVNw3BhOMnQ44yyXOo";
     
     const headers = {
         'Content-Type': 'application/json',

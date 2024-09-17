@@ -1,5 +1,5 @@
 const Room = require("../../models/Map/room");
-
+//controller for the room model
 const RoomController = {
     async exist(query) {
         try {
@@ -10,7 +10,7 @@ const RoomController = {
             return false;
         }
     },
-
+//method to get a document based on a query
     async getDoc(query) {
         try {
             const doc = await Room.find(query);
@@ -24,7 +24,7 @@ const RoomController = {
             return { success: false, message: "Error occurred." };
         }
     },
-
+//method to edit an existing record
     async edits(obj) {
         try {
             const doc = await Room.findOneAndUpdate(
@@ -49,7 +49,7 @@ const RoomController = {
             return { success: false, message: "Error occurred" };
         }
     },
-
+//method to insert a new record
     async insertRecord(obj) {
         try {
             const newRoom = new Room(obj);

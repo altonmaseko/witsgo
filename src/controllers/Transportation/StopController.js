@@ -1,5 +1,5 @@
 const Stop = require('../../models/Transportation/stop');
-
+// Method to check if a document exists
 const StopController = {
     async exist(query) {
         try {
@@ -10,7 +10,7 @@ const StopController = {
             return false;
         }
     },
-
+// Method to get a document based on a query
     async getDoc(query) {
         try {
             const doc = await Stop.find(query);
@@ -24,7 +24,7 @@ const StopController = {
             return { success: false, message: "Error occurred while retrieving document." };
         }
     },
-
+// Method to edit an existing record
     async edits(obj) {
         try {
             const doc = await Stop.findOneAndUpdate(
@@ -42,7 +42,7 @@ const StopController = {
             return { success: false, message: "Error occurred while processing request." };
         }
     },
-
+// Method to insert a new record
     async insertRecord(obj) {
         try {
             const doc = await Stop.create(obj);

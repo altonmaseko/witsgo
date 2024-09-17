@@ -10,7 +10,7 @@ const StudentController = {
             return false;
         }
     },
-
+// Method to get a document based on a query
     async getDoc(query) {
         try {
             const doc = await Student.find(query);
@@ -24,7 +24,7 @@ const StudentController = {
             return { success: false, message: "Error occurred." };
         }
     },
-
+// Method to insert a new record
     async insertRecord(obj) {
         try {
             const doc = await Student.create(obj);
@@ -34,7 +34,7 @@ const StudentController = {
             return { success: false, message: "Error occurred." };
         }
     },
-
+// Method to edit an existing record
     async edits(obj) {
         try {
             const doc = await Student.findOneAndUpdate({ _id: obj._id }, obj, { new: true });

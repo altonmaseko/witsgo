@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const location = require("../../../controllers/Accessibility/LocationController");
 
-
+// Route to get wheelchairs
 router.get("/getWheelchairs", async (req, res) => {
     try {
         // Capture the filters from the query parameters

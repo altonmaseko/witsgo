@@ -10,7 +10,7 @@ const LocationController = {
             return false;
         }
     },
-
+// Method to get a document based on a query
     async getDoc(query) {
         try {
             const doc = await Location.find(query);
@@ -24,7 +24,7 @@ const LocationController = {
             return { success: false, message: "Error occurred" };
         }
     },
-
+// Method to insert a new record
     async insertRecord(obj) {
         try {
             const doc = await Location.create(obj);
@@ -34,7 +34,7 @@ const LocationController = {
             return { success: false, message: "Error occurred" };
         }
     },
-
+// Method to edit an existing record
     async edits(obj) {
         try {
             const doc = await Location.findOneAndUpdate(

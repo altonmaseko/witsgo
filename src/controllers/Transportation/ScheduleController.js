@@ -1,5 +1,5 @@
 const Schedule = require('../../models/Transportation/schedule');
-
+// Method to check if a document exists
 const ScheduleController = {
     async exist(query) {
         try {
@@ -10,7 +10,7 @@ const ScheduleController = {
             return false;
         }
     },
-
+// Method to get a document based on a query
     async getDoc(query) {
         try {
             const doc = await Schedule.find(query).populate('route_id').populate('stop_id');
@@ -24,7 +24,7 @@ const ScheduleController = {
             return { success: false, message: "Error occurred while retrieving document." };
         }
     },
-
+// Method to edit an existing record
     async edits(obj) {
         try {
             const doc = await Schedule.findOneAndUpdate(
@@ -42,7 +42,7 @@ const ScheduleController = {
             return { success: false, message: "Error occurred while processing request." };
         }
     },
-
+// Method to insert a new record
     async insertRecord(obj) {
         try {
             const doc = await Schedule.create(obj);
