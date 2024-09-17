@@ -33,6 +33,16 @@ const UserSchema = new mongoose.Schema({
     password: {
         type: String
     },
+    degree: {
+        type: String
+    },
+    onWheelChair: {
+        type: Boolean,
+        default: false
+    },
+    age: {
+        type: Number
+    },
 });
 
 module.exports = userConnection.model("User", UserSchema, "users"); 
