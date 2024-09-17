@@ -76,7 +76,8 @@ const authSuccessController = async (req, res) => {
         sameSite: "none",
         secure: true,
         // path: "/",
-        maxAge: 1000 * 60 * 4 // 4 minutes
+        // maxAge: 1000 * 60 * 4 // 4 minutes
+        maxAge: 1000 * 60 * 60 * 24 // 24 hours
     });
 
     //     // res.redirect(`${redirect}?email=${user.email}`);
