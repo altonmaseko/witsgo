@@ -1,6 +1,5 @@
 const Routes = require("../../models/UserRoutes/Routes");
 
-
 const RoutesController = {
     // Check if a document exists based on the query
     async exist(query) {
@@ -16,7 +15,7 @@ const RoutesController = {
     // Retrieve a document based on the query
     async getDoc(query) {
         try {
-            const doc = await Routes.find(query);
+            const doc = await Routes.findOne(query); // Changed to findOne for single document retrieval
 
             if (doc) {
                 // If a document is found, return it
@@ -34,17 +33,17 @@ const RoutesController = {
     // Updates the route or adds a new one if not present
     async edits(obj) {
         try {
-            const doc = await Routes.findOneAndReplace(
+            const doc = await Routes.findOneAndUpdate(
                 {
-                    route_id: obj.route_id // Use route_id to find and replace
+                    route_id: obj.route_id // Use route_id to find and update
                 },
                 {
                     user_id: obj.user_id,
-                    start_location: obj.start_location,
-                    end_location: obj.end_location,
+                    start_location: obj.start_location, // Ensure this is an object with latitude and longitude
+                    end_location: obj.end_location, // Ensure this is an object with latitude and longitude
                     duration: obj.duration,
                     route_data: obj.route_data,
-                    created_at: Date() // You might want to consider using a different method to handle timestamps
+                    created_at: new Date() // Use Date() for current timestamp
                 },
                 {
                     new: true, // Return the modified document
@@ -58,8 +57,30 @@ const RoutesController = {
 
             return { success: true, data: doc };
         } catch (error) {
-            console.error("Error generating record:", error);
+            console.error("Error updating or creating record:", error);
             return { success: false, message: "Error occurred while processing request." };
+        }
+    },
+
+    // Insert a new route record
+    async insertRecord(obj) {
+        try {
+            const doc = new Routes({
+                route_id: obj.route_id,
+                user_id: obj.user_id,
+                start_location: obj.start_location,
+                end_location: obj.end_location,
+                duration: obj.duration,
+                route_data: obj.route_data,
+                created_at: new Date()
+            });
+
+            const result = await doc.save();
+
+            return { success: true, data: result };
+        } catch (error) {
+            console.error("Error inserting record:", error);
+            return { success: false, message: "Error occurred while inserting record." };
         }
     }
 }

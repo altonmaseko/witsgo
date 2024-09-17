@@ -62,6 +62,9 @@ app.use("/v1/schedule", bus);
 const accessibility = require("./routers/v1/Accessibility/accessibility")
 app.use("/v1/accessibility", accessibility);
 
+const userRoutes = require("./routers/v1/UserRoutes/userRoutes")
+app.use("/v1/userRoutes", userRoutes);
+
 
 app.get("/", (req, res) => {
     res.send("Welcome to the WITSGO server, what are you doing here bruv?? Go to the frontend!");

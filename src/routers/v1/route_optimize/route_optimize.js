@@ -21,8 +21,8 @@ router.post("/route_optimize",async (req,res)=>{
       return;
     }
     
-
-    const endpoint = baseURL+process.env.GOOGLE_MAP_KEY;
+    
+    const endpoint = baseURL+"AIzaSyCEbj6_WGhOUTbbDAVNw3BhOMnQ44yyXOo";
     
     const headers = {
         'Content-Type': 'application/json',

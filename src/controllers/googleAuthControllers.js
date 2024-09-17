@@ -69,7 +69,7 @@ const authSuccessController = async (req, res) => {
         return;
     }
 
-    const accessToken = jwt.sign({ user }, process.env.JWT_SECRET, { expiresIn: "2m" });
+    const accessToken = jwt.sign({ user }, process.env.JWT_SECRET, { expiresIn: "24h" });
 
     res.cookie("accessToken", accessToken, {
         httpOnly: true,
