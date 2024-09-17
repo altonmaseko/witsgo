@@ -7,7 +7,7 @@ on:
   workflow_dispatch: # This enables manual triggering of the workflow
 
 jobs:
-  test:
+  postman:
     runs-on: ubuntu-latest
 
     steps:
