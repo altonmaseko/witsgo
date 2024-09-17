@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const { rentalConnection } = require("../../config/connectDB");
 
 const vehicleSchema = new mongoose.Schema({
-    barcode: {
+    vehicle_id: {
         type: String,
         unique: true,
         required: true
