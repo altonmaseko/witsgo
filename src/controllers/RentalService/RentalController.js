@@ -1,5 +1,5 @@
 const Rental = require("../../models/Rental/rental");
-
+// Method to check if a rental exists
 const RentalController = {
     async exists(query) {
         try {
@@ -10,7 +10,7 @@ const RentalController = {
             return false;
         }
     },
-
+// Method to get a document based on a query
     async getDoc(query) {
         try {
             const doc = await Rental.find(query);
@@ -24,7 +24,7 @@ const RentalController = {
             return { success: false, message: "Error occurred." };
         }
     },
-
+// Method to insert a new record
     async insertRecord(obj) {
         try {
             const doc = await Rental.create(obj);
@@ -34,7 +34,7 @@ const RentalController = {
             return { success: false, message: "Error occurred." };
         }
     },
-
+// Method to edit an existing record
     async edits(obj) {
         try {
             const doc = await Rental.findOneAndUpdate({ _id: obj._id }, obj, { new: true });

@@ -1,5 +1,5 @@
 const Station = require("../../models/Rental/station");
-
+// Method to check if a station exists
 const StationController = {
     async exists(query) {
         try {
@@ -10,7 +10,7 @@ const StationController = {
             return false;
         }
     },
-
+// Method to get a document based on a query
     async getDoc(query) {
         try {
             const doc = await Station.find(query);
@@ -24,7 +24,7 @@ const StationController = {
             return { success: false, message: "Error occurred." };
         }
     },
-
+// Method to insert a new record
     async insertRecord(obj) {
         try {
             const doc = await Station.create(obj);
@@ -34,7 +34,7 @@ const StationController = {
             return { success: false, message: "Error occurred." };
         }
     },
-
+// Method to edit an existing record
     async edits(obj) {
         try {
             const doc = await Station.findOneAndUpdate({ _id: obj._id }, obj, { new: true });

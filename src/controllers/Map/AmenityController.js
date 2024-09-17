@@ -24,7 +24,7 @@ const AmenityController = {
             return { success: false, message: "Error occurred." };
         }
     },
-
+//method to edit an existing record
     async edits(obj) {
         try {
             const doc = await Amenity.findOneAndUpdate(
@@ -48,7 +48,7 @@ const AmenityController = {
             return { success: false, message: "Error occurred" };
         }
     },
-
+//insert a new record
     async insertRecord(obj) {
         try {
             const newAmenity = new Amenity(obj);

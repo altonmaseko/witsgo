@@ -1,5 +1,5 @@
 const Tracking = require('../../models/Transportation/tracking');
-
+// Method to check if a document exists
 const TrackingController = {
     async exist(query) {
         try {
@@ -10,7 +10,7 @@ const TrackingController = {
             return false;
         }
     },
-
+// Method to get a document based on a query
     async getDoc(query) {
         try {
             const doc = await Tracking.find(query).populate('vehicle_id').populate('route_id').populate('current_stop_id');
@@ -24,7 +24,7 @@ const TrackingController = {
             return { success: false, message: "Error occurred while retrieving document." };
         }
     },
-
+// Method to edit an existing record
     async edits(obj) {
         try {
             const doc = await Tracking.findOneAndUpdate(
@@ -42,7 +42,7 @@ const TrackingController = {
             return { success: false, message: "Error occurred while processing request." };
         }
     },
-
+// Method to insert a new record
     async insertRecord(obj) {
         try {
             const doc = await Tracking.create(obj);

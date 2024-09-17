@@ -11,7 +11,7 @@ const UserController = {
             return false;
         }
     },
-
+// Method to get a document based on a query
     async editUser(obj){
         try {
             const doc = await User.findOneAndReplace(

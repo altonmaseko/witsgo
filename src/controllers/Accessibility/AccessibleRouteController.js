@@ -31,7 +31,7 @@ const AccessibleRouteController = {
             // Check if the location_id exists
             const locationExists = await Location.exists({ _id: obj.location_id });
             if (!locationExists) {
-                return { success: false, message: "Invalid location_id provided." };
+                return { success: false, message: "Invalid location_id provided." };// check if the location_id exists before inserting the record
             }
 
             const doc = await AccessibleRoute.create(obj);
@@ -56,7 +56,7 @@ const AccessibleRouteController = {
                 { new: true }
             );
             if (doc) {
-                return { success: true, data: doc };
+                return { success: true, data: doc };// check if the location_id exists before updating the record
             } else {
                 return { success: false, message: "Document does not exist." };
             }

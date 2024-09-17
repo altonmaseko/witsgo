@@ -1,5 +1,5 @@
 const Vehicle = require('../../models/Transportation/vehicle');
-
+// Method to check if a document exists
 const VehicleController = {
     async exist(query) {
         try {
@@ -10,7 +10,7 @@ const VehicleController = {
             return false;
         }
     },
-
+// Method to get a document based on a query
     async getDoc(query) {
         try {
             const doc = await Vehicle.find(query);
@@ -24,7 +24,7 @@ const VehicleController = {
             return { success: false, message: "Error occurred while retrieving document." };
         }
     },
-
+// Method to edit an existing record
     async edits(obj) {
         try {
             const doc = await Vehicle.findOneAndUpdate(
@@ -42,7 +42,7 @@ const VehicleController = {
             return { success: false, message: "Error occurred while processing request." };
         }
     },
-
+// Method to insert a new record
     async insertRecord(obj) {
         try {
             const doc = await Vehicle.create(obj);

@@ -1,6 +1,6 @@
 const Preferences = require("../../models/UserRoutes/Preferences");
 
-
+// Method to check if a record exists
 const PreferencesController = {
     async exist(query){
         try {
@@ -12,7 +12,7 @@ const PreferencesController = {
         }
     },
 
-
+// Method to get a document based on a query
     async getDoc(query){
         try {
             const doc = await Preferences.find(query);
