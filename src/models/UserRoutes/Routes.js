@@ -1,66 +1,50 @@
-const mongoose = require("mongoose");
-const User = require("./Users");
-const { userRoutesConnection } = require("../../config/connectDB");
+const mongoose = require('mongoose');
+const generateShortUUID = require('../../misc/generateUUID');
 
-const routesSchema = new mongoose.Schema({
-    route_id: {
-        type: mongoose.Schema.Types.ObjectId,
-        auto: true,
-        required: true
-    },
-    user_id: {
-        type: mongoose.Schema.Types.ObjectId, // Reference to the User model
-        required: true,
-        ref: 'User' // Assuming you have a User model
-    },
-    start_location: {
-        type: Map, // Use Map to store key-value pairs (or you can use an embedded schema)
-        of: String, // Assuming location data are key-value pairs like { "lat": "value", "lng": "value" }
-        required: true
-    },
-    end_location: {
-        type: Map, // Same as above
-        of: String,
-        required: true
-    },
-    duration: {
-        type: Number, // Correct type for integers
-        required: true
-    },
-    route_data: {
-        type: String, // Encoded polyline as a string
-        required: true
-    },
-    created_at: {
-        type: Date,
-        default: Date.now, // Automatically set to the current date and time if not provided
-        required: true
-    }
+const locationSchema = new mongoose.Schema({
+  latitude: {
+    type: Number,
+    required: true,
+  },
+  longitude: {
+    type: Number,
+    required: true,
+  }
 });
 
-routesSchema.pre('save', async function(next) {
-    // `this` refers to the current document being saved
-    const isValidUser = await User.isUserValid(this.user_id);
-
-    if (!isValidUser) {
-        const err = new Error('Invalid user_id provided.');
-        return next(err);
-    }
-    next();
+const routeSchema = new mongoose.Schema({
+  route_id:{
+    type:String,
+    required:true,
+    default:generateShortUUID()
+  },
+  user_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+  },
+  start_location: {
+    type: locationSchema,
+    required: true,
+  },
+  end_location: {
+    type: locationSchema,
+    required: true,
+  },
+  duration: {
+    type: Number,
+    required: true,
+  },
+  route_data: {
+    type: String, // or other type depending on your structure
+    required: true,
+  },
+  created_at: {
+    type: Date,
+    default: Date.now,
+  }
 });
 
+const Route = mongoose.model('Route', routeSchema);
 
-routesSchema.statics.isRouteValid = async function(route_id) {
-    try {
-        const route = await this.exists({ _id: route_id });
-        return route !== null;
-    } catch (error) {
-        console.error("Error checking if route is valid:", error);
-        return false;
-    }
-};
-
-
-const Routes = userRoutesConnection.model('Routes', routesSchema);
-
-module.exports = Routes
+module.exports = Route;
