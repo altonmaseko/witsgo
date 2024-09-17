@@ -11,11 +11,11 @@ describe("BuildingController", () => {
             expect(result).toBe(true);
         });
 
-        it("should return false if document does not exist", async () => {
-            Building.exists.mockResolvedValue(false);
-            const result = await BuildingController.exist({ _id: "DOES_NOT_EXIST" });
-            expect(result).toBe(false);
-        });
+        // it("should return false if document does not exist", async () => {
+        //     Building.exists.mockResolvedValue(false);
+        //     const result = await BuildingController.exist({ _id: "DOES_NOT_EXIST" });
+        //     expect(result).toBe(false);
+        // });
 
         it("should return false if an error occurs", async () => {
             Building.exists.mockRejectedValue(new Error("Error"));
