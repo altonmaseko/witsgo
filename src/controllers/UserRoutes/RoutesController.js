@@ -66,7 +66,6 @@ const RoutesController = {
     async insertRecord(obj) {
         try {
             const doc = new Routes({
-                route_id: obj.route_id,
                 user_id: obj.user_id,
                 start_location: obj.start_location,
                 end_location: obj.end_location,
