@@ -69,7 +69,7 @@ const authSuccessController = async (req, res) => {
         return;
     }
 
-    const accessToken = jwt.sign({ user }, process.env.JWT_SECRET, { expiresIn: "2m" });
+    const accessToken = jwt.sign({ user }, process.env.JWT_SECRET, { expiresIn: "24h" });
 
     res.cookie("accessToken", accessToken, {
         httpOnly: true,
@@ -79,22 +79,6 @@ const authSuccessController = async (req, res) => {
         // maxAge: 1000 * 60 * 4 // 4 minutes
         maxAge: 1000 * 60 * 60 * 24 // 24 hours
     });
-
-    //     // res.redirect(`${redirect}?email=${user.email}`);
-
-    //     // Send a response with a script to redirect after a short delay
-    //     res.send(`
-    //   <html>
-    //     <body>
-    //       <script>
-    //         setTimeout(() => {
-    //           window.location.href = "${redirect}?email=${user.email}";
-    //         }, 500);  // 500ms delay
-    //       </script>
-    //     </body>
-    //   </html>
-    // `
-    //     );
 
     // Read the HTML file
     const filePath = path.join(__dirname, '..', 'config', 'loaderPageRedirect.html');
@@ -137,6 +121,7 @@ const verifyLoginController = (req, res) => {
             });
         }
         console.log("JWT IS VALID");
+        // get the length time of token
         res.json({
             user,
             isLoggedIn: true,
