@@ -80,22 +80,6 @@ const authSuccessController = async (req, res) => {
         maxAge: 1000 * 60 * 60 * 24 // 24 hours
     });
 
-    //     // res.redirect(`${redirect}?email=${user.email}`);
-
-    //     // Send a response with a script to redirect after a short delay
-    //     res.send(`
-    //   <html>
-    //     <body>
-    //       <script>
-    //         setTimeout(() => {
-    //           window.location.href = "${redirect}?email=${user.email}";
-    //         }, 500);  // 500ms delay
-    //       </script>
-    //     </body>
-    //   </html>
-    // `
-    //     );
-
     // Read the HTML file
     const filePath = path.join(__dirname, '..', 'config', 'loaderPageRedirect.html');
     let loaderPageHtml = fs.readFileSync(filePath, 'utf8');
@@ -137,6 +121,7 @@ const verifyLoginController = (req, res) => {
             });
         }
         console.log("JWT IS VALID");
+        // get the length time of token
         res.json({
             user,
             isLoggedIn: true,

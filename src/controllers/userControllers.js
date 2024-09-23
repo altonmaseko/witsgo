@@ -69,6 +69,7 @@ const getUserController = async (req, res) => {
 }
 
 const deleteUserController = async (req, res) => {
+    console.log("DELETE USER REQUEST", req.params);
     const { email } = req.params;
     const user = await User.findOne({
         email
