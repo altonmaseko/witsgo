@@ -2,6 +2,7 @@
 const User = require('../models/User.js');
 const Admin = require('../models/Admin.js');
 const CryptoJS = require('crypto-js');
+const jwt = require('jsonwebtoken');
 
 require("dotenv").config();
 
@@ -109,44 +110,53 @@ const deleteUserController = async (req, res) => {
 
 const adminLoginController = async (req, res) => {
     const { email, password } = req.body;
-    const user = await Admin.findOne({ email});
 
-    if (!user) {
-        res.json({
-            success: false,
-            message: "User not found",
-            status: 404
+    try {
+        const user = await Admin.findOne({ email });
+        if (!user) {
+            console.log("ADMIN User not found");
+            return res.status(404).json({
+                success: false,
+                message: "User not found"
+            });
+        }
+
+        // const decryptedPassword = CryptoJS.AES.decrypt(user.password, process.env.JWT_SECRET).toString(CryptoJS.enc.Utf8);
+        const decryptedPassword = user.password;
+        if (decryptedPassword !== password) {
+            console.log("ADMIN Incorrect password");
+            return res.status(401).json({
+                success: false,
+                message: "Incorrect password"
+            });
+        }
+
+        // Valid admin, create a token
+        const accessToken = jwt.sign({ user }, process.env.JWT_SECRET, { expiresIn: "24h" });
+
+        res.cookie("accessToken", accessToken, {
+            httpOnly: true,
+            sameSite: "none",
+            secure: true,
+            maxAge: 1000 * 60 * 60 * 24 // 24 hours
         });
-        return;
-    }
 
-    const decryptedPassword = CryptoJS.AES.decrypt(user.password, process.env.JWT_SECRET).toString(CryptoJS.enc.Utf8);
-
-    if (decryptedPassword !== password) {
+        console.log("ADMIN Login successful");
         res.json({
-            success: false,
-            message: "Incorrect password",
-            status: 401
+            success: true,
+            message: "Login successful",
+            status: 200,
+            accessToken
         });
-        return;
+
+    } catch (error) {
+        console.error("Login error:", error);
+        res.status(500).json({
+            success: false,
+            message: "An error occurred during login"
+        });
     }
-
-    // if reach this point, user is valid admin
-
-    // create a token to indicate that the user is logged in
-    const accessToken = jwt.sign({ user }, process.env.JWT_SECRET, { expiresIn: "24h" });
-
-    res.cookie("accessToken", accessToken, {
-        httpOnly: true,
-        sameSite: "none",
-        secure: true,
-        // path: "/",
-        // maxAge: 1000 * 60 * 4 // 4 minutes
-        maxAge: 1000 * 60 * 60 * 24 // 24 hours
-    });
-
-
-}
+};
 
 
 module.exports = { updateUserController, getUserController, deleteUserController, adminLoginController };
