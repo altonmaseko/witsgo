@@ -1,11 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const StationController = require('../controllers/StationController');
-const VehicleController = require('../controllers/VehicleController');
-const RentalController = require('../../controllers/RentalController');
+const StationController = require('../../../controllers/RentalService/StationController');
+const VehicleController = require('../../../controllers/RentalService/VehicleController');
+const RentalController = require('../../../controllers/RentalService/RentalController');
 
 // Endpoint to get all stations
 router.get('/stations', async (req, res) => {
+    console.log("GET /stations");
     try {
         const stations = await StationController.getDoc({});
         if (stations.success) {
@@ -20,6 +21,7 @@ router.get('/stations', async (req, res) => {
 
 // Endpoint to get vehicles at a station
 router.get('/stations/:stationId/vehicles', async (req, res) => {
+    console.log("GET /stations/:stationId/vehicles");
     try {
         const stationId = req.params.stationId;
         const vehicles = await VehicleController.getDoc({ current_station_id: stationId });
@@ -34,6 +36,7 @@ router.get('/stations/:stationId/vehicles', async (req, res) => {
 });
 
 router.post('/rent', async (req, res) => {
+    console.log("POST /rent");
     const { studentId, vehicleId, fromStationId, toStationId } = req.body;
 
     try {

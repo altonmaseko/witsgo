@@ -63,6 +63,12 @@ const bus = require("./routers/v1/Schedule/busSchedule")
 app.use("/v1/schedule", bus);
 
 
+// LIAM STUFF
+const rental = require("./routers/v1/Rental/rental")
+app.use("/v1/rental", rental);
+// ======
+
+
 const accessibility = require("./routers/v1/Accessibility/accessibility")
 app.use("/v1/accessibility", accessibility);
 
