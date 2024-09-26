@@ -40,7 +40,9 @@ const startAuthController = (req, res, next) => {
 const googleCallbackController = (req, res, next) => {
     passport.authenticate("google", async (err, user, info) => {
         if (err) {
-            return next(err);
+            console.error("Authentication error:", err);
+            return res.redirect('/auth/failure');
+            // return next(err);
         }
         if (!user) {
             return res.redirect('/auth/failure');
