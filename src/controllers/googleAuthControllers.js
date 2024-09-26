@@ -38,9 +38,11 @@ const startAuthController = (req, res, next) => {
 }
 
 const googleCallbackController = (req, res, next) => {
-    passport.authenticate("google", (err, user, info) => {
+    passport.authenticate("google", async (err, user, info) => {
         if (err) {
-            return next(err);
+            console.error("Authentication error:", err);
+            return res.redirect('/auth/failure');
+            // return next(err);
         }
         if (!user) {
             return res.redirect('/auth/failure');
@@ -58,6 +60,15 @@ const googleCallbackController = (req, res, next) => {
         if (state.register == false) { // trying to login
             if (!user.password) { // user has not registered before
                 res.redirect(`${process.env.CLIENT_URL}?servermessage=You need to register first before logging in!`);
+
+                // if user was created, delete it
+                try {
+                    const result = await User.findOneAndDelete({ email: user.email });
+                    console.log("Deleted user who is not registered", result.email);
+                } catch (error) {
+                    console.log("Error deleting user who is not registered", error);
+                }
+
                 return
             }
         }

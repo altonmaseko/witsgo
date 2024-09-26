@@ -7,6 +7,7 @@ const rentalSchema = new mongoose.Schema({
         ref: 'Student',
         // required: true
     },
+
     vehicle_id: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Vehicle',
