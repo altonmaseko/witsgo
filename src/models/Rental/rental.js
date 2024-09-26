@@ -5,12 +5,13 @@ const rentalSchema = new mongoose.Schema({
     student_id: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Student',
-        required: true
+        // required: true
     },
+
     vehicle_id: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Vehicle',
-        required: true
+        // required: true
     },
     rental_start_time: {
         type: Date,

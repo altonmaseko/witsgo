@@ -13,26 +13,37 @@ passport.use(new GoogleStrategy({
   callbackURL: `${process.env.SERVER_URL}/google/callback`
 },
   async (accessToken, refreshToken, profile, cb) => {
-    // console.log(profile._json);
 
-    let user = await User.findOne({ googleId: profile.id });
 
-    if (user) {
-      console.log("User exists");
+    try {
+
+      let user = await User.findOne({ googleId: profile.id });
+
+      if (user) {
+        console.log("User exists");
+        return cb(null, user);
+      }
+
+      // If user does not exist, create a new user
+      user = await User.create({
+        firstName: profile._json.given_name,
+        lastName: profile._json.family_name,
+        email: profile._json.email,
+        googleId: profile.id,
+        picture: profile._json.picture
+      });
+
+      console.log(`User Created: ${profile._json.name}`);
       return cb(null, user);
+
+    } catch (error) {
+
+      console.log("Error authenticating user: ", error);
+      return cb(error, null);
+
     }
 
-    // If user does not exist, create a new user
-    user = await User.create({
-      firstName: profile._json.given_name,
-      lastName: profile._json.family_name,
-      email: profile._json.email,
-      googleId: profile.id,
-      picture: profile._json.picture
-    });
 
-    console.log(`User Created: ${profile._json.name}`);
-    return cb(null, user);
 
   }
 ));

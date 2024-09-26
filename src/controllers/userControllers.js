@@ -1,5 +1,6 @@
 
 const User = require('../models/User.js');
+const Admin = require('../models/Admin.js');
 const CryptoJS = require('crypto-js');
 
 require("dotenv").config();
@@ -104,4 +105,48 @@ const deleteUserController = async (req, res) => {
     });
 }
 
-module.exports = { updateUserController, getUserController, deleteUserController };
+// ADMIN STUFF =====================================
+
+const adminLoginController = async (req, res) => {
+    const { email, password } = req.body;
+    const user = await Admin.findOne({ email});
+
+    if (!user) {
+        res.json({
+            success: false,
+            message: "User not found",
+            status: 404
+        });
+        return;
+    }
+
+    const decryptedPassword = CryptoJS.AES.decrypt(user.password, process.env.JWT_SECRET).toString(CryptoJS.enc.Utf8);
+
+    if (decryptedPassword !== password) {
+        res.json({
+            success: false,
+            message: "Incorrect password",
+            status: 401
+        });
+        return;
+    }
+
+    // if reach this point, user is valid admin
+
+    // create a token to indicate that the user is logged in
+    const accessToken = jwt.sign({ user }, process.env.JWT_SECRET, { expiresIn: "24h" });
+
+    res.cookie("accessToken", accessToken, {
+        httpOnly: true,
+        sameSite: "none",
+        secure: true,
+        // path: "/",
+        // maxAge: 1000 * 60 * 4 // 4 minutes
+        maxAge: 1000 * 60 * 60 * 24 // 24 hours
+    });
+
+
+}
+
+
+module.exports = { updateUserController, getUserController, deleteUserController, adminLoginController };
