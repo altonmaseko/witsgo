@@ -33,7 +33,7 @@ const UserSchema = new mongoose.Schema({
     password: {
         type: String
     },
-    degree: {
+    faculty: {
         type: String
     },
     onWheelChair: {

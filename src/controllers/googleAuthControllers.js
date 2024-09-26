@@ -13,13 +13,14 @@ function isMobileRequest(req) {
 const startAuthController = (req, res, next) => {
     const redirect = req.query.redirect;
 
-    // encodeURIComponent:  It converts characters that are not valid in a URL 
-    // (like spaces, special characters, and punctuation) into a format that 
-    // can be safely transmitted via a URL.
-    const state = encodeURIComponent(redirect);
+    const state = JSON.stringify({
+        redirect: encodeURIComponent(redirect),
+        register: req.query.register === "true"
+    });
 
     // show prompt only if registering
     let prompt = req.query.register === "true" ? "consent" : "none";
+
 
     if (isMobileRequest(req)) {
         console.log("***Mobile Request");
@@ -45,7 +46,23 @@ const googleCallbackController = (req, res, next) => {
             return res.redirect('/auth/failure');
         }
 
-        return res.redirect(`/auth/success?redirect=${req.query.state}&email=${user.email}`);
+        let state = JSON.parse(req.query.state);
+
+        // if password exists, user already registered before.
+        // So redirect to homepage, regardless of whether they clicked register or login.
+        if (user.password) {
+            state.redirect = encodeURIComponent(process.env.CLIENT_URL);
+        }
+
+        // if user is trying to login but has not registered before, redirect to register page
+        if (state.register == false) { // trying to login
+            if (!user.password) { // user has not registered before
+                res.redirect(`${process.env.CLIENT_URL}?servermessage=You need to register first before logging in!`);
+                return
+            }
+        }
+
+        return res.redirect(`/auth/success?redirect=${state.redirect}&email=${user.email}`);
     })(req, res, next);
 }
 
@@ -80,22 +97,6 @@ const authSuccessController = async (req, res) => {
         maxAge: 1000 * 60 * 60 * 24 // 24 hours
     });
 
-    //     // res.redirect(`${redirect}?email=${user.email}`);
-
-    //     // Send a response with a script to redirect after a short delay
-    //     res.send(`
-    //   <html>
-    //     <body>
-    //       <script>
-    //         setTimeout(() => {
-    //           window.location.href = "${redirect}?email=${user.email}";
-    //         }, 500);  // 500ms delay
-    //       </script>
-    //     </body>
-    //   </html>
-    // `
-    //     );
-
     // Read the HTML file
     const filePath = path.join(__dirname, '..', 'config', 'loaderPageRedirect.html');
     let loaderPageHtml = fs.readFileSync(filePath, 'utf8');
@@ -126,7 +127,7 @@ const verifyLoginController = (req, res) => {
         return;
     }
 
-    jwt.verify(accessToken, process.env.JWT_SECRET, (err, user) => {
+    jwt.verify(accessToken, process.env.JWT_SECRET, async (err, user) => {
         if (err) {
             console.log("INVALID JWT");
             return res.json({
@@ -137,6 +138,11 @@ const verifyLoginController = (req, res) => {
             });
         }
         console.log("JWT IS VALID");
+
+        const userFromDatabase = await User.findOne({ googleId: user.googleId });
+
+        console.log("User from database:", userFromDatabase);
+
         res.json({
             user,
             isLoggedIn: true,
