@@ -4,7 +4,7 @@ const { rentalConnection } = require("../../config/connectDB");
 const stationSchema = new mongoose.Schema({
     location: {
         type: String,
-        required: true
+        // required: true
     },
     created_at: {
         type: Date,
@@ -12,11 +12,11 @@ const stationSchema = new mongoose.Schema({
     },
     latitude: {
         type: Number,
-        required: true
+        // required: true
     },
     longitude: {
         type: Number,
-        required: true
+        // required: true
     },
     updated_at: {
         type: Date,
@@ -24,15 +24,15 @@ const stationSchema = new mongoose.Schema({
     },
     amountOfScooters: {
         type: Number,
-        required: true
+        // required: true
     },
     amountOfBicyles: {
         type: Number,
-        required: true
+        // required: true
     },
     amountOfScateboards: {
         type: Number,
-        required: true
+        // required: true
     },
 
 });
