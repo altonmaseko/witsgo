@@ -109,7 +109,7 @@ const deleteUserController = async (req, res) => {
 
 const adminLoginController = async (req, res) => {
     const { email, password } = req.body;
-    const user = await Admin.findOne({ email});
+    const user = await Admin.findOne({ email });
 
     if (!user) {
         res.json({

@@ -31,6 +31,12 @@ app.use(cors({
     },
     credentials: true
 }));
+// This is for the client to be able to send cookies to the server [trying for iphone]
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Credentials', true);
+    res.header('Access-Control-Allow-Origin', process.env.CLIENT_URL);
+    next();
+});
 
 // app.use(cors()); // Causes google authentication to fail
 
