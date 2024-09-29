@@ -19,7 +19,7 @@ const startAuthController = (req, res, next) => {
     });
 
     // show prompt only if registering
-    let prompt = req.query.register === "true" ? "consent" : "none";
+    let prompt = req.query.register === "true" ? "select_account" : "none";
 
 
     if (isMobileRequest(req)) {
@@ -80,12 +80,47 @@ const googleCallbackController = (req, res, next) => {
 // AUTHENTICATION SUCCESS AND FAILURE ==========================================
 
 const authFailureController = (req, res) => {
-    res.send("Something went wrong while trying to authenticate you.");
+
+
+    const error = req.query.error;
+    let message = "An unknown error occurred during authentication.";
+
+    switch (error) {
+        case 'token_expired':
+            message = "Your session has expired. Please try logging in again.";
+            break;
+        case 'google_auth_required':
+            message = "Additional authentication required by Google. Please ensure you're signed in to Google and try again.";
+            break;
+        case 'no_user':
+            message = "No user found. Please ensure you're using the correct Google account.";
+            break;
+        default:
+            message = "An unknown error occurred during authentication.";
+            break;
+    }
+
+    // Read the HTML template
+    let html = fs.readFileSync(path.join(__dirname, '..', 'backend_pages', 'authFailurePage.html'), 'utf8');
+
+    // Replace placeholders
+    html = html.replace('{{ERROR_MESSAGE}}', message);
+    html = html.replace('{{FRONTEND_URL}}', process.env.CLIENT_URL);
+
+    // Clear any existing authentication cookies    
+    res.clearCookie("accessToken");
+    req.session.destroy();
+
+    // Send the HTML response
+    res.send(html);
+
 }
 
 
 
 const authSuccessController = async (req, res) => {
+
+
 
     // AFTER google authentication is successful, we create our own accessToken to store
     const redirect = decodeURIComponent(req.query.redirect);
@@ -109,7 +144,7 @@ const authSuccessController = async (req, res) => {
     });
 
     // Read the HTML file
-    const filePath = path.join(__dirname, '..', 'config', 'loaderPageRedirect.html');
+    const filePath = path.join(__dirname, '..', 'backend_pages', 'loaderPageRedirect.html');
     let loaderPageHtml = fs.readFileSync(filePath, 'utf8');
 
     // Replace the placeholder with the actual redirect URL

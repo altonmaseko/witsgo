@@ -26,6 +26,5 @@ router.get("/api/secrets/googlemapsapikey",
 
 router.post("/admin/login", adminLoginController);
 
-
 module.exports = router;
 
