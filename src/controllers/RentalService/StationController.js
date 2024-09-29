@@ -4,7 +4,12 @@ const StationController = {
     async exists(query) {
         try {
             const doc = await Station.exists(query);
-            return doc !== null;
+           //return doc !== null; // Returns true if a document exists, otherwise false
+           if(doc){
+            return true;
+        }else{
+            return false;
+        }
         } catch (error) {
             console.error("Error checking if station exists:", error);
             return false;
