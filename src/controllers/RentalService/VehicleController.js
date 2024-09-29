@@ -4,7 +4,12 @@ const VehicleController = {
     async exists(query) {
         try {
             const doc = await Vehicle.exists(query);
-            return doc !== null;
+            //return doc !== null; // Returns true if a document exists, otherwise false
+           if(doc){
+            return true;
+        }else{
+            return false;
+        }
         } catch (error) {
             console.error("Error checking if vehicle exists:", error);
             return false;
