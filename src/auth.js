@@ -10,8 +10,8 @@ const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
 passport.use(new GoogleStrategy({
   clientID: GOOGLE_CLIENT_ID,
   clientSecret: GOOGLE_CLIENT_SECRET,
-  callbackURL: `${process.env.SERVER_URL}/google/callback`
-},
+  callbackURL: `${process.env.SERVER_URL}/auth/google/callback`
+}, 
   async (accessToken, refreshToken, profile, cb) => {
     // console.log(profile._json);
 
