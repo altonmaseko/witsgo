@@ -109,7 +109,7 @@ const authFailureController = (req, res) => {
 
     // Clear any existing authentication cookies    
     res.clearCookie("accessToken");
-    req.session.destroy();
+    // req.session.destroy(); // not using session
 
     // Send the HTML response
     res.send(html);
@@ -215,42 +215,22 @@ const logoutController = (req, res) => {
     console.log("Logging out request made");
     const loginPage = `${process.env.CLIENT_URL}`;
 
-    // req.session.destroy(); // req.user will be undefined
-    // res.clearCookie("accessToken");
-    // res.clearCookie("connect.sid");
+    // req.session.destroy(); // not using session
+    res.clearCookie("accessToken");
+    res.clearCookie("connect.sid");
 
-    // res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
-    // res.setHeader('Pragma', 'no-cache');
-    // res.setHeader('Expires', '0');
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
 
-    // res.json({
-    //     success: true,
-    //     message: "User logged out successfully",
-    //     status: 200
-    // });
-
-    // Clear the session
-    req.session.destroy((err) => {
-        if (err) {
-            console.error("Error destroying session:", err);
-            return res.status(500).json({ success: false, message: "Error logging out" });
-        }
-
-        // Clear cookies
-        res.clearCookie("accessToken");
-        res.clearCookie("connect.sid");
-
-        // Set headers to prevent caching
-        res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
-        res.setHeader('Pragma', 'no-cache');
-        res.setHeader('Expires', '0');
-
-        res.json({
-            success: true,
-            message: "User logged out successfully",
-            status: 200
-        });
+    res.json({
+        success: true,
+        message: "User logged out successfully",
+        status: 200
     });
+
+
+
 }
 
 module.exports = {
