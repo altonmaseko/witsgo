@@ -1,6 +1,7 @@
 const Rental = require('../../models/Rental/rental');
 const Vehicle = require('../../models/Rental/vehicle');
 const Station = require('../../models/Rental/station');
+const mongoose = require("mongoose");
 
 // Rent a vehicle
 exports.rentVehicle = async (req, res) => {
@@ -57,7 +58,9 @@ exports.returnVehicle = async (req, res) => {
 exports.getUserRentals = async (req, res) => {
     const userId = req.params.userId;
     try {
-        const rentals = await Rental.find({ user: userId }).populate('vehicle station');
+        const rentals = await Rental.find({ user:userId});
+
+        console.log(userId);
         return res.status(200).json(rentals);
     } catch (err) {
         return res.status(500).json({ message: err.message });
