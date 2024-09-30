@@ -14,9 +14,9 @@ const NavigationHistoryController = {
 // Method to get a document based on a query
     async addRecord(recordInfo){
         try{
-            const alreadyExists = this.exists({route_id:recordInfo.route_id});
-
-            if (alreadyExists){
+            const alreadyExists = await this.exists({route_id:recordInfo.route_id});
+            
+            if (alreadyExists==true){
                 return { success: false, message: "document_already_exists" };
             }
 
