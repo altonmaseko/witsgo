@@ -5,7 +5,7 @@ const NavigationHistoryController = {
     async exists(query){
         try {
             const doc = await NavigationHistory.exists(query);
-            return doc !== null; // Returns true if a document exists, otherwise false
+            return doc; // Returns true if a document exists, otherwise false
         } catch (error) {
             console.error("Error checking if document exists:", error);
             return false;
@@ -14,9 +14,9 @@ const NavigationHistoryController = {
 // Method to get a document based on a query
     async addRecord(recordInfo){
         try{
-            const alreadyExists = this.getRecord({route_id:recordInfo.route_id});
-
-            if (alreadyExists){
+            const alreadyExists = await this.exists({route_id:recordInfo.route_id});
+            
+            if (alreadyExists==true){
                 return { success: false, message: "document_already_exists" };
             }
 

@@ -5,7 +5,7 @@ const RoutesController = {
     async exist(query) {
         try {
             const doc = await Routes.exists(query);
-            return doc !== null; // Returns true if a document exists, otherwise false
+            return doc; // Returns true if a document exists, otherwise false
         } catch (error) {
             console.error("Error checking if document exists:", error);
             return false;
@@ -66,7 +66,6 @@ const RoutesController = {
     async insertRecord(obj) {
         try {
             const doc = new Routes({
-                route_id: obj.route_id,
                 user_id: obj.user_id,
                 start_location: obj.start_location,
                 end_location: obj.end_location,
