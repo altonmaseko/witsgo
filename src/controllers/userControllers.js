@@ -91,7 +91,7 @@ const deleteUserController = async (req, res) => {
     await user.deleteOne();
 
     // Logout the user
-    req.session.destroy(); // req.user will be undefined
+    // req.session.destroy(); // not using session  
     res.clearCookie("accessToken");
     res.clearCookie("connect.sid");
 

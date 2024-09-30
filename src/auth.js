@@ -47,6 +47,7 @@ passport.use(new GoogleStrategy({
 
   }
 ));
+/*
 
 // These methods are used for session-based authentication, where Passport stores user data in the session.
 // We are not using them
@@ -106,3 +107,7 @@ profile:
     }
   }
   */
+
+
+
+
