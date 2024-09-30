@@ -108,7 +108,12 @@ const authFailureController = (req, res) => {
     html = html.replace('{{FRONTEND_URL}}', process.env.CLIENT_URL);
 
     // Clear any existing authentication cookies    
-    res.clearCookie("accessToken");
+    res.clearCookie("accessToken", {
+        httpOnly: true,
+        sameSite: "none",
+        secure: true,
+        path: "/",
+    });
     // req.session.destroy(); // not using session
 
     // Send the HTML response
@@ -138,7 +143,7 @@ const authSuccessController = async (req, res) => {
         httpOnly: true,
         sameSite: "none",
         secure: true,
-        // path: "/",
+        path: "/",
         // maxAge: 1000 * 60 * 4 // 4 minutes
         maxAge: 1000 * 60 * 60 * 24 // 24 hours
     });
@@ -216,7 +221,12 @@ const logoutController = (req, res) => {
     const loginPage = `${process.env.CLIENT_URL}`;
 
     // req.session.destroy(); // not using session
-    res.clearCookie("accessToken");
+    res.clearCookie("accessToken", {
+        httpOnly: true,
+        sameSite: "none",
+        secure: true,
+        path: "/",
+    });
     res.clearCookie("connect.sid");
 
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
