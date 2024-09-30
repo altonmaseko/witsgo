@@ -3,7 +3,9 @@ const Station = require('../../models/Rental/station');
 // Get all stations
 exports.getStations = async (req, res) => {
     try {
+        console.log(Station);
         const stations = await Station.find({});
+        console.log(stations);
         return res.status(200).json(stations);
     } catch (err) {
         return res.status(500).json({ message: err.message });
@@ -23,3 +25,4 @@ exports.getStationById = async (req, res) => {
         return res.status(500).json({ message: err.message });
     }
 };
+
