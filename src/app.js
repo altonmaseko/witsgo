@@ -20,7 +20,7 @@ const userRouter = require("./routers/userRouter");
 app.use(express.json());
 app.use(cookieParser());
 // CORS -------------
-const allowedOrigins = [process.env.CLIENT_URL, 'http://localhost:5000', 'http://localhost:5001'];
+const allowedOrigins = [process.env.CLIENT_URL, 'http://localhost:5000', 'http://localhost:5001', 'http://localhost:5001', 'http://127.0.0.1:5500'];
 app.use(cors({
     origin: function (origin, callback) {
         if (!origin || allowedOrigins.indexOf(origin) !== -1) {

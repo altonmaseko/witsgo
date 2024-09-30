@@ -30,16 +30,16 @@ const preferencesSchema = new mongoose.Schema({
     }
 });
 
-preferencesSchema.pre('save', async function(next) {
-    // `this` refers to the current document being saved
-    const isValidUser = await User.isUserValid(this.user_id);
+// preferencesSchema.pre('save', async function(next) {
+//     // `this` refers to the current document being saved
+//     const isValidUser = await User.isUserValid(this.user_id);
 
-    if (!isValidUser) {
-        const err = new Error('Invalid user_id provided.');
-        return next(err);
-    }
-    next();
-});
+//     if (!isValidUser) {
+//         const err = new Error('Invalid user_id provided.');
+//         return next(err);
+//     }
+//     next();
+// });
 
 
 

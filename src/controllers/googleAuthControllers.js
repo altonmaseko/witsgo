@@ -185,9 +185,20 @@ const verifyLoginController = (req, res) => {
         }
         console.log("JWT IS VALID");
 
-        const userFromDatabase = await User.findOne({ googleId: user.googleId });
+        const userFromDatabase = await User.findOne({ googleId: user.user.googleId });
 
         console.log("User from database:", userFromDatabase);
+
+        if (!userFromDatabase) {
+            console.log("Logout: JWT is valid but User not found in database");
+            return res.json({
+                success: false,
+                isLoggedIn: false,
+                message: "JWT IS VALID, BUT USER NOT IN DATABASE",
+                status: 200
+            });
+        }
+
 
         res.json({
             user,
@@ -204,18 +215,41 @@ const logoutController = (req, res) => {
     console.log("Logging out request made");
     const loginPage = `${process.env.CLIENT_URL}`;
 
-    req.session.destroy(); // req.user will be undefined
-    res.clearCookie("accessToken");
-    res.clearCookie("connect.sid");
+    // req.session.destroy(); // req.user will be undefined
+    // res.clearCookie("accessToken");
+    // res.clearCookie("connect.sid");
 
-    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
-    res.setHeader('Pragma', 'no-cache');
-    res.setHeader('Expires', '0');
+    // res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    // res.setHeader('Pragma', 'no-cache');
+    // res.setHeader('Expires', '0');
 
-    res.json({
-        success: true,
-        message: "User logged out successfully",
-        status: 200
+    // res.json({
+    //     success: true,
+    //     message: "User logged out successfully",
+    //     status: 200
+    // });
+
+    // Clear the session
+    req.session.destroy((err) => {
+        if (err) {
+            console.error("Error destroying session:", err);
+            return res.status(500).json({ success: false, message: "Error logging out" });
+        }
+
+        // Clear cookies
+        res.clearCookie("accessToken");
+        res.clearCookie("connect.sid");
+
+        // Set headers to prevent caching
+        res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+        res.setHeader('Pragma', 'no-cache');
+        res.setHeader('Expires', '0');
+
+        res.json({
+            success: true,
+            message: "User logged out successfully",
+            status: 200
+        });
     });
 }
 

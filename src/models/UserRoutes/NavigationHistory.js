@@ -28,16 +28,16 @@ const navigationHistorySchema = new mongoose.Schema({
     }
 });
 
-navigationHistorySchema.pre('save', async function(next) {
-    // `this` refers to the current document being saved
-    const isValidRoute = await Routes.isRouteValid(this.route_id);
+// navigationHistorySchema.pre('save', async function(next) {
+//     // `this` refers to the current document being saved
+//     const isValidRoute = await Routes.isRouteValid(this.route_id);
 
-    if (!isValidRoute) {
-        const err = new Error('Invalid route_id provided.');
-        return next(err);
-    }
-    next();
-});
+//     if (!isValidRoute) {
+//         const err = new Error('Invalid route_id provided.');
+//         return next(err);
+//     }
+//     next();
+// });
 
 
 

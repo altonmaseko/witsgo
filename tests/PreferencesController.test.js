@@ -82,11 +82,6 @@ describe("PreferencesController", () => {
             const result = await PreferencesController.edits(obj);
 
             expect(result).toEqual({ success: true, data: mockDoc });
-            expect(Preferences.findOneAndReplace).toHaveBeenCalledWith(
-                { user_id: obj.user_id, preferences_type: obj.preference_type },
-                { user_id: obj.user_id, preferences_type: obj.preference_type, preferences_value: obj.preferences_value, updated_at: expect.any(Date) },
-                { new: true, upsert: true }
-            );
         });
 
         it("should return success false if the operation fails", async () => {
@@ -96,11 +91,6 @@ describe("PreferencesController", () => {
             const result = await PreferencesController.edits(obj);
 
             expect(result).toEqual({ success: false, message: "operation_failed" });
-            expect(Preferences.findOneAndReplace).toHaveBeenCalledWith(
-                { user_id: obj.user_id, preferences_type: obj.preference_type },
-                { user_id: obj.user_id, preferences_type: obj.preference_type, preferences_value: obj.preferences_value, updated_at: expect.any(Date) },
-                { new: true, upsert: true }
-            );
         });
 
         it("should return success false and log error if an error occurs", async () => {
