@@ -1,58 +1,65 @@
-const Rental = require("../../models/Rental/rental");
-// Method to check if a rental exists
-const RentalController = {
-    async exists(query) {
-        try {
-            const doc = await Rental.exists(query);
-            //return doc !== null; // Returns true if a document exists, otherwise false
-            if(doc){
-                return true;
-            }else{
-                return false;
-            }
-        } catch (error) {
-            console.error("Error checking if rental exists:", error);
-            return false;
+const Rental = require('../../models/Rental/rental');
+const Vehicle = require('../../models/Rental/vehicle');
+const Station = require('../../models/Rental/station');
+
+// Rent a vehicle
+exports.rentVehicle = async (req, res) => {
+    const { vehicleId, stationId, userId } = req.body;
+    try {
+        const vehicle = await Vehicle.findById(vehicleId);
+        if (!vehicle || !vehicle.isAvailable) {
+            return res.status(400).json({ message: 'Vehicle not available' });
         }
-    },
-// Method to get a document based on a query
-    async getDoc(query) {
-        try {
-            const doc = await Rental.find(query);
-            if (doc) {
-                return { success: true, data: doc };
-            } else {
-                return { success: false, message: "Rental does not exist." };
-            }
-        } catch (error) {
-            console.error("Error getting rental:", error);
-            return { success: false, message: "Error occurred." };
-        }
-    },
-// Method to insert a new record
-    async insertRecord(obj) {
-        try {
-            const doc = await Rental.create(obj);
-            return { success: true, data: doc };
-        } catch (error) {
-            console.error("Error inserting rental:", error);
-            return { success: false, message: "Error occurred." };
-        }
-    },
-// Method to edit an existing record
-    async edits(obj) {
-        try {
-            const doc = await Rental.findOneAndUpdate({ _id: obj._id }, obj, { new: true });
-            if (doc) {
-                return { success: true, data: doc };
-            } else {
-                return { success: false, message: "Rental does not exist." };
-            }
-        } catch (error) {
-            console.error("Error updating rental:", error);
-            return { success: false, message: "Error occurred." };
-        }
+        const station = await Station.findById(stationId);
+        const rental = new Rental({
+            vehicle: vehicleId,
+            station: stationId,
+            user: userId,
+            rentedAt: Date.now(),
+        });
+        await rental.save();
+
+        vehicle.isAvailable = false;
+        await vehicle.save();
+
+        return res.status(200).json(rental);
+    } catch (err) {
+        return res.status(500).json({ message: err.message });
     }
 };
 
-module.exports = RentalController;
+// Return a vehicle
+exports.returnVehicle = async (req, res) => {
+    const { rentalId, stationId } = req.body;
+    try {
+        const rental = await Rental.findById(rentalId);
+        if (!rental) {
+            return res.status(404).json({ message: 'Rental not found' });
+        }
+        rental.returnedAt = Date.now();
+        await rental.save();
+
+        const vehicle = await Vehicle.findById(rental.vehicle);
+        vehicle.isAvailable = true;
+        await vehicle.save();
+
+        const station = await Station.findById(stationId);
+        station.vehicles.push(vehicle._id);
+        await station.save();
+
+        return res.status(200).json(rental);
+    } catch (err) {
+        return res.status(500).json({ message: err.message });
+    }
+};
+
+// Get user's rental history
+exports.getUserRentals = async (req, res) => {
+    const userId = req.params.userId;
+    try {
+        const rentals = await Rental.find({ user: userId }).populate('vehicle station');
+        return res.status(200).json(rentals);
+    } catch (err) {
+        return res.status(500).json({ message: err.message });
+    }
+};
