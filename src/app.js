@@ -31,6 +31,12 @@ app.use(cors({
     },
     credentials: true
 }));
+// This is for the client to be able to send cookies to the server [trying for iphone]
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Credentials', true);
+    res.header('Access-Control-Allow-Origin', process.env.CLIENT_URL);
+    next();
+});
 
 // app.use(cors()); // Causes google authentication to fail
 
@@ -39,7 +45,11 @@ app.use(cors({
 app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
-    saveUninitialized: true
+    saveUninitialized: true,
+    cookie: {
+        secure: true,
+        maxAge: 1000 * 60 * 60 * 24 // 24 hours
+    }
 }));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -57,6 +67,12 @@ app.use("/v1/map", maps);
 
 const bus = require("./routers/v1/Schedule/busSchedule")
 app.use("/v1/schedule", bus);
+
+
+// LIAM STUFF
+const rental = require("./routers/v1/Rental/rental")
+app.use("/v1/rental", rental);
+// ======
 
 
 const accessibility = require("./routers/v1/Accessibility/accessibility")

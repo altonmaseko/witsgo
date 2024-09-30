@@ -1,6 +1,8 @@
 
 const User = require('../models/User.js');
+const Admin = require('../models/Admin.js');
 const CryptoJS = require('crypto-js');
+const jwt = require('jsonwebtoken');
 
 require("dotenv").config();
 
@@ -23,10 +25,12 @@ const updateUserController = async (req, res) => {
     user.role = body.role ? body.role : user.role;
     user.email = body.email ? body.email : user.email;
     user.picture = body.picture ? body.picture : user.picture;
-    user.degree = body.degree ? body.degree : user.degree;
+    user.faculty = body.faculty ? body.faculty : user.faculty;
     user.age = body.age ? body.age : user.age;
     user.onWheelChair = body.onWheelChair ? body.onWheelChair : user.onWheelChair;
+
     console.log("body", body);
+
     if (body.password) {
         const encryptedPassword = CryptoJS.AES.encrypt(body.password, process.env.JWT_SECRET).toString();
         // to decrypt
@@ -69,6 +73,7 @@ const getUserController = async (req, res) => {
 }
 
 const deleteUserController = async (req, res) => {
+    console.log("DELETE USER REQUEST", req.params);
     const { email } = req.params;
     const user = await User.findOne({
         email
@@ -101,4 +106,57 @@ const deleteUserController = async (req, res) => {
     });
 }
 
-module.exports = { updateUserController, getUserController, deleteUserController };
+// ADMIN STUFF =====================================
+
+const adminLoginController = async (req, res) => {
+    const { email, password } = req.body;
+
+    try {
+        const user = await Admin.findOne({ email });
+        if (!user) {
+            console.log("ADMIN User not found");
+            return res.status(404).json({
+                success: false,
+                message: "User not found"
+            });
+        }
+
+        // const decryptedPassword = CryptoJS.AES.decrypt(user.password, process.env.JWT_SECRET).toString(CryptoJS.enc.Utf8);
+        const decryptedPassword = user.password;
+        if (decryptedPassword !== password) {
+            console.log("ADMIN Incorrect password");
+            return res.status(401).json({
+                success: false,
+                message: "Incorrect password"
+            });
+        }
+
+        // Valid admin, create a token
+        const accessToken = jwt.sign({ user }, process.env.JWT_SECRET, { expiresIn: "24h" });
+
+        res.cookie("accessToken", accessToken, {
+            httpOnly: true,
+            sameSite: "none",
+            secure: true,
+            maxAge: 1000 * 60 * 60 * 24 // 24 hours
+        });
+
+        console.log("ADMIN Login successful");
+        res.json({
+            success: true,
+            message: "Login successful",
+            status: 200,
+            accessToken
+        });
+
+    } catch (error) {
+        console.error("Login error:", error);
+        res.status(500).json({
+            success: false,
+            message: "An error occurred during login"
+        });
+    }
+};
+
+
+module.exports = { updateUserController, getUserController, deleteUserController, adminLoginController };

@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const passport = require("passport");
-const { updateUserController, getUserController, deleteUserController } = require("../controllers/userControllers");
+const { updateUserController, getUserController, deleteUserController, adminLoginController } = require("../controllers/userControllers");
 
 require("dotenv").config();
 
@@ -20,6 +20,11 @@ router.get("/api/secrets/googlemapsapikey",
         });
     }
 );
+
+
+// ADMIN USER STUFF =====================================
+
+router.post("/admin/login", adminLoginController);
 
 module.exports = router;
 

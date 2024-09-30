@@ -11,9 +11,13 @@ const vehicleSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    status: {
-        type: String,
-        default: "available"
+    // status: {
+    //     type: String,
+    //     default: "available"
+    // },
+    isAvailable: {
+        type: Boolean,
+        default: true
     },
     current_station_id: {
         type: mongoose.Schema.Types.ObjectId,

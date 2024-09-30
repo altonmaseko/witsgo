@@ -16,10 +16,11 @@ export default [
           globals: {
             ...globals.browser,
             ...globals.node,
+            ...globals.jest, // Include Jest globals here
             google: "readonly",
-            "axios": "readonly",
-            "polyline": "readonly"
+            axios: "readonly",
+            polyline: "readonly",
           },
-        }
-    },
-];
+        },
+      },
+    ];
