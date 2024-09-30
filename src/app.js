@@ -1,6 +1,6 @@
 const path = require("path")
 const express = require("express")
-const session = require("express-session")
+// const session = require("express-session") // we dont use sessions
 const cors = require('cors');
 const mongoose = require("mongoose")
 const connectDatabase = require("./config/connectDB")
@@ -20,7 +20,7 @@ const userRouter = require("./routers/userRouter");
 app.use(express.json());
 app.use(cookieParser());
 // CORS -------------
-const allowedOrigins = [process.env.CLIENT_URL, 'http://localhost:5000', 'http://localhost:5001'];
+const allowedOrigins = [process.env.CLIENT_URL, 'http://localhost:5000', 'http://localhost:5001', 'http://localhost:5001', 'http://127.0.0.1:5500'];
 app.use(cors({
     origin: function (origin, callback) {
         if (!origin || allowedOrigins.indexOf(origin) !== -1) {
@@ -42,17 +42,17 @@ app.use((req, res, next) => {
 
 // END: CORS -------------
 
-app.use(session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: true,
-    cookie: {
-        secure: true,
-        maxAge: 1000 * 60 * 60 * 24 // 24 hours
-    }
-}));
+// app.use(session({ // we dont use sessions
+//     secret: process.env.SESSION_SECRET,
+//     resave: false,
+//     saveUninitialized: true,
+//     cookie: {
+//         secure: true,
+//         maxAge: 1000 * 60 * 60 * 24 // 24 hours
+//     }
+// })); 
 app.use(passport.initialize());
-app.use(passport.session());
+// app.use(passport.session()); // we dont use sessions
 // END: MIDDLEWARE ================================
 
 const route_optimize = require("./routers/v1/route_optimize/route_optimize")

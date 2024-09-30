@@ -109,7 +109,7 @@ const authFailureController = (req, res) => {
 
     // Clear any existing authentication cookies    
     res.clearCookie("accessToken");
-    req.session.destroy();
+    // req.session.destroy(); // not using session
 
     // Send the HTML response
     res.send(html);
@@ -185,9 +185,20 @@ const verifyLoginController = (req, res) => {
         }
         console.log("JWT IS VALID");
 
-        const userFromDatabase = await User.findOne({ googleId: user.googleId });
+        const userFromDatabase = await User.findOne({ googleId: user.user.googleId });
 
         console.log("User from database:", userFromDatabase);
+
+        if (!userFromDatabase) {
+            console.log("Logout: JWT is valid but User not found in database");
+            return res.json({
+                success: false,
+                isLoggedIn: false,
+                message: "JWT IS VALID, BUT USER NOT IN DATABASE",
+                status: 200
+            });
+        }
+
 
         res.json({
             user,
@@ -204,7 +215,7 @@ const logoutController = (req, res) => {
     console.log("Logging out request made");
     const loginPage = `${process.env.CLIENT_URL}`;
 
-    req.session.destroy(); // req.user will be undefined
+    // req.session.destroy(); // not using session
     res.clearCookie("accessToken");
     res.clearCookie("connect.sid");
 
@@ -217,6 +228,9 @@ const logoutController = (req, res) => {
         message: "User logged out successfully",
         status: 200
     });
+
+
+
 }
 
 module.exports = {

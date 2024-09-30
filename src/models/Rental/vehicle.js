@@ -1,39 +1,19 @@
-const mongoose = require("mongoose");
-const { rentalConnection } = require("../../config/connectDB");
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
-const vehicleSchema = new mongoose.Schema({
-    vehicle_id: {
-        type: String,
-        unique: true,
-        required: true
-    },
+const vehicleSchema = new Schema({
     type: {
         type: String,
         required: true
     },
-    // status: {
-    //     type: String,
-    //     default: "available"
-    // },
     isAvailable: {
         type: Boolean,
         default: true
     },
-    current_station_id: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Station',
-        default: null
-    },
-    created_at: {
-        type: Date,
-        default: Date.now
-    },
-    updated_at: {
-        type: Date,
-        default: Date.now
+    lastStation: {
+        type: Schema.Types.ObjectId,
+        ref: 'Station'
     }
 });
 
-const Vehicle = rentalConnection.model('Vehicle', vehicleSchema);
-
-module.exports = Vehicle
+module.exports = mongoose.model('Vehicle', vehicleSchema);
