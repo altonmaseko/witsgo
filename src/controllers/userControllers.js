@@ -92,7 +92,12 @@ const deleteUserController = async (req, res) => {
 
     // Logout the user
     // req.session.destroy(); // not using session  
-    res.clearCookie("accessToken");
+    res.clearCookie("accessToken", {
+        httpOnly: true,
+        sameSite: "none",
+        secure: true,
+        path: "/",
+    });
     res.clearCookie("connect.sid");
 
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
