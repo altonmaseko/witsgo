@@ -51,11 +51,11 @@ describe("NavigationHistoryController", () => {
 
         it("should return success true if the record is added successfully", async () => {
             jest.spyOn(NavigationHistoryController, "exists").mockResolvedValue(false);
-            const mockDoc = new NavigationHistory({ route_id: "newRouteId" });
+            const mockDoc = new NavigationHistory({ route_id: "newRouteId1" });
             NavigationHistory.mockImplementation(() => mockDoc);
             mockDoc.save = jest.fn().mockResolvedValue(mockDoc);
 
-            const recordInfo = { route_id: "newRouteId" };
+            const recordInfo = { route_id: "newRouteId1" };
             const result = await NavigationHistoryController.addRecord(recordInfo);
 
             expect(result).toEqual({ success: true, data: mockDoc });

@@ -5,7 +5,7 @@ const PreferencesController = {
     async exist(query){
         try {
             const doc = await Preferences.exists(query);
-            return doc !== null; // Returns true if a document exists, otherwise false
+            return doc; // Returns true if a document exists, otherwise false
         } catch (error) {
             console.error("Error checking if document exists:", error);
             return false;
