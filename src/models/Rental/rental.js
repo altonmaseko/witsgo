@@ -14,7 +14,7 @@ const rentalSchema = new mongoose.Schema({
         required: true
     },
     user: {
-        type:mongoose.Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'User',  // Assuming a User model exists
         required: true
     },
@@ -28,6 +28,6 @@ const rentalSchema = new mongoose.Schema({
     }
 });
 
-const Rental = rentalConnection.model('Rental', rentalSchema);
+const Rental = rentalConnection.model('Rental', rentalSchema, 'rentals');
 
 module.exports = Rental;
