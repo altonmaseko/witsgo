@@ -40,8 +40,7 @@ const RoutesController = {
                 {
                     user_id: obj.user_id,
                     start_location: obj.start_location, // Ensure this is an object with latitude and longitude
-                    end_location: obj.end_location, // Ensure this is an object with latitude and longitude
-                    duration: obj.duration,
+                    end_location: obj.end_location,
                     route_data: obj.route_data,
                     created_at: new Date() // Use Date() for current timestamp
                 },
