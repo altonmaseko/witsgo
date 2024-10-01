@@ -1,7 +1,11 @@
 const express = require('express');
 const router = express.Router();
 
+const Rental = require('../../../models/Rental/rental.js');
 const Station = require('../../../models/Rental/station.js');
+const Vehicle = require('../../../models/Rental/vehicle.js');
+const User = require('../../../models/User.js');
+
 
 // Import the controllers from their respective paths
 const rentalController = require('../../../controllers/RentalService/RentalController');
@@ -45,6 +49,39 @@ router.post('/createstation', async (req, res) => {
 
 });
 
+router.get('/rentals', async (req, res) => {
+    try {
+        const rentals = await Rental.find();
+
+        let rental_logs = await Promise.all(rentals.map(async rental => {
+            console.log("for each one");
+
+            const vehicle = await Vehicle.findById(rental.vehicle);
+            // console.log("vehicle", vehicle);
+            const station = await Station.findById(rental.station);
+            // console.log("station", station);
+            const user = await User.findById(rental.user);
+            // console.log("user", user);
+
+            return {
+                email: user.email,
+                first_name: user.firstName,
+                last_name: user.lastName,
+                vehicle_type: vehicle.type,
+                station_name: station.name,
+                rentedAt: rental.rentedAt,
+                returnedAt: rental.returnedAt
+            };
+        }));
+
+        res.status(200).json({ success: true, rental_logs });
+
+
+
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+});
 
 
 // Station = new mongoose.Schema({
