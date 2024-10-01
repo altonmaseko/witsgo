@@ -1,7 +1,7 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const mongoose = require("mongoose");
+const { rentalConnection } = require("../../config/connectDB");
 
-const stationSchema = new Schema({
+const Station = new mongoose.Schema({
     name: {
         type: String,
         required: true
@@ -14,13 +14,15 @@ const stationSchema = new Schema({
         required: true
     },
     vehicles: [{
-        type: Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'Vehicle'
     }],
     icon: {
         type: String,
         default: '/images/station.png'
     }
-});
+}, { collection: 'Station' }); // Explicitly specify the collection name
 
-module.exports = mongoose.model('Station', stationSchema);
+const StationModel = rentalConnection.model('Station', Station);
+
+module.exports = StationModel;

@@ -1,19 +1,20 @@
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const { rentalConnection } = require("../../config/connectDB");
 
-const rentalSchema = new Schema({
+
+const rentalSchema = new mongoose.Schema({
     vehicle: {
-        type: Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'Vehicle',
         required: true
     },
     station: {
-        type: Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'Station',
         required: true
     },
     user: {
-        type: Schema.Types.ObjectId,
+        type:mongoose.Schema.Types.ObjectId,
         ref: 'User',  // Assuming a User model exists
         required: true
     },
@@ -27,4 +28,6 @@ const rentalSchema = new Schema({
     }
 });
 
-module.exports = mongoose.model('Rental', rentalSchema);
+const Rental = rentalConnection.model('Rental', rentalSchema);
+
+module.exports = Rental;

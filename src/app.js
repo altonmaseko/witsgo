@@ -11,6 +11,7 @@ require("dotenv").config()
 require("./auth");
 const app = express()
 
+
 // ROUTES ==========================================
 const googleAuthRouter = require("./routers/googleAuthRouter");
 const userRouter = require("./routers/userRouter");
@@ -20,7 +21,14 @@ const userRouter = require("./routers/userRouter");
 app.use(express.json());
 app.use(cookieParser());
 // CORS -------------
-const allowedOrigins = [process.env.CLIENT_URL, 'http://localhost:5000', 'http://localhost:5001', 'http://localhost:5001', 'http://127.0.0.1:5500'];
+const allowedOrigins = [
+    process.env.CLIENT_URL,
+    'http://localhost:5000',
+    'http://localhost:5001',
+    'http://localhost:5001',
+    'http://127.0.0.1:5500',
+    'https://agreeable-forest-0b968ac03.5.azurestaticapps.net/'
+];
 app.use(cors({
     origin: function (origin, callback) {
         if (!origin || allowedOrigins.indexOf(origin) !== -1) {
