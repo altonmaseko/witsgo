@@ -22,10 +22,10 @@ app.use(express.json());
 app.use(cookieParser());
 // CORS -------------
 const allowedOrigins = [
+    'http://localhost:5001',
     process.env.CLIENT_URL,
     'http://localhost:5000',
-    'http://localhost:5001',
-    'http://localhost:5001',
+
     'http://127.0.0.1:5500',
     'https://agreeable-forest-0b968ac03.5.azurestaticapps.net/'
 ];
@@ -40,11 +40,11 @@ app.use(cors({
     credentials: true
 }));
 // This is for the client to be able to send cookies to the server [trying for iphone]
-app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Credentials', true);
-    res.header('Access-Control-Allow-Origin', process.env.CLIENT_URL);
-    next();
-});
+// app.use((req, res, next) => {
+//     res.header('Access-Control-Allow-Credentials', true);
+//     res.header('Access-Control-Allow-Origin', process.env.CLIENT_URL);
+//     next();
+// });
 
 // app.use(cors()); // Causes google authentication to fail
 
