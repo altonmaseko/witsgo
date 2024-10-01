@@ -60,7 +60,7 @@ exports.returnVehicle = async (req, res) => {
 exports.getUserRentals = async (req, res) => {
     const userId = req.params.userId;
     try {
-        const rentals = await Rental.find({ user:userId});
+        const rentals = await Rental.find({ user: userId });
 
         console.log(userId);
         return res.status(200).json(rentals);
