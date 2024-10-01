@@ -3,7 +3,7 @@ const Vehicle = require('../../models/Rental/vehicle');
 // Get all vehicles
 exports.getVehicles = async (req, res) => {
     try {
-        const vehicles = await Vehicle.find();
+        const vehicles = await Vehicle.find({});
         return res.status(200).json(vehicles);
     } catch (err) {
         return res.status(500).json({ message: err.message });
@@ -23,3 +23,4 @@ exports.getVehicleById = async (req, res) => {
         return res.status(500).json({ message: err.message });
     }
 };
+

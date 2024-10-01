@@ -18,5 +18,6 @@ router.get('/station/:id', stationController.getStationById);
 // Vehicle routes
 router.get('/vehicles', vehicleController.getVehicles);
 router.get('/vehicle/:id', vehicleController.getVehicleById);
+// New route to get vehicles by station ID
 
 module.exports = router;
