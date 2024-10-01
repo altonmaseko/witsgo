@@ -3,8 +3,8 @@ const mongoose = require("mongoose");
 require("dotenv").config()
 
 
-const connectionURI = "mongodb+srv://lucian:lucian-witsgo@hexacluster.sjjuf.mongodb.net/";
-// const connectionURI = process.env.CONNECTION_URI;
+// const connectionURI = "mongodb+srv://lucian:lucian-witsgo@hexacluster.sjjuf.mongodb.net/";
+const connectionURI = process.env.CONNECTION_URI;
 
 const userConnectionURI = connectionURI + "User"
 const userConnection = mongoose.createConnection(userConnectionURI, {});
