@@ -11,6 +11,7 @@ require("dotenv").config()
 require("./auth");
 const app = express()
 
+
 // ROUTES ==========================================
 const googleAuthRouter = require("./routers/googleAuthRouter");
 const userRouter = require("./routers/userRouter");
