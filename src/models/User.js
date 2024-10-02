@@ -19,7 +19,6 @@ const UserSchema = new mongoose.Schema({
     role: {
         type: String,
         enum: [busDriver, admin, student, campusSecurity, campusControl],
-        default: student
     },
     email: {
         type: String,
@@ -33,16 +32,16 @@ const UserSchema = new mongoose.Schema({
     password: {
         type: String
     },
-    faculty: {
-        type: String
-    },
+    // faculty: {
+    //     type: String
+    // },
     onWheelChair: {
         type: Boolean,
         default: false
     },
-    age: {
-        type: Number
-    },
+    // age: {
+    //     type: Number
+    // },
 });
 
 module.exports = userConnection.model("User", UserSchema, "users"); 
