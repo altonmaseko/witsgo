@@ -27,7 +27,9 @@ const updateUserController = async (req, res) => {
     user.picture = body.picture ? body.picture : user.picture;
     // user.faculty = body.faculty ? body.faculty : user.faculty;
     // user.age = body.age ? body.age : user.age;
-    user.onWheelChair = body.onWheelChair ? body.onWheelChair : user.onWheelChair;
+    if (body.hasOwnProperty('onWheelChair')) {
+        user.onWheelChair = body.onWheelChair;
+    }
 
     console.log("body", body);
 
@@ -93,7 +95,7 @@ const deleteUserController = async (req, res) => {
     // Logout the user
     // req.session.destroy(); // not using session  
     res.clearCookie("accessToken", {
-        httpOnly: true,
+        // httpOnly: true, // trying off for iphone
         sameSite: "none",
         secure: true,
         path: "/",
@@ -114,6 +116,8 @@ const deleteUserController = async (req, res) => {
 // ADMIN STUFF =====================================
 
 const adminLoginController = async (req, res) => {
+
+    console.log("ADMIN LOGIN REQUEST", req.body);
     const { email, password } = req.body;
 
     try {
@@ -140,7 +144,7 @@ const adminLoginController = async (req, res) => {
         const accessToken = jwt.sign({ user }, process.env.JWT_SECRET, { expiresIn: "24h" });
 
         res.cookie("accessToken", accessToken, {
-            httpOnly: true,
+            // httpOnly: true, // trying off for iphone
             sameSite: "none",
             secure: true,
             maxAge: 1000 * 60 * 60 * 24 // 24 hours
@@ -163,5 +167,42 @@ const adminLoginController = async (req, res) => {
     }
 };
 
+const adminVerifyController = (req, res) => {
+    console.log("/admin/verify");
 
-module.exports = { updateUserController, getUserController, deleteUserController, adminLoginController };
+    const accessToken = req.body.token;
+
+    if (!accessToken) {
+        return res.status(401).json({
+            success: false,
+            message: "No token provided"
+        });
+    }
+
+    //verify the token with jwt
+    jwt.verify(accessToken, process.env.JWT_SECRET, (err, user) => {
+        if (err) {
+            console.log("Invalid admin token");
+
+            return res.status(403).json({
+                success: false,
+                message: "Failed to authenticate token"
+            });
+        }
+
+        console.log("Admin token is valid");
+        res.status(200).json({
+            success: true,
+            message: "Token is valid"
+        });
+    });
+};
+
+
+module.exports = {
+    updateUserController,
+    getUserController,
+    deleteUserController,
+    adminLoginController,
+    adminVerifyController
+};

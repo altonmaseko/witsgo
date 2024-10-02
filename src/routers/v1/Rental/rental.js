@@ -54,7 +54,6 @@ router.get('/rentals', async (req, res) => {
         const rentals = await Rental.find();
 
         let rental_logs = await Promise.all(rentals.map(async rental => {
-            console.log("for each one");
 
             const vehicle = await Vehicle.findById(rental.vehicle);
             // console.log("vehicle", vehicle);
