@@ -114,6 +114,8 @@ const deleteUserController = async (req, res) => {
 // ADMIN STUFF =====================================
 
 const adminLoginController = async (req, res) => {
+
+    console.log("ADMIN LOGIN REQUEST", req.body);
     const { email, password } = req.body;
 
     try {
@@ -163,5 +165,42 @@ const adminLoginController = async (req, res) => {
     }
 };
 
+const adminVerifyController = (req, res) => {
+    console.log("/admin/verify");
 
-module.exports = { updateUserController, getUserController, deleteUserController, adminLoginController };
+    const accessToken = req.body.token;
+
+    if (!accessToken) {
+        return res.status(401).json({
+            success: false,
+            message: "No token provided"
+        });
+    }
+
+    //verify the token with jwt
+    jwt.verify(accessToken, process.env.JWT_SECRET, (err, user) => {
+        if (err) {
+            console.log("Invalid admin token");
+
+            return res.status(403).json({
+                success: false,
+                message: "Failed to authenticate token"
+            });
+        }
+
+        console.log("Admin token is valid");
+        res.status(200).json({
+            success: true,
+            message: "Token is valid"
+        });
+    });
+};
+
+
+module.exports = {
+    updateUserController,
+    getUserController,
+    deleteUserController,
+    adminLoginController,
+    adminVerifyController
+};
