@@ -37,42 +37,52 @@ describe('TrackingController', () => {
     });
 
     describe('getDoc', () => {
-        it('should retrieve and populate the document', async () => {
-            const query = { tracking_id: 'trackingId1' };
-            const mockDoc = [{ tracking_id: 'trackingId1', vehicle_id: 'vehicleId1', route_id: 'routeId1', current_stop_id: 'stopId1' }];
+    it('should retrieve and populate the document', async () => {
+        const query = { tracking_id: 'trackingId1' };
+        const mockDoc = [{ tracking_id: 'trackingId1', vehicle_id: 'vehicleId1', route_id: 'routeId1', current_stop_id: 'stopId1' }];
 
-            const populateMock = jest.fn().mockResolvedValue(mockDoc);
-            Tracking.find.mockReturnValue({ populate: populateMock });
+        const populateMock = jest.fn().mockReturnThis(); // Chain mock to return `this` for chaining
+        const execMock = jest.fn().mockResolvedValue(mockDoc);
 
-            const result = await TrackingController.getDoc(query);
+        Tracking.find.mockReturnValue({ populate: populateMock, exec: execMock });
 
-            expect(result).toEqual({ success: true, data: mockDoc });
-            expect(Tracking.find).toHaveBeenCalledWith(query);
-            expect(populateMock).toHaveBeenCalledWith('vehicle_id');
-            expect(populateMock).toHaveBeenCalledWith('route_id');
-            expect(populateMock).toHaveBeenCalledWith('current_stop_id');
-        });
+        const result = await TrackingController.getDoc(query);
 
-        it('should return a failure message if the document does not exist', async () => {
-            const query = { tracking_id: 'trackingId1' };
-            Tracking.find.mockReturnValue({ populate: jest.fn().mockResolvedValue(null) });
-
-            const result = await TrackingController.getDoc(query);
-
-            expect(result).toEqual({ success: false, message: 'Document does not exist.' });
-            expect(Tracking.find).toHaveBeenCalledWith(query);
-        });
-
-        it('should handle errors and return a failure message', async () => {
-            const query = { tracking_id: 'trackingId1' };
-            Tracking.find.mockReturnValue({ populate: jest.fn().mockRejectedValue(new Error('Test Error')) });
-
-            const result = await TrackingController.getDoc(query);
-
-            expect(result).toEqual({ success: false, message: 'Error occurred while retrieving document.' });
-            expect(Tracking.find).toHaveBeenCalledWith(query);
-        });
+        expect(result).toEqual({ success: true, data: mockDoc });
+        expect(Tracking.find).toHaveBeenCalledWith(query);
+        expect(populateMock).toHaveBeenCalledWith('vehicle_id');
+        expect(populateMock).toHaveBeenCalledWith('route_id');
+        expect(populateMock).toHaveBeenCalledWith('current_stop_id');
+        expect(execMock).toHaveBeenCalled(); // Check if final exec is called
     });
+
+    it('should return a failure message if the document does not exist', async () => {
+        const query = { tracking_id: 'trackingId1' };
+        const populateMock = jest.fn().mockReturnThis();
+        const execMock = jest.fn().mockResolvedValue(null);
+
+        Tracking.find.mockReturnValue({ populate: populateMock, exec: execMock });
+
+        const result = await TrackingController.getDoc(query);
+
+        expect(result).toEqual({ success: false, message: 'Document does not exist.' });
+        expect(Tracking.find).toHaveBeenCalledWith(query);
+    });
+
+    it('should handle errors and return a failure message', async () => {
+        const query = { tracking_id: 'trackingId1' };
+        const populateMock = jest.fn().mockReturnThis();
+        const execMock = jest.fn().mockRejectedValue(new Error('Test Error'));
+
+        Tracking.find.mockReturnValue({ populate: populateMock, exec: execMock });
+
+        const result = await TrackingController.getDoc(query);
+
+        expect(result).toEqual({ success: false, message: 'Error occurred while retrieving document.' });
+        expect(Tracking.find).toHaveBeenCalledWith(query);
+    });
+});
+
 
     describe('edits', () => {
         it('should update the document and return success', async () => {
