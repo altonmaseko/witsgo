@@ -1,10 +1,10 @@
-const UserRoute = require("../../models/UserRoute");
+const UserRoute = require("../../models/Map/route");
 // Method to check if a document exists
 const UserRouteController = {
     async exist(query) {
         try {
             const doc = await UserRoute.exists(query);
-            return doc !== null; // Returns true if a document exists, otherwise false
+            return doc; // Returns true if a document exists, otherwise false
         } catch (error) {
             console.error("Error checking if document exists:", error);
             return false;

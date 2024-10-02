@@ -5,20 +5,20 @@ jest.mock("../src/models/UserRoutes/NavigationHistory");
 
 describe("NavigationHistoryController", () => {
     describe("exists", () => {
-        it("should return true if the record exists", async () => {
+        it("should return true if the document exists", async () => {
+            const query = { route_id: "routeId1" };
             NavigationHistory.exists.mockResolvedValue(true);
 
-            const query = { route_id: "someRouteId" };
             const result = await NavigationHistoryController.exists(query);
 
             expect(result).toBe(true);
             expect(NavigationHistory.exists).toHaveBeenCalledWith(query);
         });
 
-        it("should return false if the record does not exist", async () => {
+        it("should return false if the document does not exist", async () => {
+            const query = { route_id: "routeId1" };
             NavigationHistory.exists.mockResolvedValue(false);
 
-            const query = { route_id: "nonexistentRouteId" };
             const result = await NavigationHistoryController.exists(query);
 
             expect(result).toBe(false);
@@ -26,10 +26,10 @@ describe("NavigationHistoryController", () => {
         });
 
         it("should return false and log error if an error occurs", async () => {
+            const query = { route_id: "routeId1" };
             const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
             NavigationHistory.exists.mockRejectedValue(new Error("Test Error"));
 
-            const query = { route_id: "errorRouteId" };
             const result = await NavigationHistoryController.exists(query);
 
             expect(result).toBe(false);
@@ -39,41 +39,39 @@ describe("NavigationHistoryController", () => {
     });
 
     describe("addRecord", () => {
-        it("should return success false if the record already exists", async () => {
-            jest.spyOn(NavigationHistoryController, "exists").mockResolvedValue(true);
+        it("should return success false if the document already exists", async () => {
+            const recordInfo = { route_id: "routeId1" };
+            NavigationHistory.exists.mockResolvedValue(true);
 
-            const recordInfo = { route_id: "existingRouteId1" };
-            await NavigationHistoryController.addRecord(recordInfo);
-            const result1 = await NavigationHistoryController.addRecord(recordInfo);
-
-            expect(result1).toEqual({ success: false, message: "document_already_exists" });
-            expect(NavigationHistoryController.exists).toHaveBeenCalledWith({ route_id: recordInfo.route_id });
-        });
-
-        it("should return success true if the record is added successfully", async () => {
-            jest.spyOn(NavigationHistoryController, "exists").mockResolvedValue(false);
-            
-            const mockDoc = new NavigationHistory({ route_id: "newRouteId" });
-            NavigationHistory.mockImplementation(() => mockDoc);
-            mockDoc.save = jest.fn().mockResolvedValue(mockDoc); // Ensure save is mocked correctly
-        
-            const recordInfo = { route_id: "newRouteId1" };
             const result = await NavigationHistoryController.addRecord(recordInfo);
-        
-            expect(result).toEqual({ success: true, data: mockDoc });
-            expect(NavigationHistoryController.exists).toHaveBeenCalledWith({ route_id: recordInfo.route_id });
-            expect(mockDoc.save).toHaveBeenCalled(); // Uncomment this line
+
+            expect(result).toEqual({ success: false, message: "document_already_exists" });
+            expect(NavigationHistory.exists).toHaveBeenCalledWith({ route_id: recordInfo.route_id });
         });
-        
+
+        it("should return success true if the document is added", async () => {
+            const recordInfo = { route_id: "routeId1" };
+            const mockDoc = { _id: "docId1", route_id: "routeId1" };
+            NavigationHistory.exists.mockResolvedValue(false);
+            NavigationHistory.prototype.save = jest.fn().mockResolvedValue(mockDoc);
+
+            const result = await NavigationHistoryController.addRecord(recordInfo);
+
+            expect(result).toEqual({ success: true, data: mockDoc });
+            expect(NavigationHistory.exists).toHaveBeenCalledWith({ route_id: recordInfo.route_id });
+            expect(NavigationHistory.prototype.save).toHaveBeenCalled();
+        });
 
         it("should return success false and log error if an error occurs", async () => {
-            jest.spyOn(NavigationHistoryController, "exists").mockResolvedValue(false);
-            const mockDoc = new NavigationHistory({ route_id: "errorRouteId" });
-            NavigationHistory.mockImplementation(() => mockDoc);
-            mockDoc.save = jest.fn().mockRejectedValue(new Error("Test Error"));
-            const recordInfo = { route_ide: "errorRouteId" };
+            const recordInfo = { route_id: "routeId1" };
+            const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
+            NavigationHistory.exists.mockRejectedValue(new Error("Test Error"));
+
             const result = await NavigationHistoryController.addRecord(recordInfo);
+
             expect(result).toEqual({ success: false, message: "Test Error" });
-        });        
+            expect(consoleErrorSpy).toHaveBeenCalledWith("Error checking if document exists:", expect.any(Error));
+            consoleErrorSpy.mockRestore();
+        });
     });
 });

@@ -2,6 +2,9 @@ const Vehicle = require('../../models/Rental/vehicle');
 
 // Get all vehicles
 exports.getVehicles = async (req, res) => {
+
+    console.log("getVehicles");
+
     try {
         const vehicles = await Vehicle.find({});
         return res.status(200).json(vehicles);
@@ -12,6 +15,9 @@ exports.getVehicles = async (req, res) => {
 
 // Get vehicle by ID
 exports.getVehicleById = async (req, res) => {
+
+    console.log("getVehicleById");
+
     const { id } = req.params;
     try {
         const vehicle = await Vehicle.findById(id);

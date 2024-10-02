@@ -25,18 +25,18 @@ const updateUserController = async (req, res) => {
     user.role = body.role ? body.role : user.role;
     user.email = body.email ? body.email : user.email;
     user.picture = body.picture ? body.picture : user.picture;
-    user.faculty = body.faculty ? body.faculty : user.faculty;
-    user.age = body.age ? body.age : user.age;
+    // user.faculty = body.faculty ? body.faculty : user.faculty;
+    // user.age = body.age ? body.age : user.age;
     user.onWheelChair = body.onWheelChair ? body.onWheelChair : user.onWheelChair;
 
     console.log("body", body);
 
-    if (body.password) {
-        const encryptedPassword = CryptoJS.AES.encrypt(body.password, process.env.JWT_SECRET).toString();
-        // to decrypt
-        // const decryptedPassword = CryptoJS.AES.decrypt(encryptedPassword, process.env.JWT_SECRET).toString(CryptoJS.enc.Utf8);
-        user.password = encryptedPassword;
-    }
+    // if (body.password) {
+    //     const encryptedPassword = CryptoJS.AES.encrypt(body.password, process.env.JWT_SECRET).toString();
+    //     // to decrypt
+    //     // const decryptedPassword = CryptoJS.AES.decrypt(encryptedPassword, process.env.JWT_SECRET).toString(CryptoJS.enc.Utf8);
+    //     user.password = encryptedPassword;
+    // }
 
     await user.save();
 

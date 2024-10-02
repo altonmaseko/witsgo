@@ -1,135 +1,99 @@
-const Vehicle = require("../src/models/Rental/vehicle");
-const VehicleController = require("../src/controllers/RentalService/VehicleController");
+const Vehicle = require('../src/models/Rental/vehicle');
+const VehicleController = require('../src/controllers/RentalService/VehicleController');
 
-jest.mock("../src/models/Rental/vehicle");
+jest.mock('../src/models/Rental/vehicle');
 
-describe("VehicleController", () => {
-    describe("exists", () => {
-        it("should return true if vehicle exists", async () => {
-            Vehicle.exists.mockResolvedValue(true);
+describe('VehicleController', () => {
+    describe('getVehicles', () => {
+        it('should return all vehicles successfully', async () => {
+            const req = {};
+            const res = {
+                status: jest.fn().mockReturnThis(),
+                json: jest.fn()
+            };
 
-            const query = { name: "Test Vehicle" };
-            const result = await VehicleController.exists(query);
+            const mockVehicles = [{ _id: 'vehicleId1' }, { _id: 'vehicleId2' }];
+            Vehicle.find.mockResolvedValue(mockVehicles);
 
-            expect(result).toBe(true);
-            expect(Vehicle.exists).toHaveBeenCalledWith(query);
+            await VehicleController.getVehicles(req, res);
+
+            expect(res.status).toHaveBeenCalledWith(200);
+            expect(res.json).toHaveBeenCalledWith(mockVehicles);
         });
 
-        it("should return false if vehicle does not exist", async () => {
-            Vehicle.exists.mockResolvedValue(false);
+        it('should return 500 if an error occurs', async () => {
+            const req = {};
+            const res = {
+                status: jest.fn().mockReturnThis(),
+                json: jest.fn()
+            };
 
-            const query = { name: "Nonexistent Vehicle" };
-            const result = await VehicleController.exists(query);
+            Vehicle.find.mockRejectedValue(new Error('Test Error'));
 
-            expect(result).toBe(false);
-            expect(Vehicle.exists).toHaveBeenCalledWith(query);
-        });
+            await VehicleController.getVehicles(req, res);
 
-        it("should return false and log error if an error occurs", async () => {
-            const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
-            Vehicle.exists.mockRejectedValue(new Error("Test Error"));
-
-            const query = { name: "Error Vehicle" };
-            const result = await VehicleController.exists(query);
-
-            expect(result).toBe(false);
-            expect(consoleErrorSpy).toHaveBeenCalledWith("Error checking if vehicle exists:", expect.any(Error));
-            consoleErrorSpy.mockRestore();
-        });
-    });
-
-    describe("getDoc", () => {
-        it("should return document if it exists", async () => {
-            const mockDoc = { name: "Test Vehicle" };
-            Vehicle.find.mockResolvedValue(mockDoc);
-
-            const query = { name: "Test Vehicle" };
-            const result = await VehicleController.getDoc(query);
-
-            expect(result).toEqual({ success: true, data: mockDoc });
-            expect(Vehicle.find).toHaveBeenCalledWith(query);
-        });
-
-        it("should return success false if document does not exist", async () => {
-            Vehicle.find.mockResolvedValue(null);
-
-            const query = { name: "Nonexistent Vehicle" };
-            const result = await VehicleController.getDoc(query);
-
-            expect(result).toEqual({ success: false, message: "Vehicle does not exist." });
-            expect(Vehicle.find).toHaveBeenCalledWith(query);
-        });
-
-        it("should return success false and log error if an error occurs", async () => {
-            const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
-            Vehicle.find.mockRejectedValue(new Error("Test Error"));
-
-            const query = { name: "Error Vehicle" };
-            const result = await VehicleController.getDoc(query);
-
-            expect(result).toEqual({ success: false, message: "Error occurred." });
-            expect(consoleErrorSpy).toHaveBeenCalledWith("Error getting vehicle:", expect.any(Error));
-            consoleErrorSpy.mockRestore();
+            expect(res.status).toHaveBeenCalledWith(500);
+            expect(res.json).toHaveBeenCalledWith({ message: 'Test Error' });
         });
     });
 
-    describe("insertRecord", () => {
-        it("should return success true if document is inserted", async () => {
-            const mockDoc = { name: "New Vehicle" };
-            Vehicle.create.mockResolvedValue(mockDoc);
+    describe('getVehicleById', () => {
+        it('should return a vehicle successfully', async () => {
+            const req = {
+                params: {
+                    id: 'vehicleId1'
+                }
+            };
+            const res = {
+                status: jest.fn().mockReturnThis(),
+                json: jest.fn()
+            };
 
-            const obj = { name: "New Vehicle" };
-            const result = await VehicleController.insertRecord(obj);
+            const mockVehicle = { _id: 'vehicleId1' };
+            Vehicle.findById.mockResolvedValue(mockVehicle);
 
-            expect(result).toEqual({ success: true, data: mockDoc });
-            expect(Vehicle.create).toHaveBeenCalledWith(obj);
+            await VehicleController.getVehicleById(req, res);
+
+            expect(res.status).toHaveBeenCalledWith(200);
+            expect(res.json).toHaveBeenCalledWith(mockVehicle);
         });
 
-        it("should return success false and log error if an error occurs", async () => {
-            const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
-            Vehicle.create.mockRejectedValue(new Error("Test Error"));
+        it('should return 404 if vehicle is not found', async () => {
+            const req = {
+                params: {
+                    id: 'vehicleId1'
+                }
+            };
+            const res = {
+                status: jest.fn().mockReturnThis(),
+                json: jest.fn()
+            };
 
-            const obj = { name: "New Vehicle" };
-            const result = await VehicleController.insertRecord(obj);
+            Vehicle.findById.mockResolvedValue(null);
 
-            expect(result).toEqual({ success: false, message: "Error occurred." });
-            expect(consoleErrorSpy).toHaveBeenCalledWith("Error inserting vehicle:", expect.any(Error));
-            consoleErrorSpy.mockRestore();
-        });
-    });
+            await VehicleController.getVehicleById(req, res);
 
-    describe("edits", () => {
-        it("should return success true if document is updated", async () => {
-            const mockDoc = { name: "Updated Vehicle" };
-            Vehicle.findOneAndUpdate.mockResolvedValue(mockDoc);
-
-            const obj = { _id: 1, name: "Updated Vehicle" };
-            const result = await VehicleController.edits(obj);
-
-            expect(result).toEqual({ success: true, data: mockDoc });
-            expect(Vehicle.findOneAndUpdate).toHaveBeenCalledWith({ _id: obj._id }, obj, { new: true });
+            expect(res.status).toHaveBeenCalledWith(404);
+            expect(res.json).toHaveBeenCalledWith({ message: 'Vehicle not found' });
         });
 
-        it("should return success false if document does not exist", async () => {
-            Vehicle.findOneAndUpdate.mockResolvedValue(null);
+        it('should return 500 if an error occurs', async () => {
+            const req = {
+                params: {
+                    id: 'vehicleId1'
+                }
+            };
+            const res = {
+                status: jest.fn().mockReturnThis(),
+                json: jest.fn()
+            };
 
-            const obj = { _id: 1, name: "Updated Vehicle" };
-            const result = await VehicleController.edits(obj);
+            Vehicle.findById.mockRejectedValue(new Error('Test Error'));
 
-            expect(result).toEqual({ success: false, message: "Vehicle does not exist." });
-            expect(Vehicle.findOneAndUpdate).toHaveBeenCalledWith({ _id: obj._id }, obj, { new: true });
-        });
+            await VehicleController.getVehicleById(req, res);
 
-        it("should return success false and log error if an error occurs", async () => {
-            const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
-            Vehicle.findOneAndUpdate.mockRejectedValue(new Error("Test Error"));
-
-            const obj = { _id: 1, name: "Updated Vehicle" };
-            const result = await VehicleController.edits(obj);
-
-            expect(result).toEqual({ success: false, message: "Error occurred." });
-            expect(consoleErrorSpy).toHaveBeenCalledWith("Error updating vehicle:", expect.any(Error));
-            consoleErrorSpy.mockRestore();
+            expect(res.status).toHaveBeenCalledWith(500);
+            expect(res.json).toHaveBeenCalledWith({ message: 'Test Error' });
         });
     });
 });

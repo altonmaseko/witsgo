@@ -50,15 +50,15 @@ const googleCallbackController = (req, res, next) => {
 
         let state = JSON.parse(req.query.state);
 
-        // if password exists, user already registered before.
+        // if valid role exists, user already registered before.
         // So redirect to homepage, regardless of whether they clicked register or login.
-        if (user.password) {
+        if (user.role != "not-registered") {
             state.redirect = encodeURIComponent(process.env.CLIENT_URL);
         }
 
         // if user is trying to login but has not registered before, redirect to register page
         if (state.register == false) { // trying to login
-            if (!user.password) { // user has not registered before
+            if (user.role == 'not-registered') { // user has not registered before
                 res.redirect(`${process.env.CLIENT_URL}?servermessage=You need to register first before logging in!`);
 
                 // if user was created, delete it

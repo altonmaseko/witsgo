@@ -5,20 +5,20 @@ jest.mock("../src/models/UserRoutes/Routes");
 
 describe("RoutesController", () => {
     describe("exist", () => {
-        it("should return true if the record exists", async () => {
+        it("should return true if the document exists", async () => {
+            const query = { route_id: "routeId1" };
             Routes.exists.mockResolvedValue(true);
 
-            const query = { route_id: "someRouteId" };
             const result = await RoutesController.exist(query);
 
             expect(result).toBe(true);
             expect(Routes.exists).toHaveBeenCalledWith(query);
         });
 
-        it("should return false if the record does not exist", async () => {
+        it("should return false if the document does not exist", async () => {
+            const query = { route_id: "routeId1" };
             Routes.exists.mockResolvedValue(false);
 
-            const query = { route_id: "BLAH BLAH BLAH" };
             const result = await RoutesController.exist(query);
 
             expect(result).toBe(false);
@@ -26,10 +26,10 @@ describe("RoutesController", () => {
         });
 
         it("should return false and log error if an error occurs", async () => {
+            const query = { route_id: "routeId1" };
             const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
             Routes.exists.mockRejectedValue(new Error("Test Error"));
 
-            const query = { route_id: "errorRouteId" };
             const result = await RoutesController.exist(query);
 
             expect(result).toBe(false);
@@ -39,21 +39,21 @@ describe("RoutesController", () => {
     });
 
     describe("getDoc", () => {
-        it("should return success true if the document is found", async () => {
-            const mockDoc = { route_id: "someRouteId", user_id: "someUserId" };
+        it("should return success true and data if a document is found", async () => {
+            const query = { route_id: "routeId1" };
+            const mockDoc = { route_id: "routeId1", user_id: "userId1" };
             Routes.findOne.mockResolvedValue(mockDoc);
 
-            const query = { route_id: "someRouteId" };
             const result = await RoutesController.getDoc(query);
 
             expect(result).toEqual({ success: true, data: mockDoc });
             expect(Routes.findOne).toHaveBeenCalledWith(query);
         });
 
-        it("should return success false if the document is not found", async () => {
+        it("should return success false and message if no document is found", async () => {
+            const query = { route_id: "routeId1" };
             Routes.findOne.mockResolvedValue(null);
 
-            const query = { route_id: "nonexistentRouteId" };
             const result = await RoutesController.getDoc(query);
 
             expect(result).toEqual({ success: false, message: "Document does not exist." });
@@ -61,10 +61,10 @@ describe("RoutesController", () => {
         });
 
         it("should return success false and log error if an error occurs", async () => {
+            const query = { route_id: "routeId1" };
             const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
             Routes.findOne.mockRejectedValue(new Error("Test Error"));
 
-            const query = { route_id: "errorRouteId" };
             const result = await RoutesController.getDoc(query);
 
             expect(result).toEqual({ success: false, message: "Error occurred while retrieving document." });
@@ -74,18 +74,11 @@ describe("RoutesController", () => {
     });
 
     describe("edits", () => {
-        it("should return success true if the document is updated or added successfully", async () => {
-            const mockDoc = { route_id: "someRouteId", user_id: "someUserId" };
+        it("should return success true and data if the document is edited or added", async () => {
+            const obj = { route_id: "routeId1", user_id: "userId1", start_location: { lat: 0, lng: 0 }, end_location: { lat: 1, lng: 1 }, route_data: "data" };
+            const mockDoc = { route_id: "routeId1", user_id: "userId1", start_location: { lat: 0, lng: 0 }, end_location: { lat: 1, lng: 1 }, route_data: "data", created_at: new Date() };
             Routes.findOneAndUpdate.mockResolvedValue(mockDoc);
 
-            const obj = {
-                route_id: "someRouteId",
-                user_id: "someUserId",
-                start_location: { latitude: 0, longitude: 0 },
-                end_location: { latitude: 1, longitude: 1 },
-                duration: 100,
-                route_data: "someRouteData"
-            };
             const result = await RoutesController.edits(obj);
 
             expect(result).toEqual({ success: true, data: mockDoc });
@@ -95,7 +88,6 @@ describe("RoutesController", () => {
                     user_id: obj.user_id,
                     start_location: obj.start_location,
                     end_location: obj.end_location,
-                    duration: obj.duration,
                     route_data: obj.route_data,
                     created_at: expect.any(Date)
                 },
@@ -103,17 +95,10 @@ describe("RoutesController", () => {
             );
         });
 
-        it("should return success false if the operation fails", async () => {
+        it("should return success false and message if the operation failed", async () => {
+            const obj = { route_id: "routeId1", user_id: "userId1", start_location: { lat: 0, lng: 0 }, end_location: { lat: 1, lng: 1 }, route_data: "data" };
             Routes.findOneAndUpdate.mockResolvedValue(null);
 
-            const obj = {
-                route_id: "someRouteId",
-                user_id: "someUserId",
-                start_location: { latitude: 0, longitude: 0 },
-                end_location: { latitude: 1, longitude: 1 },
-                duration: 100,
-                route_data: "someRouteData"
-            };
             const result = await RoutesController.edits(obj);
 
             expect(result).toEqual({ success: false, message: "Operation failed." });
@@ -123,7 +108,6 @@ describe("RoutesController", () => {
                     user_id: obj.user_id,
                     start_location: obj.start_location,
                     end_location: obj.end_location,
-                    duration: obj.duration,
                     route_data: obj.route_data,
                     created_at: expect.any(Date)
                 },
@@ -132,17 +116,10 @@ describe("RoutesController", () => {
         });
 
         it("should return success false and log error if an error occurs", async () => {
+            const obj = { route_id: "routeId1", user_id: "userId1", start_location: { lat: 0, lng: 0 }, end_location: { lat: 1, lng: 1 }, route_data: "data" };
             const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
             Routes.findOneAndUpdate.mockRejectedValue(new Error("Test Error"));
 
-            const obj = {
-                route_id: "errorRouteId",
-                user_id: "errorUserId",
-                start_location: { latitude: 0, longitude: 0 },
-                end_location: { latitude: 1, longitude: 1 },
-                duration: 100,
-                route_data: "errorRouteData"
-            };
             const result = await RoutesController.edits(obj);
 
             expect(result).toEqual({ success: false, message: "Error occurred while processing request." });
@@ -152,40 +129,22 @@ describe("RoutesController", () => {
     });
 
     describe("insertRecord", () => {
-        it("should return success true if the record is inserted successfully", async () => {
-            const mockDoc = { route_id: "someRouteId", user_id: "someUserId" };
-            Routes.mockImplementation(() => ({
-                save: jest.fn().mockResolvedValue(mockDoc)
-            }));
+        it("should return success true and data if the document is inserted", async () => {
+            const obj = { user_id: "userId1", start_location: { lat: 0, lng: 0 }, end_location: { lat: 1, lng: 1 }, duration: 60, route_data: "data" };
+            const mockDoc = { user_id: "userId1", start_location: { lat: 0, lng: 0 }, end_location: { lat: 1, lng: 1 }, duration: 60, route_data: "data", created_at: new Date() };
+            Routes.prototype.save = jest.fn().mockResolvedValue(mockDoc);
 
-            const obj = {
-                route_id: "someRouteId",
-                user_id: "someUserId",
-                start_location: { latitude: 0, longitude: 0 },
-                end_location: { latitude: 1, longitude: 1 },
-                duration: 100,
-                route_data: "someRouteData"
-            };
             const result = await RoutesController.insertRecord(obj);
 
-            console.log(result)
             expect(result).toEqual({ success: true, data: mockDoc });
+            expect(Routes.prototype.save).toHaveBeenCalled();
         });
 
         it("should return success false and log error if an error occurs", async () => {
+            const obj = { user_id: "userId1", start_location: { lat: 0, lng: 0 }, end_location: { lat: 1, lng: 1 }, duration: 60, route_data: "data" };
             const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
-            Routes.mockImplementation(() => ({
-                save: jest.fn().mockRejectedValue(new Error("Test Error"))
-            }));
+            Routes.prototype.save = jest.fn().mockRejectedValue(new Error("Test Error"));
 
-            const obj = {
-                route_id: "errorRouteId",
-                user_id: "errorUserId",
-                start_location: { latitude: 0, longitude: 0 },
-                end_location: { latitude: 1, longitude: 1 },
-                duration: 100,
-                route_data: "errorRouteData"
-            };
             const result = await RoutesController.insertRecord(obj);
 
             expect(result).toEqual({ success: false, message: "Error occurred while inserting record." });

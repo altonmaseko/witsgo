@@ -17,6 +17,6 @@ const vehicleSchema = new mongoose.Schema({
     }
 });
 
-const Vehicle = rentalConnection.model('Vehicle', vehicleSchema);
+const Vehicle = rentalConnection.model('Vehicle', vehicleSchema, 'vehicles');
 
 module.exports = Vehicle

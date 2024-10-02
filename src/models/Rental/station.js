@@ -4,14 +4,22 @@ const { rentalConnection } = require("../../config/connectDB");
 const Station = new mongoose.Schema({
     name: {
         type: String,
-        required: true
+        // required: true
     },
     location: {
         type: {
             lat: Number,
             lng: Number
         },
-        required: true
+        // required: true
+    },
+    latitude: {
+        type: Number,
+        // required: true
+    },
+    longitude: {
+        type: Number,
+        // required
     },
     vehicles: [{
         type: mongoose.Schema.Types.ObjectId,
@@ -21,8 +29,9 @@ const Station = new mongoose.Schema({
         type: String,
         default: '/images/station.png'
     }
+
 }, { collection: 'Station' }); // Explicitly specify the collection name
 
-const StationModel = rentalConnection.model('Station', Station);
+const StationModel = rentalConnection.model('Station', Station, 'stations');
 
 module.exports = StationModel;

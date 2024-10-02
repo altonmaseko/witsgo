@@ -4,7 +4,7 @@
   "description": "Transportation System for Wits University",
   "main": "src/app.js",
   "scripts": {
-    "test": "echo \"No test specified\" && exit 0",
+    "test": "jest",
     "start": "node src/app.js",
     "dev": "nodemon src/app.js"
   },

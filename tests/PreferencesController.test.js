@@ -4,33 +4,33 @@ const PreferencesController = require("../src/controllers/UserRoutes/Preferences
 jest.mock("../src/models/UserRoutes/Preferences");
 
 describe("PreferencesController", () => {
-    describe("exist", () => {
-        it("should return true if the record exists", async () => {
+    describe("exists", () => {
+        it("should return true if the document exists", async () => {
+            const query = { user_id: "userId1" };
             Preferences.exists.mockResolvedValue(true);
 
-            const query = { user_id: "someUserId" };
-            const result = await PreferencesController.exist(query);
+            const result = await PreferencesController.exists(query);
 
             expect(result).toBe(true);
             expect(Preferences.exists).toHaveBeenCalledWith(query);
         });
 
-        it("should return false if the record does not exist", async () => {
+        it("should return false if the document does not exist", async () => {
+            const query = { user_id: "userId1" };
             Preferences.exists.mockResolvedValue(false);
 
-            const query = { user_id: "nonexistentUserId" };
-            const result = await PreferencesController.exist(query);
+            const result = await PreferencesController.exists(query);
 
             expect(result).toBe(false);
             expect(Preferences.exists).toHaveBeenCalledWith(query);
         });
 
         it("should return false and log error if an error occurs", async () => {
+            const query = { user_id: "userId1" };
             const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
             Preferences.exists.mockRejectedValue(new Error("Test Error"));
 
-            const query = { user_id: "errorUserId" };
-            const result = await PreferencesController.exist(query);
+            const result = await PreferencesController.exists(query);
 
             expect(result).toBe(false);
             expect(consoleErrorSpy).toHaveBeenCalledWith("Error checking if document exists:", expect.any(Error));
@@ -39,21 +39,21 @@ describe("PreferencesController", () => {
     });
 
     describe("getDoc", () => {
-        it("should return success true if the document is found", async () => {
-            const mockDoc = [{ user_id: "someUserId", preferences_type: "someType", preferences_value: "someValue" }];
-            Preferences.find.mockResolvedValue(mockDoc);
+        it("should return success true and data if documents are found", async () => {
+            const query = { user_id: "userId1" };
+            const mockDocs = [{ user_id: "userId1", preferences_type: "type1", preferences_value: "value1" }];
+            Preferences.find.mockResolvedValue(mockDocs);
 
-            const query = { user_id: "someUserId" };
             const result = await PreferencesController.getDoc(query);
 
-            expect(result).toEqual({ success: true, data: mockDoc });
+            expect(result).toEqual({ success: true, data: mockDocs });
             expect(Preferences.find).toHaveBeenCalledWith(query);
         });
 
-        it("should return success false if the document is not found", async () => {
-            Preferences.find.mockResolvedValue(null);
+        it("should return success false and message if no documents are found", async () => {
+            const query = { user_id: "userId1" };
+            Preferences.find.mockResolvedValue([]);
 
-            const query = { user_id: "nonexistentUserId" };
             const result = await PreferencesController.getDoc(query);
 
             expect(result).toEqual({ success: false, message: "Document does not exist." });
@@ -61,47 +61,67 @@ describe("PreferencesController", () => {
         });
 
         it("should return success false and log error if an error occurs", async () => {
+            const query = { user_id: "userId1" };
             const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
             Preferences.find.mockRejectedValue(new Error("Test Error"));
 
-            const query = { user_id: "errorUserId" };
             const result = await PreferencesController.getDoc(query);
 
-            expect(result).toBe(false);
-            expect(consoleErrorSpy).toHaveBeenCalledWith("Error checking if document exists:", expect.any(Error));
+            expect(result).toEqual({ success: false, message: "Error occurred while retrieving document." });
+            expect(consoleErrorSpy).toHaveBeenCalledWith("Error retrieving document:", expect.any(Error));
             consoleErrorSpy.mockRestore();
         });
     });
 
     describe("edits", () => {
-        it("should return success true if the document is updated or added successfully", async () => {
-            const mockDoc = { user_id: "someUserId", preferences_type: "someType", preferences_value: "someValue" };
+        it("should return success true and data if the document is edited or added", async () => {
+            const obj = { user_id: "userId1", preferences_type: "type1", preferences_value: "value1" };
+            const mockDoc = { user_id: "userId1", preferences_type: "type1", preferences_value: "value1", updated_at: Date.now() };
             Preferences.findOneAndReplace.mockResolvedValue(mockDoc);
 
-            const obj = { user_id: "someUserId", preference_type: "someType", preferences_value: "someValue" };
             const result = await PreferencesController.edits(obj);
 
             expect(result).toEqual({ success: true, data: mockDoc });
+            expect(Preferences.findOneAndReplace).toHaveBeenCalledWith(
+                { user_id: obj.user_id },
+                {
+                    user_id: obj.user_id,
+                    preferences_type: obj.preferences_type,
+                    preferences_value: obj.preferences_value,
+                    updated_at: expect.any(Number)
+                },
+                { new: true, upsert: true }
+            );
         });
 
-        it("should return success false if the operation fails", async () => {
+        it("should return success false and message if the operation failed", async () => {
+            const obj = { user_id: "userId1", preferences_type: "type1", preferences_value: "value1" };
             Preferences.findOneAndReplace.mockResolvedValue(null);
 
-            const obj = { user_id: "someUserId", preference_type: "someType", preferences_value: "someValue" };
             const result = await PreferencesController.edits(obj);
 
-            expect(result).toEqual({ success: false, message: "operation_failed" });
+            expect(result).toEqual({ success: false, message: "Operation failed" });
+            expect(Preferences.findOneAndReplace).toHaveBeenCalledWith(
+                { user_id: obj.user_id },
+                {
+                    user_id: obj.user_id,
+                    preferences_type: obj.preferences_type,
+                    preferences_value: obj.preferences_value,
+                    updated_at: expect.any(Number)
+                },
+                { new: true, upsert: true }
+            );
         });
 
         it("should return success false and log error if an error occurs", async () => {
+            const obj = { user_id: "userId1", preferences_type: "type1", preferences_value: "value1" };
             const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
             Preferences.findOneAndReplace.mockRejectedValue(new Error("Test Error"));
 
-            const obj = { user_id: "errorUserId", preference_type: "errorType", preferences_value: "errorValue" };
             const result = await PreferencesController.edits(obj);
 
-            expect(result).toEqual({ success: false, message: "error_occurred" });
-            expect(consoleErrorSpy).toHaveBeenCalledWith("Error generating record:", expect.any(Error));
+            expect(result).toEqual({ success: false, message: "Error occurred while editing record." });
+            expect(consoleErrorSpy).toHaveBeenCalledWith("Error editing record:", expect.any(Error));
             consoleErrorSpy.mockRestore();
         });
     });
