@@ -1,135 +1,182 @@
-const Rental = require("../src/models/Rental/rental");
-const RentalController = require("../src/controllers/RentalService/RentalController");
+const Rental = require('../src/models/Rental/rental');
+const Vehicle = require('../src/models/Rental/vehicle');
+const Station = require('../src/models/Rental/station');
+const RentalController = require('../src/controllers/RentalService/RentalController');
 
-jest.mock("../src/models/Rental/rental");
+jest.mock('../src/models/Rental/rental');
+jest.mock('../src/models/Rental/vehicle');
+jest.mock('../src/models/Rental/station');
 
-describe("RentalController", () => {
-    describe("exists", () => {
-        it("should return true if rental exists", async () => {
-            Rental.exists.mockResolvedValue(true);
+describe('RentalController', () => {
+    describe('rentVehicle', () => {
+        it('should rent a vehicle successfully', async () => {
+            const req = {
+                body: {
+                    vehicleId: 'vehicleId1',
+                    stationId: 'stationId1',
+                    userId: 'userId1'
+                }
+            };
+            const res = {
+                status: jest.fn().mockReturnThis(),
+                json: jest.fn()
+            };
 
-            const query = { name: "Test Rental" };
-            const result = await RentalController.exists(query);
+            Vehicle.findById.mockResolvedValue({ _id: 'vehicleId1', isAvailable: true, save: jest.fn() });
+            Station.findById.mockResolvedValue({ _id: 'stationId1', vehicles: ['vehicleId1'], save: jest.fn() });
+            Rental.prototype.save = jest.fn().mockResolvedValue({ _id: 'rentalId1' });
 
-            expect(result).toBe(true);
-            expect(Rental.exists).toHaveBeenCalledWith(query);
+            await RentalController.rentVehicle(req, res);
+
+            expect(res.status).toHaveBeenCalledWith(200);
+            expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ success: true, message: 'Vehicle rented successfully' }));
         });
 
-        it("should return false if rental does not exist", async () => {
-            Rental.exists.mockResolvedValue(false);
+        it('should return 400 if vehicle is not available', async () => {
+            const req = {
+                body: {
+                    vehicleId: 'vehicleId1',
+                    stationId: 'stationId1',
+                    userId: 'userId1'
+                }
+            };
+            const res = {
+                status: jest.fn().mockReturnThis(),
+                json: jest.fn()
+            };
 
-            const query = { name: "Nonexistent Rental" };
-            const result = await RentalController.exists(query);
+            Vehicle.findById.mockResolvedValue({ _id: 'vehicleId1', isAvailable: false });
 
-            expect(result).toBe(false);
-            expect(Rental.exists).toHaveBeenCalledWith(query);
+            await RentalController.rentVehicle(req, res);
+
+            expect(res.status).toHaveBeenCalledWith(400);
+            expect(res.json).toHaveBeenCalledWith({ message: 'Vehicle not available' });
         });
 
-        it("should return false and log error if an error occurs", async () => {
-            const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
-            Rental.exists.mockRejectedValue(new Error("Test Error"));
+        it('should return 500 if an error occurs', async () => {
+            const req = {
+                body: {
+                    vehicleId: 'vehicleId1',
+                    stationId: 'stationId1',
+                    userId: 'userId1'
+                }
+            };
+            const res = {
+                status: jest.fn().mockReturnThis(),
+                json: jest.fn()
+            };
 
-            const query = { name: "Error Rental" };
-            const result = await RentalController.exists(query);
+            Vehicle.findById.mockRejectedValue(new Error('Test Error'));
 
-            expect(result).toBe(false);
-            expect(consoleErrorSpy).toHaveBeenCalledWith("Error checking if rental exists:", expect.any(Error));
-            consoleErrorSpy.mockRestore();
-        });
-    });
+            await RentalController.rentVehicle(req, res);
 
-    describe("getDoc", () => {
-        it("should return document if it exists", async () => {
-            const mockDoc = { name: "Test Rental" };
-            Rental.find.mockResolvedValue(mockDoc);
-
-            const query = { name: "Test Rental" };
-            const result = await RentalController.getDoc(query);
-
-            expect(result).toEqual({ success: true, data: mockDoc });
-            expect(Rental.find).toHaveBeenCalledWith(query);
-        });
-
-        it("should return success false if document does not exist", async () => {
-            Rental.find.mockResolvedValue(null);
-
-            const query = { name: "Nonexistent Rental" };
-            const result = await RentalController.getDoc(query);
-
-            expect(result).toEqual({ success: false, message: "Rental does not exist." });
-            expect(Rental.find).toHaveBeenCalledWith(query);
-        });
-
-        it("should return success false and log error if an error occurs", async () => {
-            const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
-            Rental.find.mockRejectedValue(new Error("Test Error"));
-
-            const query = { name: "Error Rental" };
-            const result = await RentalController.getDoc(query);
-
-            expect(result).toEqual({ success: false, message: "Error occurred." });
-            expect(consoleErrorSpy).toHaveBeenCalledWith("Error getting rental:", expect.any(Error));
-            consoleErrorSpy.mockRestore();
-        });
-    });
-
-    describe("insertRecord", () => {
-        it("should return success true if document is inserted", async () => {
-            const mockDoc = { name: "New Rental" };
-            Rental.create.mockResolvedValue(mockDoc);
-
-            const obj = { name: "New Rental" };
-            const result = await RentalController.insertRecord(obj);
-
-            expect(result).toEqual({ success: true, data: mockDoc });
-            expect(Rental.create).toHaveBeenCalledWith(obj);
-        });
-
-        it("should return success false and log error if an error occurs", async () => {
-            const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
-            Rental.create.mockRejectedValue(new Error("Test Error"));
-
-            const obj = { name: "New Rental" };
-            const result = await RentalController.insertRecord(obj);
-
-            expect(result).toEqual({ success: false, message: "Error occurred." });
-            expect(consoleErrorSpy).toHaveBeenCalledWith("Error inserting rental:", expect.any(Error));
-            consoleErrorSpy.mockRestore();
+            expect(res.status).toHaveBeenCalledWith(500);
+            expect(res.json).toHaveBeenCalledWith({ message: 'Test Error' });
         });
     });
 
-    describe("edits", () => {
-        it("should return success true if document is updated", async () => {
-            const mockDoc = { name: "Updated Rental" };
-            Rental.findOneAndUpdate.mockResolvedValue(mockDoc);
+    describe('returnVehicle', () => {
+        it('should return a vehicle successfully', async () => {
+            const req = {
+                body: {
+                    vehicleId: 'vehicleId1',
+                    stationId: 'stationId1'
+                }
+            };
+            const res = {
+                status: jest.fn().mockReturnThis(),
+                json: jest.fn()
+            };
 
-            const obj = { _id: 1, name: "Updated Rental" };
-            const result = await RentalController.edits(obj);
+            Rental.findOneAndDelete.mockResolvedValue({ _id: 'rentalId1' });
+            Vehicle.findById.mockResolvedValue({ _id: 'vehicleId1', isAvailable: false, save: jest.fn() });
+            Station.findById.mockResolvedValue({ _id: 'stationId1', vehicles: [], save: jest.fn() });
 
-            expect(result).toEqual({ success: true, data: mockDoc });
-            expect(Rental.findOneAndUpdate).toHaveBeenCalledWith({ _id: obj._id }, obj, { new: true });
+            await RentalController.returnVehicle(req, res);
+
+            expect(res.status).toHaveBeenCalledWith(200);
+            expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ success: true }));
         });
 
-        it("should return success false if document does not exist", async () => {
-            Rental.findOneAndUpdate.mockResolvedValue(null);
+        it('should return 404 if rental is not found', async () => {
+            const req = {
+                body: {
+                    vehicleId: 'vehicleId1',
+                    stationId: 'stationId1'
+                }
+            };
+            const res = {
+                status: jest.fn().mockReturnThis(),
+                json: jest.fn()
+            };
 
-            const obj = { _id: 1, name: "Updated Rental" };
-            const result = await RentalController.edits(obj);
+            Rental.findOneAndDelete.mockResolvedValue(null);
 
-            expect(result).toEqual({ success: false, message: "Rental does not exist." });
-            expect(Rental.findOneAndUpdate).toHaveBeenCalledWith({ _id: obj._id }, obj, { new: true });
+            await RentalController.returnVehicle(req, res);
+
+            expect(res.status).toHaveBeenCalledWith(404);
+            expect(res.json).toHaveBeenCalledWith({ message: 'Rental not found' });
         });
 
-        it("should return success false and log error if an error occurs", async () => {
-            const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
-            Rental.findOneAndUpdate.mockRejectedValue(new Error("Test Error"));
+        it('should return 500 if an error occurs', async () => {
+            const req = {
+                body: {
+                    vehicleId: 'vehicleId1',
+                    stationId: 'stationId1'
+                }
+            };
+            const res = {
+                status: jest.fn().mockReturnThis(),
+                json: jest.fn()
+            };
 
-            const obj = { _id: 1, name: "Updated Rental" };
-            const result = await RentalController.edits(obj);
+            Rental.findOneAndDelete.mockRejectedValue(new Error('Test Error'));
 
-            expect(result).toEqual({ success: false, message: "Error occurred." });
-            expect(consoleErrorSpy).toHaveBeenCalledWith("Error updating rental:", expect.any(Error));
-            consoleErrorSpy.mockRestore();
+            await RentalController.returnVehicle(req, res);
+
+            expect(res.status).toHaveBeenCalledWith(500);
+            expect(res.json).toHaveBeenCalledWith({ message: 'Test Error' });
+        });
+    });
+
+    describe('getUserRentals', () => {
+        it('should return user rentals successfully', async () => {
+            const req = {
+                params: {
+                    userId: 'userId1'
+                }
+            };
+            const res = {
+                status: jest.fn().mockReturnThis(),
+                json: jest.fn()
+            };
+
+            const mockRentals = [{ _id: 'rentalId1' }, { _id: 'rentalId2' }];
+            Rental.find.mockResolvedValue(mockRentals);
+
+            await RentalController.getUserRentals(req, res);
+
+            expect(res.status).toHaveBeenCalledWith(200);
+            expect(res.json).toHaveBeenCalledWith(mockRentals);
+        });
+
+        it('should return 500 if an error occurs', async () => {
+            const req = {
+                params: {
+                    userId: 'userId1'
+                }
+            };
+            const res = {
+                status: jest.fn().mockReturnThis(),
+                json: jest.fn()
+            };
+
+            Rental.find.mockRejectedValue(new Error('Test Error'));
+
+            await RentalController.getUserRentals(req, res);
+
+            expect(res.status).toHaveBeenCalledWith(500);
+            expect(res.json).toHaveBeenCalledWith({ message: 'Test Error' });
         });
     });
 });
