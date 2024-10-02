@@ -24,10 +24,11 @@ app.use(cookieParser());
 const allowedOrigins = [
     'http://localhost:5001',
     process.env.CLIENT_URL,
+    'https://witsgoadmin.azurewebsites.net',
     'http://localhost:5000',
 
     'http://127.0.0.1:5500',
-    'https://agreeable-forest-0b968ac03.5.azurestaticapps.net/'
+    'https://agreeable-forest-0b968ac03.5.azurestaticapps.net'
 ];
 app.use(cors({
     origin: function (origin, callback) {
