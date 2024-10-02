@@ -109,7 +109,7 @@ const authFailureController = (req, res) => {
 
     // Clear any existing authentication cookies    
     res.clearCookie("accessToken", {
-        httpOnly: true,
+        // httpOnly: true, // trying off for iphone
         sameSite: "none",
         secure: true,
         path: "/",
@@ -140,7 +140,7 @@ const authSuccessController = async (req, res) => {
     const accessToken = jwt.sign({ user }, process.env.JWT_SECRET, { expiresIn: "24h" });
 
     res.cookie("accessToken", accessToken, {
-        httpOnly: true,
+        // httpOnly: true, // trying off for iphone
         sameSite: "none",
         secure: true,
         path: "/",
@@ -222,7 +222,7 @@ const logoutController = (req, res) => {
 
     // req.session.destroy(); // not using session
     res.clearCookie("accessToken", {
-        httpOnly: true,
+        // httpOnly: true, // trying off for iphone
         sameSite: "none",
         secure: true,
         path: "/",
