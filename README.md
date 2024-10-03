@@ -24,6 +24,7 @@ This is the backend of our WitsGo application. It manages and serves all the dat
   - CLIENT_URL=http://localhost:5000
   - SERVER_URL=http://localhost:3000
   - GOOGLE_MAPS_API_KEY=userYourKey
-- You will need to go to your google cloud account, and create a Google Client ID, as well as a Google Client Secret. This will allow google authentication
+- You will need to go to your google cloud account, and create a Google Client ID, as well as a Google Client Secret. This will allow google authentication.
+- You will also need to create a google maps api key on the same platform.
 - CONNECTION_URI connects to the database that we are using.
 - After all this is setup, you can open the terminal and run 'npm run dev', in order to have the server running. Then the your locally hosted front end will be able to communicate with this server.
