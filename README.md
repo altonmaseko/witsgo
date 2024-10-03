@@ -15,7 +15,6 @@ This is the backend of our WitsGo application. It manages and serves all the dat
     - This will install all needed libraries
 - Create a .env file in the root, and give it these details
   - PORT=3000
-  - CONNECTION_URI_LOCAL=mongodb://localhost:27017/witsgo 
   - CONNECTION_URI=mongodb+srv://lucian:lucian-witsgo@hexacluster.sjjuf.mongodb.net/
   - GOOGLE_CLIENT_ID=865366285747-3k8v8mu0h11r3buqjr8jra34lces4uld.apps.googleusercontent.com
   - GOOGLE_CLIENT_SECRET=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
