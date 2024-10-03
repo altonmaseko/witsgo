@@ -37,24 +37,30 @@ describe('TrackingController', () => {
     });
 
     describe('getDoc', () => {
-    it('should retrieve and populate the document', async () => {
-        const query = { tracking_id: 'trackingId1' };
-        const mockDoc = [{ tracking_id: 'trackingId1', vehicle_id: 'vehicleId1', route_id: 'routeId1', current_stop_id: 'stopId1' }];
-
-        const populateMock = jest.fn().mockReturnThis(); // Chain mock to return `this` for chaining
-        const execMock = jest.fn().mockResolvedValue(mockDoc);
-
-        Tracking.find.mockReturnValue({ populate: populateMock, exec: execMock });
-
-        const result = await TrackingController.getDoc(query);
-
-        expect(result).toEqual({ success: true, data: mockDoc });
-        expect(Tracking.find).toHaveBeenCalledWith(query);
-        expect(populateMock).toHaveBeenCalledWith('vehicle_id');
-        expect(populateMock).toHaveBeenCalledWith('route_id');
-        expect(populateMock).toHaveBeenCalledWith('current_stop_id');
-        expect(execMock).toHaveBeenCalled(); // Check if final exec is called
-    });
+        it('should retrieve and populate the document', async () => {
+            const query = { tracking_id: 'trackingId1' };
+            const mockDoc = [{ tracking_id: 'trackingId1', vehicle_id: 'vehicleId1', route_id: 'routeId1', current_stop_id: 'stopId1' }];
+        
+            // Mock for the chainable `populate` and `exec` methods
+            const populateMock = jest.fn().mockReturnThis(); // Return `this` to allow chaining
+            const execMock = jest.fn().mockResolvedValue(mockDoc); // Return resolved promise with mockDoc
+        
+            // Mock the Tracking.find method to return an object with our mocked methods
+            Tracking.find.mockReturnValue(mockDoc);
+        
+            // Call the getDoc method from the TrackingController
+            const result = await TrackingController.getDoc(query);
+        
+            // Expectations
+            expect(result).toEqual({ success: true, data: mockDoc });
+            expect(Tracking.find).toHaveBeenCalledWith(query);
+            expect(populateMock).toHaveBeenCalledTimes(3); // Check that populate is called 3 times
+            expect(populateMock).toHaveBeenCalledWith('vehicle_id');
+            expect(populateMock).toHaveBeenCalledWith('route_id');
+            expect(populateMock).toHaveBeenCalledWith('current_stop_id');
+            expect(execMock).toHaveBeenCalled(); // Ensure exec is called
+        });
+        
 
     it('should return a failure message if the document does not exist', async () => {
         const query = { tracking_id: 'trackingId1' };
