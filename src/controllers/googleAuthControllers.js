@@ -10,6 +10,11 @@ function isMobileRequest(req) {
     return /mobile|android|iphone/i.test(req.headers['user-agent']);
 }
 
+function isIOSDevice(req) {
+    const userAgent = req.headers['user-agent'];
+    return /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
+}
+
 const startAuthController = (req, res, next) => {
     const redirect = req.query.redirect;
 
@@ -27,6 +32,14 @@ const startAuthController = (req, res, next) => {
         prompt = "select_account";
     }
 
+    if (isIOSDevice(req)) {
+        console.log("startAuthController: IOS DEVICE DETECTED")
+        prompt = "select_account";
+    } else {
+        console.log("startAuthController: NOT ios DEVICE")
+        prompt = "none";
+    }
+
     const authenticator = passport.authenticate("google", {
         scope: ["email", "profile",],
         // state will be included in the authentication request as query parameter to google,
@@ -40,7 +53,9 @@ const startAuthController = (req, res, next) => {
 const googleCallbackController = (req, res, next) => {
     passport.authenticate("google", async (err, user, info) => {
         if (err) {
-            console.error("Authentication error:", err);
+            console.error("Error code:", err.code);
+            console.error("Error message:", err.message);
+            console.error("Full Authentication error:", err);
             return res.redirect('/auth/failure');
             // return next(err);
         }
@@ -110,7 +125,7 @@ const authFailureController = (req, res) => {
     // Clear any existing authentication cookies    
     res.clearCookie("accessToken", {
         // httpOnly: true, // trying off for iphone
-        sameSite: "none",
+        sameSite: "None",
         secure: true,
         path: "/",
     });
@@ -141,7 +156,7 @@ const authSuccessController = async (req, res) => {
 
     res.cookie("accessToken", accessToken, {
         // httpOnly: true, // trying off for iphone
-        sameSite: "none",
+        sameSite: "None",
         secure: true,
         path: "/",
         // maxAge: 1000 * 60 * 4 // 4 minutes
@@ -180,6 +195,15 @@ const verifyLoginController = (req, res) => {
 
     jwt.verify(accessToken, process.env.JWT_SECRET, async (err, user) => {
         if (err) {
+            if (err.name === "TokenExpiredError") {
+                console.log("TOKEN EXPIRED");
+                return res.json({
+                    success: false,
+                    isLoggedIn: false,
+                    message: "TOKEN EXPIRED",
+                    status: 200
+                });
+            }
             console.log("INVALID JWT");
             return res.json({
                 success: false,
@@ -223,13 +247,14 @@ const logoutController = (req, res) => {
     // req.session.destroy(); // not using session
     res.clearCookie("accessToken", {
         // httpOnly: true, // trying off for iphone
-        sameSite: "none",
+        sameSite: "None",
         secure: true,
         path: "/",
     });
     res.clearCookie("connect.sid");
 
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.setHeader('Clear-Site-Data', '"cache", "cookies", "storage", "executionContexts"'); // trying for ios
     res.setHeader('Pragma', 'no-cache');
     res.setHeader('Expires', '0');
 

@@ -38,30 +38,11 @@ app.use(cors({
             callback(new Error('Not allowed by CORS'));
         }
     },
-    credentials: true
+    credentials: true,
+    methods: "GET, POST, PUT, DELETE, OPTIONS",
 }));
-// This is for the client to be able to send cookies to the server [trying for iphone]
-// app.use((req, res, next) => {
-//     res.header('Access-Control-Allow-Credentials', true);
-//     res.header('Access-Control-Allow-Origin', process.env.CLIENT_URL);
-//     next();
-// });
 
-// app.use(cors()); // Causes google authentication to fail
-
-// END: CORS -------------
-
-// app.use(session({ // we dont use sessions
-//     secret: process.env.SESSION_SECRET,
-//     resave: false,
-//     saveUninitialized: true,
-//     cookie: {
-//         secure: true,
-//         maxAge: 1000 * 60 * 60 * 24 // 24 hours
-//     }
-// })); 
 app.use(passport.initialize());
-// app.use(passport.session()); // we dont use sessions
 // END: MIDDLEWARE ================================
 
 const route_optimize = require("./routers/v1/route_optimize/route_optimize")

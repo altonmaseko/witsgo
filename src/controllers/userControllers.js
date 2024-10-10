@@ -96,7 +96,7 @@ const deleteUserController = async (req, res) => {
     // req.session.destroy(); // not using session  
     res.clearCookie("accessToken", {
         // httpOnly: true, // trying off for iphone
-        sameSite: "none",
+        sameSite: "None",
         secure: true,
         path: "/",
     });
@@ -145,7 +145,7 @@ const adminLoginController = async (req, res) => {
 
         res.cookie("accessToken", accessToken, {
             // httpOnly: true, // trying off for iphone
-            sameSite: "none",
+            sameSite: "None",
             secure: true,
             maxAge: 1000 * 60 * 60 * 24 // 24 hours
         });
