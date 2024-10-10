@@ -40,6 +40,8 @@ const startAuthController = (req, res, next) => {
         prompt = "none";
     }
 
+    prompt = "select_account"; // for ios
+
     const authenticator = passport.authenticate("google", {
         scope: ["email", "profile",],
         // state will be included in the authentication request as query parameter to google,
