@@ -183,16 +183,24 @@ const authSuccessController = async (req, res) => {
 const verifyLoginController = (req, res) => {
     console.log("Cookies Received:", req.cookies);
 
-    const accessToken = req.cookies.accessToken;
+    // backup access token
+    let accessTokenFromQuery = req.query.token;
+    console.log("accessToken from QUERY:", accessTokenFromQuery);
+    // end: backup access token
+
+    let accessToken = req.cookies.accessToken;
     if (!accessToken) {
-        console.log("No accessToken");
-        res.json({
-            success: false,
-            isLoggedIn: false,
-            message: "NO accessToken FOUND",
-            status: 200
-        });
-        return;
+        accessToken = accessTokenFromQuery;
+        if (!accessToken) {
+            console.log("No accessToken");
+            res.json({
+                success: false,
+                isLoggedIn: false,
+                message: "NO accessToken FOUND",
+                status: 200
+            });
+            return;
+        }
     }
 
     jwt.verify(accessToken, process.env.JWT_SECRET, async (err, user) => {
