@@ -1,53 +1,32 @@
-const Vehicle = require("../../models/Rental/vehicle");
+const Vehicle = require('../../models/Rental/vehicle');
 
-const VehicleController = {
-    async exists(query) {
-        try {
-            const doc = await Vehicle.exists(query);
-            return doc !== null;
-        } catch (error) {
-            console.error("Error checking if vehicle exists:", error);
-            return false;
-        }
-    },
-// Method to get a document based on a query
-    async getDoc(query) {
-        try {
-            const doc = await Vehicle.find(query);
-            if (doc) {
-                return { success: true, data: doc };
-            } else {
-                return { success: false, message: "Vehicle does not exist." };
-            }
-        } catch (error) {
-            console.error("Error getting vehicle:", error);
-            return { success: false, message: "Error occurred." };
-        }
-    },
-//method to insert a new record
-    async insertRecord(obj) {
-        try {
-            const doc = await Vehicle.create(obj);
-            return { success: true, data: doc };
-        } catch (error) {
-            console.error("Error inserting vehicle:", error);
-            return { success: false, message: "Error occurred." };
-        }
-    },
-// Method to edit an existing record
-    async edits(obj) {
-        try {
-            const doc = await Vehicle.findOneAndUpdate({ _id: obj._id }, obj, { new: true });
-            if (doc) {
-                return { success: true, data: doc };
-            } else {
-                return { success: false, message: "Vehicle does not exist." };
-            }
-        } catch (error) {
-            console.error("Error updating vehicle:", error);
-            return { success: false, message: "Error occurred." };
-        }
+// Get all vehicles
+exports.getVehicles = async (req, res) => {
+
+    console.log("getVehicles");
+
+    try {
+        const vehicles = await Vehicle.find({});
+        return res.status(200).json(vehicles);
+    } catch (err) {
+        return res.status(500).json({ message: err.message });
     }
 };
 
-module.exports = VehicleController;
+// Get vehicle by ID
+exports.getVehicleById = async (req, res) => {
+
+    console.log("getVehicleById");
+
+    const { id } = req.params;
+    try {
+        const vehicle = await Vehicle.findById(id);
+        if (!vehicle) {
+            return res.status(404).json({ message: 'Vehicle not found' });
+        }
+        return res.status(200).json(vehicle);
+    } catch (err) {
+        return res.status(500).json({ message: err.message });
+    }
+};
+

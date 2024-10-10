@@ -1,10 +1,11 @@
 const Tracking = require('../../models/Transportation/tracking');
 // Method to check if a document exists
+
 const TrackingController = {
     async exist(query) {
         try {
             const doc = await Tracking.exists(query);
-            return doc !== null; // Returns true if a document exists, otherwise false
+            return doc; // Returns true if a document exists, otherwise false
         } catch (error) {
             console.error("Error checking if document exists:", error);
             return false;

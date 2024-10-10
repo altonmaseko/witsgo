@@ -57,15 +57,16 @@ router.post("/route_optimize",async (req,res)=>{
         "units": "METRIC"
       }
 
-
     try{  
         const APIresponse = await axios.post(endpoint,data,{headers:headers})
         const legs = APIresponse.data.routes[0].legs
         const encodedPolyline = APIresponse.data.routes[0].polyline.encodedPolyline;
+        const duration = APIresponse.data.routes[0].duration;
         res.send(
             {"success":true,data:{
               "polyline":encodedPolyline,
-              "legs":legs
+              "legs":legs,
+              "duration":duration
             }
           }
         );

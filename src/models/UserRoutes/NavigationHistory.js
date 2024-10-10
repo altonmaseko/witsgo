@@ -1,26 +1,28 @@
 const mongoose = require("mongoose");
-const Routes = require("./Routes");const { userRoutesConnection } = require("../../config/connectDB");
-;
+const { userRoutesConnection } = require("../../config/connectDB");
+const generate = require("../../misc/generateUUID");
 
 
 const navigationHistorySchema = new mongoose.Schema({
     history_id: {
-        type: mongoose.Schema.Types.ObjectId,
-        auto: true,
+        type: String,
+        default:generate(),
         required: true
     },
+    user_id:{
+        type: String, // Reference to the User model
+        required: true,
+        ref: 'User' // Assuming you have a User model
+    },
     route_id:{
-        type: mongoose.Schema.Types.ObjectId, // Reference to the User model
+        type: String, // Reference to the User model
         required: true,
         ref: 'Routes' // Assuming you have a User model
-    },
-    start_time: {
-        type: Date,
-        required:true,
     },
     end_time: {
         type: Date,
         required:true,
+        default: Date.now
     },
     created_at: {
         type: Date,
@@ -28,16 +30,16 @@ const navigationHistorySchema = new mongoose.Schema({
     }
 });
 
-navigationHistorySchema.pre('save', async function(next) {
-    // `this` refers to the current document being saved
-    const isValidRoute = await Routes.isRouteValid(this.route_id);
+// navigationHistorySchema.pre('save', async function(next) {
+//     // `this` refers to the current document being saved
+//     const isValidRoute = await Routes.isRouteValid(this.route_id);
 
-    if (!isValidRoute) {
-        const err = new Error('Invalid route_id provided.');
-        return next(err);
-    }
-    next();
-});
+//     if (!isValidRoute) {
+//         const err = new Error('Invalid route_id provided.');
+//         return next(err);
+//     }
+//     next();
+// });
 
 
 

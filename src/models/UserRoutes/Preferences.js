@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
-const User = require("./Users");const { userRoutesConnection } = require("../../config/connectDB");
+const { userRoutesConnection } = require("../../config/connectDB");
 ;
-
 
 const preferencesSchema = new mongoose.Schema({
     preference_id: {
@@ -10,13 +9,13 @@ const preferencesSchema = new mongoose.Schema({
         required: true
     },
     user_id:{
-        type: mongoose.Schema.Types.ObjectId, // Reference to the User model
+        type: String, // Reference to the User model
         required: true,
-        ref: 'User' // Assuming you have a User model
+        // ref: 'User' // Assuming you have a User model
     },
     preferences_type:{
         type:String,
-        enum:["wheelchair","tolls_free","none"],
+        enum:["wheelchair","none"],
         required:true,
         default:"none"
     },
@@ -30,16 +29,16 @@ const preferencesSchema = new mongoose.Schema({
     }
 });
 
-preferencesSchema.pre('save', async function(next) {
-    // `this` refers to the current document being saved
-    const isValidUser = await User.isUserValid(this.user_id);
+// preferencesSchema.pre('save', async function(next) {
+//     // `this` refers to the current document being saved
+//     const isValidUser = await User.isUserValid(this.user_id);
 
-    if (!isValidUser) {
-        const err = new Error('Invalid user_id provided.');
-        return next(err);
-    }
-    next();
-});
+//     if (!isValidUser) {
+//         const err = new Error('Invalid user_id provided.');
+//         return next(err);
+//     }
+//     next();
+// });
 
 
 

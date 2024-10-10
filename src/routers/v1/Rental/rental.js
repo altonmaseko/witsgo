@@ -1,76 +1,116 @@
 const express = require('express');
 const router = express.Router();
-const StationController = require('../controllers/StationController');
-const VehicleController = require('../controllers/VehicleController');
-const RentalController = require('../../controllers/RentalController');
 
-// Endpoint to get all stations
-router.get('/stations', async (req, res) => {
-    try {
-        const stations = await StationController.getDoc({});
-        if (stations.success) {
-            res.json(stations.data);
-        } else {
-            res.status(404).json({ error: 'Stations not found' });
-        }
-    } catch (error) {
-        res.status(500).json({ error: 'Server error' });
-    }
-});
+const Rental = require('../../../models/Rental/rental.js');
+const Station = require('../../../models/Rental/station.js');
+const Vehicle = require('../../../models/Rental/vehicle.js');
+const User = require('../../../models/User.js');
 
-// Endpoint to get vehicles at a station
-router.get('/stations/:stationId/vehicles', async (req, res) => {
-    try {
-        const stationId = req.params.stationId;
-        const vehicles = await VehicleController.getDoc({ current_station_id: stationId });
-        if (vehicles.success) {
-            res.json(vehicles.data);
-        } else {
-            res.status(404).json({ error: 'Vehicles not found' });
-        }
-    } catch (error) {
-        res.status(500).json({ error: 'Server error' });
-    }
-});
 
-router.post('/rent', async (req, res) => {
-    const { studentId, vehicleId, fromStationId, toStationId } = req.body;
+// Import the controllers from their respective paths
+const rentalController = require('../../../controllers/RentalService/RentalController');
+const stationController = require('../../../controllers/RentalService/StationController');
+const vehicleController = require('../../../controllers/RentalService/VehicleController');
+
+// Rental routes
+router.post('/rent', rentalController.rentVehicle); // this works, tested
+router.post('/return', rentalController.returnVehicle); // this works, testedf
+router.get('/user/:userId', rentalController.getUserRentals); // get users rental history
+
+// Station routes
+router.get('/stations', stationController.getStations);
+router.get('/station/:id', stationController.getStationById);
+
+// Vehicle routes
+router.get('/vehicles', vehicleController.getVehicles);
+router.get('/vehicle/:id', vehicleController.getVehicleById);
+// New route to get vehicles by station ID
+
+
+router.post('/createstation', async (req, res) => {
+
+    console.log("creating stations");
+
+    const { name, location, vehicles } = req.body;
 
     try {
-        // Get the vehicle document
-        const vehicle = await VehicleController.getDoc({ _id: vehicleId });
-        if (!vehicle.success || vehicle.data.status !== 'available') {
-            return res.status(400).json({ error: 'Vehicle is not available' });
-        }
-
-        // Update the vehicle's current station to null (since it's being rented)
-        await VehicleController.edits({
-            _id: vehicleId,
-            current_station_id: null,
-            status: 'rented'
+        const station = new Station({
+            name,
+            location,
+            vehicles
         });
 
-        // Decrease the vehicle count from the originating station
-        const fromStation = await StationController.getDoc({ _id: fromStationId });
-        if (fromStation.success) {
-            // Logic to decrease vehicle count in the station's inventory
-            await StationController.edits({
-                _id: fromStationId,
-                $inc: { vehicle_count: -1 } // Assumes a `vehicle_count` field
-            });
-        }
+        await station.save();
 
-        // Create a rental record
-        await RentalController.insertRecord({
-            student_id: studentId,
-            vehicle_id: vehicleId,
-            is_active: true
-        });
-
-        res.status(200).json({ success: true });
+        res.status(200).json({ success: true, station });
     } catch (error) {
-        res.status(500).json({ error: 'Server error during rental process' });
+        res.status(500).json({ message: error.message });
+    }
+
+});
+
+router.get('/rentals', async (req, res) => {
+    try {
+        const rentals = await Rental.find();
+
+        let rental_logs = await Promise.all(rentals.map(async rental => {
+
+            const vehicle = await Vehicle.findById(rental.vehicle);
+            // console.log("vehicle", vehicle);
+            const station = await Station.findById(rental.station);
+            // console.log("station", station);
+            const user = await User.findById(rental.user);
+            // console.log("user", user);
+
+            return {
+                email: user.email,
+                first_name: user.firstName,
+                last_name: user.lastName,
+                vehicle_type: vehicle.type,
+                station_name: station.name,
+                rentedAt: rental.rentedAt,
+                returnedAt: rental.returnedAt
+            };
+        }));
+
+        res.status(200).json({ success: true, rental_logs });
+
+
+
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
     }
 });
+
+
+// Station = new mongoose.Schema({
+//     name: {
+//         type: String,
+//         // required: true
+//     },
+//     location: {
+//         type: {
+//             lat: Number,
+//             lng: Number
+//         },
+//         // required: true
+//     },
+//     latitude: {
+//         type: Number,
+//         // required: true
+//     },
+//     longitude: {
+//         type: Number,
+//         // required
+//     },
+//     vehicles: [{
+//         type: mongoose.Schema.Types.ObjectId,
+//         ref: 'Vehicle'
+//     }],
+//     icon: {
+//         type: String,
+//         default: '/images/station.png'
+//     }
+// }, { collection: 'Station' }); // Explicitly specify the collection name
 
 module.exports = router;

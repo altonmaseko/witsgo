@@ -1,6 +1,6 @@
 const path = require("path")
 const express = require("express")
-const session = require("express-session")
+// const session = require("express-session") // we dont use sessions
 const cors = require('cors');
 const mongoose = require("mongoose")
 const connectDatabase = require("./config/connectDB")
@@ -11,6 +11,7 @@ require("dotenv").config()
 require("./auth");
 const app = express()
 
+
 // ROUTES ==========================================
 const googleAuthRouter = require("./routers/googleAuthRouter");
 const userRouter = require("./routers/userRouter");
@@ -20,7 +21,15 @@ const userRouter = require("./routers/userRouter");
 app.use(express.json());
 app.use(cookieParser());
 // CORS -------------
-const allowedOrigins = [process.env.CLIENT_URL, 'http://localhost:5000', 'http://localhost:5001'];
+const allowedOrigins = [
+    'http://localhost:5001',
+    process.env.CLIENT_URL,
+    'https://witsgoadmin.azurewebsites.net',
+    'http://localhost:5000',
+
+    'http://127.0.0.1:5500',
+    'https://agreeable-forest-0b968ac03.5.azurestaticapps.net'
+];
 app.use(cors({
     origin: function (origin, callback) {
         if (!origin || allowedOrigins.indexOf(origin) !== -1) {
@@ -29,20 +38,11 @@ app.use(cors({
             callback(new Error('Not allowed by CORS'));
         }
     },
-    credentials: true
+    credentials: true,
+    methods: "GET, POST, PUT, DELETE, OPTIONS",
 }));
 
-// app.use(cors()); // Causes google authentication to fail
-
-// END: CORS -------------
-
-app.use(session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: true
-}));
 app.use(passport.initialize());
-app.use(passport.session());
 // END: MIDDLEWARE ================================
 
 const route_optimize = require("./routers/v1/route_optimize/route_optimize")
@@ -57,6 +57,12 @@ app.use("/v1/map", maps);
 
 const bus = require("./routers/v1/Schedule/busSchedule")
 app.use("/v1/schedule", bus);
+
+
+// LIAM STUFF
+const rental = require("./routers/v1/Rental/rental")
+app.use("/v1/rental", rental);
+// ======
 
 
 const accessibility = require("./routers/v1/Accessibility/accessibility")

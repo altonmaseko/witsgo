@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const generateShortUUID = require('../../misc/generateUUID');
+const {userRoutesConnection} = require('../../config/connectDB');
 
 const locationSchema = new mongoose.Schema({
   latitude: {
@@ -19,7 +20,7 @@ const routeSchema = new mongoose.Schema({
     default:generateShortUUID()
   },
   user_id: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: String,
     ref: 'User',
     required: true,
   },
@@ -29,10 +30,6 @@ const routeSchema = new mongoose.Schema({
   },
   end_location: {
     type: locationSchema,
-    required: true,
-  },
-  duration: {
-    type: Number,
     required: true,
   },
   route_data: {
@@ -45,6 +42,6 @@ const routeSchema = new mongoose.Schema({
   }
 });
 
-const Route = mongoose.model('Route', routeSchema);
+const Route = userRoutesConnection.model('Route', routeSchema);
 
 module.exports = Route;

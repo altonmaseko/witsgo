@@ -1,7 +1,14 @@
 const express = require("express");
 const router = express.Router();
 const passport = require("passport");
-const { updateUserController, getUserController, deleteUserController } = require("../controllers/userControllers");
+const jwt = require('jsonwebtoken');
+const {
+    updateUserController,
+    getUserController,
+    deleteUserController,
+    adminLoginController,
+    adminVerifyController } = require("../controllers/userControllers");
+
 
 require("dotenv").config();
 
@@ -10,7 +17,13 @@ router.put("/user/update/:email", updateUserController);
 router.get("/user/:email", getUserController);
 router.delete("/user/:email", deleteUserController);
 
+// ADMIN USER STUFF =====================================
 
+router.post("/admin/login", adminLoginController);
+
+router.post("/admin/verify", adminVerifyController);
+
+// API KEY
 router.get("/api/secrets/googlemapsapikey",
     // return google maps api key
     (req, res) => {
@@ -20,6 +33,7 @@ router.get("/api/secrets/googlemapsapikey",
         });
     }
 );
+
 
 module.exports = router;
 

@@ -4,7 +4,7 @@ const StopController = {
     async exist(query) {
         try {
             const doc = await Stop.exists(query);
-            return doc !== null; // Returns true if a document exists, otherwise false
+            return doc;
         } catch (error) {
             console.error("Error checking if document exists:", error);
             return false;

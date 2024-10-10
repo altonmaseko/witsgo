@@ -4,7 +4,12 @@ const RoomController = {
     async exist(query) {
         try {
             const doc = await Room.exists(query);
-            return doc !== null; // Returns true if a document exists, otherwise false
+            //return doc !== null; // Returns true if a document exists, otherwise false
+            if(doc){
+                return true;
+            }else{
+                return false;
+            }
         } catch (error) {
             console.error("Error checking if document exists:", error);
             return false;
