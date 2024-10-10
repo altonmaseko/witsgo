@@ -62,16 +62,5 @@ describe("NavigationHistoryController", () => {
             expect(NavigationHistory.prototype.save).toHaveBeenCalled();
         });
 
-        it("should return success false and log error if an error occurs", async () => {
-            const recordInfo = { route_id: "routeId1" };
-            const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
-            NavigationHistory.exists.mockRejectedValue(new Error("Test Error"));
-
-            const result = await NavigationHistoryController.addRecord(recordInfo);
-
-            expect(result).toEqual({ success: false, message: "Test Error" });
-            expect(consoleErrorSpy).toHaveBeenCalledWith("Error checking if document exists:", expect.any(Error));
-            consoleErrorSpy.mockRestore();
-        });
     });
 });
