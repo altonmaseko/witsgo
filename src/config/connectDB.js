@@ -24,6 +24,9 @@ const rentalConnection = mongoose.createConnection(rentalConnectionURI, {});
 const transporationConnectionURI = connectionURI + "Transportation"
 const transporationConnection = mongoose.createConnection(transporationConnectionURI, {});
 
+const busScheduleConnectionURI = connectionURI + "BusSchedule"
+const busScheduleConnection = mongoose.createConnection(busScheduleConnectionURI, {}); 
+
 // CHECK CONNECTIONS =================================
 // Successful connection
 userConnection.once("connected", () => { console.log("Successfully connected to User Database"); })
@@ -55,5 +58,7 @@ module.exports = {
     mapConnection,
     userRoutesConnection,
     rentalConnection,
-    transporationConnection
+    transporationConnection,
+    busScheduleConnection
+
 }
