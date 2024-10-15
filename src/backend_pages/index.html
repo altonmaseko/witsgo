@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WITSGO Server</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #121212;
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            color: #e0e0e0;
+        }
+
+        .container {
+            text-align: center;
+            background-color: #1e1e1e;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            max-width: 800px;
+            width: 90%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: fit-content;
+            margin: 20px;
+        }
+
+
+        h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            display: inline-flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .bounce-container {
+            display: inline-flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .bounce {
+            display: inline-block;
+            color: #5c67f2;
+            animation: bounce 1s infinite;
+        }
+
+        .bounce:nth-child(odd) {
+            animation-delay: 0.1s;
+        }
+
+        .bounce:nth-child(even) {
+            animation-delay: 0.2s;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .message-container {
+            position: relative;
+            width: 100%;
+            min-height: 200px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: auto;
+        }
+
+        .message {
+            font-size: 1.2em;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            position: absolute;
+            max-width: 90%;
+            width: 100%;
+            text-align: center;
+            /* word-wrap: break-word; */
+        }
+
+        .message.active {
+            opacity: 1;
+        }
+
+        a {
+            text-decoration: none;
+            color: #fff;
+            background-color: #5c67f2;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: bold;
+            display: inline-block;
+            margin-top: 30px;
+        }
+
+        a:hover {
+            background-color: #434bb3;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2em;
+                flex-direction: column;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            a {
+                margin-top: 40px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>
+            <span class="bounce-container">
+                <span class="bounce">W</span>
+                <span class="bounce">I</span>
+                <span class="bounce">T</span>
+                <span class="bounce">S</span>
+                <span class="bounce">G</span>
+                <span class="bounce">O</span>
+            </span>
+            <span> </span>
+            <span class="bounce-container">
+                <span class="bounce">S</span>
+                <span class="bounce">E</span>
+                <span class="bounce">R</span>
+                <span class="bounce">V</span>
+                <span class="bounce">E</span>
+                <span class="bounce">R</span>
+            </span>
+        </h1>
+
+        <div class="message-container">
+            <div class="message active">Oops, looks like you've taken a wrong turn! Our backend is like a secret
+                kitchen—no meals here, just code cooking. Head back to the front and let the magic happen where it’s
+                meant to!</div>
+            <div class="message">Well, this is awkward... The magic happens on the frontend, not here in the engine
+                room.</div>
+            <div class="message">You've stumbled into the backend—where the wizard hides behind the curtain. But the
+                real show is upfront!</div>
+            <div class="message">404? More like 404-fun-not-found. You’re in the backend, head to the frontend for the
+                action!</div>
+            <div class="message">You found the backend! But unless you're debugging, this isn't the party you're looking
+                for...</div>
+            <div class="message">Welcome to the backend—where the code sleeps. You should really be on the frontend
+                right now!</div>
+            <div class="message">Surprise! You found our backend. But trust us, the frontend is a lot more fun.</div>
+            <div class="message">Our backend is like a library—quiet, mysterious, and not very interactive. Head to the
+                frontend for some fun!</div>
+            <div class="message">The backend is where we do all the heavy lifting. Head back to the frontend to see the
+                magic in action!</div>
+            <div class="message">Congratulations, you’ve reached the backend. It’s like the basement of a party—you
+                won’t find the fun here!</div>
+            <div class="message">This is like finding a janitor's closet in a maze. Cool, but you should probably head
+                back to the main event.</div>
+            <div class="message">The backend is where the magic gets prepared—don’t spoil the surprise! Head back to the
+                frontend for the reveal.</div>
+            <div class="message">You’ve reached the backend! But don't worry, all the fun is happening on the frontend.
+                We promise!</div>
+            <div class="message">Whoops, you're in the backend. Unless you're Neo from The Matrix, you should go back to
+                the frontend!</div>
+            <div class="message">Found the backend? Nice! But all the fun is on the frontend. Go check it out.</div>
+            <div class="message">You’re in the backend, aka the ‘boring part.’ Head to the frontend for the magic show!
+            </div>
+            <div class="message">Welcome to the backstage! All the action is happening in the frontend though. Get back
+                there!</div>
+            <div class="message">The backend is like a kitchen—things are cooking, but you want to be at the table to
+                enjoy it!</div>
+            <div class="message">The backend is a maze of code. The real treasure is on the frontend. Go find it!</div>
+            <div class="message">Found the backend! Nice... but there’s nothing to see here. Head back to the frontend
+                for the action.</div>
+        </div>
+
+        <a href="https://witsgo.azurewebsites.net/">Go to the Frontend</a>
+    </div>
+
+    <script>
+        const messages = document.querySelectorAll('.message');
+        let currentMessageIndex = 0;
+
+        function showNextMessage() {
+            messages[currentMessageIndex].classList.remove('active');
+            currentMessageIndex = (currentMessageIndex + 1) % messages.length;
+            messages[currentMessageIndex].classList.add('active');
+        }
+
+        setInterval(showNextMessage, 6000);
+    </script>
+</body>
+
+</html>
