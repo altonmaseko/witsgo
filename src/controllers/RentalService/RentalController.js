@@ -46,22 +46,29 @@ exports.rentVehicle = async (req, res) => {
 
 // Return a vehicle
 exports.returnVehicle = async (req, res) => {
-
     console.log("returnVehicle");
 
     const { vehicleId, stationId } = req.body; // Use vehicleId from the request body
     try {
-        const rental = await Rental.findOneAndDelete({ vehicle: vehicleId, returnedAt: null }); // Find active rental
+        // Find the active rental and set the returnedAt timestamp instead of deleting
+        const rental = await Rental.findOneAndUpdate(
+            { vehicle: vehicleId, returnedAt: null }, // Find active rental
+            { returnedAt: new Date() },               // Update with the return timestamp
+            { new: true }                             // Return the updated document
+        );
+        
         if (!rental) {
             return res.status(404).json({ message: 'Rental not found' });
         }
 
+        // Mark the vehicle as available again
         const vehicle = await Vehicle.findById(vehicleId);
         vehicle.isAvailable = true;
         await vehicle.save();
 
+        // Add the vehicle back to the station
         const station = await Station.findById(stationId);
-        station.vehicles.push(vehicleId); // Update station vehicle count
+        station.vehicles.push(vehicleId); // Update station vehicle list
         await station.save();
 
         return res.status(200).json({ success: true, rental });
@@ -69,6 +76,7 @@ exports.returnVehicle = async (req, res) => {
         return res.status(500).json({ message: err.message });
     }
 };
+
 
 
 

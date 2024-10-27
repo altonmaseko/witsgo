@@ -1,4 +1,10 @@
 const express = require('express');
+const fs = require('fs');
+const axios = require('axios');
+const { PdfReader } = require('pdfreader');
+
+
+
 const router = express.Router();
 //get the bus schedule pdf from site
 const pdfUrl = 'https://www.wits.ac.za/media/wits-university/campus-life/documents/CampusBusSchedule24.pdf';
@@ -66,4 +72,5 @@ router.get('/new-schedule', (req, res) => {
   });
 
 
-module.exports = router;
+module.exports = router
+

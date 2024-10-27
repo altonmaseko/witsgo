@@ -38,30 +38,11 @@ app.use(cors({
             callback(new Error('Not allowed by CORS'));
         }
     },
-    credentials: true
+    credentials: true,
+    methods: "GET, POST, PUT, DELETE, OPTIONS",
 }));
-// This is for the client to be able to send cookies to the server [trying for iphone]
-// app.use((req, res, next) => {
-//     res.header('Access-Control-Allow-Credentials', true);
-//     res.header('Access-Control-Allow-Origin', process.env.CLIENT_URL);
-//     next();
-// });
 
-// app.use(cors()); // Causes google authentication to fail
-
-// END: CORS -------------
-
-// app.use(session({ // we dont use sessions
-//     secret: process.env.SESSION_SECRET,
-//     resave: false,
-//     saveUninitialized: true,
-//     cookie: {
-//         secure: true,
-//         maxAge: 1000 * 60 * 60 * 24 // 24 hours
-//     }
-// })); 
 app.use(passport.initialize());
-// app.use(passport.session()); // we dont use sessions
 // END: MIDDLEWARE ================================
 
 const route_optimize = require("./routers/v1/route_optimize/route_optimize")
@@ -90,9 +71,12 @@ app.use("/v1/accessibility", accessibility);
 const userRoutes = require("./routers/v1/UserRoutes/userRoutes")
 app.use("/v1/userRoutes", userRoutes);
 
+const busSchedule = require("./routers/v1/Schedule/busSchedule")
+app.use("/v1/busSchedule", busSchedule);
+
 
 app.get("/", (req, res) => {
-    res.send("Welcome to the WITSGO server, what are you doing here bruv?? Go to the frontend!");
+    res.sendFile(path.join(__dirname, 'backend_pages', 'index.html'));
 });
 
 app.use(googleAuthRouter);
@@ -125,7 +109,7 @@ app.use((req, res) => {
 
 const PORT = process.env.PORT || 3000; // get port from .env file, otherwise 3000
 
-// Create an HTTP server that both Express and WebSockets will use
+// Create an HTTP server that both Express and Sockets will use
 const server = http.createServer(app);
 
 server.listen(PORT, () => {

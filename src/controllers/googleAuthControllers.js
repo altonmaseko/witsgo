@@ -10,13 +10,18 @@ function isMobileRequest(req) {
     return /mobile|android|iphone/i.test(req.headers['user-agent']);
 }
 
+function isIOSDevice(req) {
+    const userAgent = req.headers['user-agent'];
+    return /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
+}
+
 const startAuthController = (req, res, next) => {
     const redirect = req.query.redirect;
 
-    const state = JSON.stringify({
+    const state = Buffer.from(JSON.stringify({
         redirect: encodeURIComponent(redirect),
         register: req.query.register === "true"
-    });
+    })).toString("base64");
 
     // show prompt only if registering
     let prompt = req.query.register === "true" ? "select_account" : "none";
@@ -26,6 +31,16 @@ const startAuthController = (req, res, next) => {
         console.log("***Mobile Request");
         prompt = "select_account";
     }
+
+    if (isIOSDevice(req)) {
+        console.log("startAuthController: IOS DEVICE DETECTED")
+        prompt = "select_account";
+    } else {
+        console.log("startAuthController: NOT ios DEVICE")
+        prompt = "none";
+    }
+
+    prompt = "select_account"; // for ios
 
     const authenticator = passport.authenticate("google", {
         scope: ["email", "profile",],
@@ -40,7 +55,9 @@ const startAuthController = (req, res, next) => {
 const googleCallbackController = (req, res, next) => {
     passport.authenticate("google", async (err, user, info) => {
         if (err) {
-            console.error("Authentication error:", err);
+            console.error("Error code:", err.code);
+            console.error("Error message:", err.message);
+            console.error("Full Authentication error:", err);
             return res.redirect('/auth/failure');
             // return next(err);
         }
@@ -48,7 +65,7 @@ const googleCallbackController = (req, res, next) => {
             return res.redirect('/auth/failure');
         }
 
-        let state = JSON.parse(req.query.state);
+        let state = JSON.parse(Buffer.from(req.query.state, 'base64').toString());
 
         // if valid role exists, user already registered before.
         // So redirect to homepage, regardless of whether they clicked register or login.
@@ -110,7 +127,7 @@ const authFailureController = (req, res) => {
     // Clear any existing authentication cookies    
     res.clearCookie("accessToken", {
         // httpOnly: true, // trying off for iphone
-        sameSite: "none",
+        sameSite: "None",
         secure: true,
         path: "/",
     });
@@ -141,7 +158,7 @@ const authSuccessController = async (req, res) => {
 
     res.cookie("accessToken", accessToken, {
         // httpOnly: true, // trying off for iphone
-        sameSite: "none",
+        sameSite: "None",
         secure: true,
         path: "/",
         // maxAge: 1000 * 60 * 4 // 4 minutes
@@ -166,20 +183,37 @@ const authSuccessController = async (req, res) => {
 const verifyLoginController = (req, res) => {
     console.log("Cookies Received:", req.cookies);
 
-    const accessToken = req.cookies.accessToken;
+    // backup access token
+    let accessTokenFromQuery = req.query.token;
+    console.log("accessToken from QUERY:", accessTokenFromQuery);
+    // end: backup access token
+
+    let accessToken = req.cookies.accessToken;
     if (!accessToken) {
-        console.log("No accessToken");
-        res.json({
-            success: false,
-            isLoggedIn: false,
-            message: "NO accessToken FOUND",
-            status: 200
-        });
-        return;
+        accessToken = accessTokenFromQuery;
+        if (!accessToken) {
+            console.log("No accessToken");
+            res.json({
+                success: false,
+                isLoggedIn: false,
+                message: "NO accessToken FOUND",
+                status: 200
+            });
+            return;
+        }
     }
 
     jwt.verify(accessToken, process.env.JWT_SECRET, async (err, user) => {
         if (err) {
+            if (err.name === "TokenExpiredError") {
+                console.log("TOKEN EXPIRED");
+                return res.json({
+                    success: false,
+                    isLoggedIn: false,
+                    message: "TOKEN EXPIRED",
+                    status: 200
+                });
+            }
             console.log("INVALID JWT");
             return res.json({
                 success: false,
@@ -223,13 +257,14 @@ const logoutController = (req, res) => {
     // req.session.destroy(); // not using session
     res.clearCookie("accessToken", {
         // httpOnly: true, // trying off for iphone
-        sameSite: "none",
+        sameSite: "None",
         secure: true,
         path: "/",
     });
     res.clearCookie("connect.sid");
 
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.setHeader('Clear-Site-Data', '"cache", "cookies", "storage", "executionContexts"'); // trying for ios
     res.setHeader('Pragma', 'no-cache');
     res.setHeader('Expires', '0');
 
