@@ -6,6 +6,11 @@ const TrackingController = {
         try {
             const doc = await Tracking.exists(query);
             return doc; // Returns true if a document exists, otherwise false
+            if (doc){
+                return true;
+            }
+            return false;
+
         } catch (error) {
             console.error("Error checking if document exists:", error);
             return false;
