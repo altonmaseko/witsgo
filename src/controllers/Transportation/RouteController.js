@@ -18,7 +18,7 @@ const RouteController = {
 // Method to get a document based on a query
     async getDoc(query) {
         try {
-            const doc = await Route.find(query).populate('stops');
+            const doc = await Route.find(query);
             if (doc) {
                 return { success: true, data: doc };
             } else {
