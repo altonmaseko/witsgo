@@ -58,6 +58,8 @@ jobs:
 
       - name: Run tests with coverage
         run: npx jest --coverage --forceExit
+        env:
+          CONNECTION_URI: mongodb+srv://lucian:lucian-witsgo@hexacluster.sjjuf.mongodb.net/
 
       - name: Upload coverage reports
         uses: actions/upload-artifact@v3
