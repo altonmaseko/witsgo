@@ -57,7 +57,7 @@ jobs:
         run: npm install
 
       - name: Run tests with coverage
-        run: npx jest --coverage --forceExit
+        run: npx jest --coverage --forceExit --silent
         env:
           CONNECTION_URI: mongodb+srv://lucian:lucian-witsgo@hexacluster.sjjuf.mongodb.net/
 
