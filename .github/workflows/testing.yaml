@@ -35,38 +35,25 @@ jobs:
      - name: Install Newman
        run: npm install -g newman
  
-     - name: Create results directory
-       run: mkdir -p newman
  
      - name: Run Postman tests and save results
        run: newman run "https://api.getpostman.com/collections/33683923-80216182-2ad9-4a3f-bbea-9cca9a8106af?apikey=${{ secrets.POSTMAN_API_KEY }}" \
-           --reporters cli,json --reporter-json-export newman/results.json
+           --reporters cli,json --reporter-json-export results.json
+ 
+     - name: Upload Newman results
+       uses: actions/upload-artifact@v3
+       with:
+         name: newman-results
+         path: results.json
  
      - name: Stop the server
        run: kill $(lsof -t -i:3000) || true
  
-     - name: Parse and display test results
+     - name: Post summary with results
        if: always()
        run: |
-         # Extract test statistics using jq
-         TOTAL_REQUESTS=$(jq '.run.stats.requests.total' newman/results.json)
-         FAILED_REQUESTS=$(jq '.run.stats.requests.failed' newman/results.json)
-         TOTAL_ASSERTIONS=$(jq '.run.stats.assertions.total' newman/results.json)
-         FAILED_ASSERTIONS=$(jq '.run.stats.assertions.failed' newman/results.json)
-         
-         # Output test summary in Markdown format
-         echo "### 📝 Postman Test Results Summary" >> $GITHUB_STEP_SUMMARY
-         echo "" >> $GITHUB_STEP_SUMMARY
-         echo "| Metric              | Count |" >> $GITHUB_STEP_SUMMARY
-         echo "|---------------------|-------|" >> $GITHUB_STEP_SUMMARY
-         echo "| **Total Requests**  | $TOTAL_REQUESTS |" >> $GITHUB_STEP_SUMMARY
-         echo "| **Failed Requests** | $FAILED_REQUESTS |" >> $GITHUB_STEP_SUMMARY
-         echo "| **Total Assertions**| $TOTAL_ASSERTIONS |" >> $GITHUB_STEP_SUMMARY
-         echo "| **Failed Assertions**| $FAILED_ASSERTIONS |" >> $GITHUB_STEP_SUMMARY
-         echo "" >> $GITHUB_STEP_SUMMARY
-         echo "### 📋 Detailed Report" >> $GITHUB_STEP_SUMMARY
-         echo "Download the [Newman JSON report](./newman/results.json) for more details." >> $GITHUB_STEP_SUMMARY
-
+         echo "### Postman Test Results" >> $GITHUB_STEP_SUMMARY
+         echo "Download the [Newman test results](./newman/results.json)" >> $GITHUB_STEP_SUMMARY
 
   jest:
     runs-on: ubuntu-latest
