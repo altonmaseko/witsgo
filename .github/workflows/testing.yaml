@@ -37,7 +37,7 @@ jobs:
  
  
      - name: Run Postman tests and save results
-       run: newman run "https://api.getpostman.com/collections/33683923-80216182-2ad9-4a3f-bbea-9cca9a8106af?apikey=${{ secrets.POSTMAN_API_KEY }}" \
+       run: newman run "https://api.getpostman.com/collections/33683923-80216182-2ad9-4a3f-bbea-9cca9a8106af?apikey=${{ secrets.POSTMAN_API_KEY }}"  \
            --reporters cli,json --reporter-json-export results.json
  
      - name: Upload Newman results
