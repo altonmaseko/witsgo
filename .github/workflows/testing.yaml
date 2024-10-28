@@ -36,7 +36,7 @@ jobs:
         run: npm install -g newman
 
       - name: Run Postman tests
-        run: newman run "https://api.getpostman.com/collections/33683923-80216182-2ad9-4a3f-bbea-9cca9a8106af?apikey="
+        run: newman run "https://api.getpostman.com/collections/33683923-80216182-2ad9-4a3f-bbea-9cca9a8106af?apikey=${{ secrets.POSTMAN_API_KEY }}"
 
       - name: Stop the server
         run: kill $(lsof -t -i:3000) || true
