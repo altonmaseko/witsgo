@@ -59,7 +59,7 @@ const maps = require("./routers/v1/Map/map")
 app.use("/v1/map", maps);
 
 
-const bus = require("./routers/v1/Schedule/busSchedule")
+const bus = require("./routers/v1/Schedule/busSchedule.js")
 app.use("/v1/schedule", bus);
 
 
