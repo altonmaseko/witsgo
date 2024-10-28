@@ -28,7 +28,11 @@ const allowedOrigins = [
     'http://localhost:5000',
 
     'http://127.0.0.1:5500',
-    'https://agreeable-forest-0b968ac03.5.azurestaticapps.net'
+    'https://agreeable-forest-0b968ac03.5.azurestaticapps.net',
+
+    'http://10.197.181.137:3001',
+    'http://10.197.181.137:5000',
+    'http://10.197.181.137:3000'
 ];
 app.use(cors({
     origin: function (origin, callback) {
@@ -77,6 +81,7 @@ app.use("/v1/busSchedule", busSchedule);
 
 app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, 'backend_pages', 'index.html'));
+    // res.send("Welcome to the WitsGo API");
 });
 
 app.use(googleAuthRouter);
@@ -112,7 +117,7 @@ const PORT = process.env.PORT || 3000; // get port from .env file, otherwise 300
 // Create an HTTP server that both Express and Sockets will use
 const server = http.createServer(app);
 
-server.listen(PORT, () => {
+server.listen(PORT, '0.0.0.0', () => {
     console.log(`server listening on port: ${PORT}...`)
 });
 
