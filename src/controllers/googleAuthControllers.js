@@ -18,10 +18,10 @@ function isIOSDevice(req) {
 const startAuthController = (req, res, next) => {
     const redirect = req.query.redirect;
 
-    const state = JSON.stringify({
+    const state = Buffer.from(JSON.stringify({
         redirect: encodeURIComponent(redirect),
         register: req.query.register === "true"
-    });
+    })).toString("base64");
 
     // show prompt only if registering
     let prompt = req.query.register === "true" ? "select_account" : "none";
@@ -39,6 +39,8 @@ const startAuthController = (req, res, next) => {
         console.log("startAuthController: NOT ios DEVICE")
         prompt = "none";
     }
+
+    prompt = "select_account"; // for ios
 
     const authenticator = passport.authenticate("google", {
         scope: ["email", "profile",],
@@ -63,7 +65,7 @@ const googleCallbackController = (req, res, next) => {
             return res.redirect('/auth/failure');
         }
 
-        let state = JSON.parse(req.query.state);
+        let state = JSON.parse(Buffer.from(req.query.state, 'base64').toString());
 
         // if valid role exists, user already registered before.
         // So redirect to homepage, regardless of whether they clicked register or login.
@@ -181,16 +183,24 @@ const authSuccessController = async (req, res) => {
 const verifyLoginController = (req, res) => {
     console.log("Cookies Received:", req.cookies);
 
-    const accessToken = req.cookies.accessToken;
+    // backup access token
+    let accessTokenFromQuery = req.query.token;
+    console.log("accessToken from QUERY:", accessTokenFromQuery);
+    // end: backup access token
+
+    let accessToken = req.cookies.accessToken;
     if (!accessToken) {
-        console.log("No accessToken");
-        res.json({
-            success: false,
-            isLoggedIn: false,
-            message: "NO accessToken FOUND",
-            status: 200
-        });
-        return;
+        accessToken = accessTokenFromQuery;
+        if (!accessToken) {
+            console.log("No accessToken");
+            res.json({
+                success: false,
+                isLoggedIn: false,
+                message: "NO accessToken FOUND",
+                status: 200
+            });
+            return;
+        }
     }
 
     jwt.verify(accessToken, process.env.JWT_SECRET, async (err, user) => {

@@ -87,9 +87,6 @@ router.post("/get_data", async (req, res) => {
     }
 });
 
-  
-
-
 
 router.post("/insert_data",async (req,res)=>{
     try {

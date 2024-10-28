@@ -36,7 +36,7 @@ jobs:
         run: npm install -g newman
 
       - name: Run Postman tests
-        run: newman run "https://api.getpostman.com/collections/33683923-80216182-2ad9-4a3f-bbea-9cca9a8106af?apikey=PMAK-66e889ccb6c61c0001a29e1d-9ca34dfbd7be40c1aae35249ca202729ed"
+        run: newman run "https://api.getpostman.com/collections/33683923-80216182-2ad9-4a3f-bbea-9cca9a8106af?apikey="
 
       - name: Stop the server
         run: kill $(lsof -t -i:3000) || true
@@ -58,6 +58,8 @@ jobs:
 
       - name: Run tests with coverage
         run: npx jest --coverage --forceExit
+        env:
+          CONNECTION_URI: mongodb+srv://lucian:lucian-witsgo@hexacluster.sjjuf.mongodb.net/
 
       - name: Upload coverage reports
         uses: actions/upload-artifact@v3
