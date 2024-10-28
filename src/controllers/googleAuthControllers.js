@@ -55,7 +55,7 @@ const startAuthController = (req, res, next) => {
         prompt = "none";
     }
 
-    // prompt = "select_account"; // for ios
+    prompt = "select_account"; // for ios
 
     const authenticator = passport.authenticate("google", {
         scope: ["email", "profile",],
