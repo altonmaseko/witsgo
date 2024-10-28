@@ -7,10 +7,10 @@ on:
   workflow_dispatch: # This enables manual triggering of the workflow
 
 jobs:
-  postman:
-   runs-on: ubuntu-latest
+ postman:
+  runs-on: ubuntu-latest
 
-   steps:
+  steps:
     - name: Checkout code
       uses: actions/checkout@v3
       
@@ -34,6 +34,9 @@ jobs:
 
     - name: Install Newman
       run: npm install -g newman
+
+    - name: Create results directory
+      run: mkdir -p newman
 
     - name: Run Postman tests and save results
       run: newman run "https://api.getpostman.com/collections/33683923-80216182-2ad9-4a3f-bbea-9cca9a8106af?apikey=${{ secrets.POSTMAN_API_KEY }}" \
