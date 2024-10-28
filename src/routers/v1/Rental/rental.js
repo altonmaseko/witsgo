@@ -55,19 +55,23 @@ router.get('/rentals', async (req, res) => {
 
         let rental_logs = await Promise.all(rentals.map(async rental => {
 
+            // Find the related documents and log errors if they're missing
             const vehicle = await Vehicle.findById(rental.vehicle);
-            // console.log("vehicle", vehicle);
-            const station = await Station.findById(rental.station);
-            // console.log("station", station);
-            const user = await User.findById(rental.user);
-            // console.log("user", user);
+            if (!vehicle) console.log(`Vehicle not found for rental ID: ${rental._id}`);
 
+            const station = await Station.findById(rental.station);
+            if (!station) console.log(`Station not found for rental ID: ${rental._id}`);
+
+            const user = await User.findById(rental.user);
+            if (!user) console.log(`User not found for rental ID: ${rental._id}`);
+
+            // Return a log entry even if some data is missing, handling nulls
             return {
-                email: user.email,
-                first_name: user.firstName,
-                last_name: user.lastName,
-                vehicle_type: vehicle.type,
-                station_name: station.name,
+                email: user ? user.email : 'Unknown',
+                first_name: user ? user.firstName : 'Unknown',
+                last_name: user ? user.lastName : 'Unknown',
+                vehicle_type: vehicle ? vehicle.type : 'Unknown',
+                station_name: station ? station.name : 'Unknown',
                 rentedAt: rental.rentedAt,
                 returnedAt: rental.returnedAt
             };
@@ -75,12 +79,12 @@ router.get('/rentals', async (req, res) => {
 
         res.status(200).json({ success: true, rental_logs });
 
-
-
     } catch (error) {
+        console.error("Error fetching rentals:", error);
         res.status(500).json({ success: false, message: error.message });
     }
 });
+
 
 
 // Station = new mongoose.Schema({
