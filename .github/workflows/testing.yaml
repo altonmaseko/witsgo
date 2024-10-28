@@ -72,3 +72,6 @@ jobs:
         with:
           name: junit-report
           path: reports/jest/junit.xml
+
+      - name: Coveralls GitHub Action
+        uses: coverallsapp/github-action@v2.3.0
