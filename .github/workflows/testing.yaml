@@ -8,38 +8,52 @@ on:
 
 jobs:
   postman:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-        
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Start the server
-        run: npm start &
-        env:
-          PORT: 3000
-          CONNECTION_URI: mongodb+srv://lucian:lucian-witsgo@hexacluster.sjjuf.mongodb.net/
-          GOOGLE_MAP_KEY: AIzaSyCEbj6_WGhOUTbbDAVNw3BhOMnQ44yyXOo
-          GOOGLE_CLIENT_ID: 1
-          GOOGLE_CLIENT_SECRET: 1
-          SESSION_SECRET: temp
-
-      - name: Install Newman
-        run: npm install -g newman
-
-      - name: Run Postman tests
-        run: newman run "https://api.getpostman.com/collections/33683923-80216182-2ad9-4a3f-bbea-9cca9a8106af?apikey=${{ secrets.POSTMAN_API_KEY }}"
-
-      - name: Stop the server
-        run: kill $(lsof -t -i:3000) || true
+   runs-on: ubuntu-latest
+ 
+   steps:
+     - name: Checkout code
+       uses: actions/checkout@v3
+       
+     - name: Set up Node.js
+       uses: actions/setup-node@v3
+       with:
+         node-version: '18'
+ 
+     - name: Install dependencies
+       run: npm install
+ 
+     - name: Start the server
+       run: npm start &
+       env:
+         PORT: 3000
+         CONNECTION_URI: mongodb+srv://lucian:lucian-witsgo@hexacluster.sjjuf.mongodb.net/
+         GOOGLE_MAP_KEY: AIzaSyCEbj6_WGhOUTbbDAVNw3BhOMnQ44yyXOo
+         GOOGLE_CLIENT_ID: 1
+         GOOGLE_CLIENT_SECRET: 1
+         SESSION_SECRET: temp
+ 
+     - name: Install Newman
+       run: npm install -g newman
+ 
+ 
+     - name: Run Postman tests and save results
+       run: newman run "https://api.getpostman.com/collections/33683923-80216182-2ad9-4a3f-bbea-9cca9a8106af?apikey=${{ secrets.POSTMAN_API_KEY }}"  \
+           --reporters cli,json --reporter-json-export results.json
+ 
+     - name: Upload Newman results
+       uses: actions/upload-artifact@v3
+       with:
+         name: newman-results
+         path: results.json
+ 
+     - name: Stop the server
+       run: kill $(lsof -t -i:3000) || true
+ 
+     - name: Post summary with results
+       if: always()
+       run: |
+         echo "### Postman Test Results" >> $GITHUB_STEP_SUMMARY
+         echo "Download the [Newman test results](./newman/results.json)" >> $GITHUB_STEP_SUMMARY
 
   jest:
     runs-on: ubuntu-latest
@@ -53,6 +67,7 @@ jobs:
         with:
           node-version: '18'
 
+          
       - name: Install dependencies
         run: npm install
 
