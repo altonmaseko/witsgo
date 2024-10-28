@@ -17,7 +17,7 @@ This is the backend of our WitsGo application. It manages and serves all the dat
     - This will install all needed libraries
 - Create a .env file in the root, and give it these details
   - PORT=3000
-  - CONNECTION_URI=mongodb+srv://lucian:lucian-witsgo@hexacluster.sjjuf.mongodb.net/
+  - CONNECTION_URI={use our database connection uri, we cant show it pubicly}
   - GOOGLE_CLIENT_ID=865366285747-3k8v8mu0h11r3buqjr8jra34lces4uld.apps.googleusercontent.com
   - GOOGLE_CLIENT_SECRET=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
   - SESSION_SECRET=dfpioaesmfpewu-2393r29821x2w2
@@ -28,4 +28,4 @@ This is the backend of our WitsGo application. It manages and serves all the dat
 - You will need to go to your google cloud account, and create a Google Client ID, as well as a Google Client Secret. This will allow google authentication.
 - You will also need to create a google maps api key on the same platform.
 - CONNECTION_URI connects to the database that we are using.
-- After all this is setup, you can open the terminal and run 'npm run dev', in order to have the server running. Then the your locally hosted front end will be able to communicate with this server.
+- After all this is setup, you can open the terminal and run 'npm run dev', in order to have the server running. Then your locally hosted front end will be able to communicate with this server.
