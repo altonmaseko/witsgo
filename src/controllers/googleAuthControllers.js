@@ -12,8 +12,23 @@ function isMobileRequest(req) {
 
 function isIOSDevice(req) {
     const userAgent = req.headers['user-agent'];
-    return /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
+
+    // Check for iPhone, iPod, or iPad user agents
+    if (/iPhone|iPod|iPad/.test(userAgent)) {
+        return true;
+    }
+
+    // Check for newer iPadOS user agents
+    if (/Macintosh/.test(userAgent) && /Safari/.test(userAgent)) {
+        // Look for additional iPad-specific indicators
+        if (/CPU OS/.test(userAgent) || /Intel Mac OS X/.test(userAgent)) {
+            return true;
+        }
+    }
+
+    return false;
 }
+
 
 const startAuthController = (req, res, next) => {
     const redirect = req.query.redirect;
@@ -40,7 +55,7 @@ const startAuthController = (req, res, next) => {
         prompt = "none";
     }
 
-    prompt = "select_account"; // for ios
+    // prompt = "select_account"; // for ios
 
     const authenticator = passport.authenticate("google", {
         scope: ["email", "profile",],

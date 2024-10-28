@@ -11,7 +11,7 @@ beforeAll(async () => {
 
 afterAll(async () => {
     // Ensure proper cleanup of asynchronous operations
-    await mongoose.disconnect(); // Close any open connections
+    // await mongoose.disconnect(); // Close any open connections
 });
 
 describe("AccessibleRouteController", () => {
