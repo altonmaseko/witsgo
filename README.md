@@ -1,4 +1,5 @@
 # WITSGO BACKEND
+[![Coverage Status](https://coveralls.io/repos/github/altonmaseko/witsgo/badge.svg)](https://coveralls.io/github/altonmaseko/witsgo)
 
 This is the backend of our WitsGo application. It manages and serves all the databases that our application uses. It also provides additional functionality to the client application. The various data that the backend manages includes:
 - Accessibility Database to allow enhancing of the various navigation and map features, so that it is suitable for people on wheelchairs.
